@@ -1,0 +1,3 @@
+#!/bin/sh
+
+oslo-config-generator --config-file=tools/zun-config-generator.conf
