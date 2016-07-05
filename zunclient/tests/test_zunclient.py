@@ -12,8 +12,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import pbr.version
+"""
+test_zunclient
+----------------------------------
+Tests for `zunclient` module.
+"""
+
+from zunclient.tests import base
 
 
-__version__ = pbr.version.VersionInfo(
-    'python-zunclient').version_string()
+class TestZunclient(base.TestCase):
+
+    def test_something(self):
+        pass
