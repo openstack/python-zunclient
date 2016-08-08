@@ -13,8 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from zunclient.v1 import containers_shell
 from zunclient.v1 import services_shell
 
 COMMAND_MODULES = [
+    containers_shell,
     services_shell,
 ]

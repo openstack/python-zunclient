@@ -17,6 +17,7 @@ from keystoneauth1 import loading
 from keystoneauth1 import session as ksa_session
 
 from zunclient.common import httpclient
+from zunclient.v1 import containers
 from zunclient.v1 import services
 
 
@@ -106,4 +107,5 @@ class Client(object):
             region_name=region_name,
             session=session,
             **client_kwargs)
+        self.containers = containers.ContainerManager(self.http_client)
         self.services = services.ServiceManager(self.http_client)
