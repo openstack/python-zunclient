@@ -32,6 +32,9 @@ def _show_container(container):
 @utils.arg('-c', '--command',
            metavar='<command>',
            help='Send command to the container')
+@utils.arg('--cpu',
+           metavar='<cpu>',
+           help='The number of virtual cpus.')
 @utils.arg('-m', '--memory',
            metavar='<memory>',
            help='The container memory size (format: <number><optional unit>, '
@@ -40,6 +43,22 @@ def _show_container(container):
            metavar='<KEY=VALUE>',
            action='append', default=[],
            help='The environment variabled')
+@utils.arg('--workdir',
+           metavar='<workdir>',
+           help='The working directory for commands to run in')
+@utils.arg('--expose',
+           metavar='<port>',
+           action='append', default=[],
+           help='A port or a list of ports to expose. '
+                'May be used multiple times.')
+@utils.arg('--hostname',
+           metavar='<hostname>',
+           help='The hostname to use for the container')
+@utils.arg('--label',
+           metavar='<KEY=VALUE>',
+           action='append', default=[],
+           help='Adds a map of labels to a container. '
+                'May be used multiple times.')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -47,7 +66,12 @@ def do_create(cs, args):
     opts['image'] = args.image
     opts['command'] = args.command
     opts['memory'] = args.memory
+    opts['cpu'] = args.cpu
     opts['environment'] = zun_utils.format_labels(args.environment)
+    opts['workdir'] = args.workdir
+    opts['ports'] = args.expose
+    opts['hostname'] = args.hostname
+    opts['labels'] = zun_utils.format_labels(args.label)
     _show_container(cs.containers.create(**opts))
 
 
@@ -75,7 +99,8 @@ def do_list(cs, args):
     opts['sort_key'] = args.sort_key
     opts['sort_dir'] = args.sort_dir
     containers = cs.containers.list(**opts)
-    columns = ('uuid', 'name', 'status', 'image', 'command', 'memory')
+    columns = ('uuid', 'name', 'status', 'task_state', 'image', 'command',
+               'ports')
     utils.print_list(containers, columns,
                      {'versions': zun_utils.print_list_field('versions')},
                      sortby_index=None)

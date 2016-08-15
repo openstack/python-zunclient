@@ -19,7 +19,8 @@ from zunclient.common import utils
 from zunclient import exceptions
 
 
-CREATION_ATTRIBUTES = ['name', 'image', 'command', 'memory', 'environment']
+CREATION_ATTRIBUTES = ['name', 'image', 'command', 'cpu', 'memory',
+                       'environment', 'workdir', 'ports', 'hostname', 'labels']
 
 
 class Container(base.Resource):
