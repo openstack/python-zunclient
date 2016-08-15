@@ -39,7 +39,7 @@ def _show_container(container):
 @utils.arg('--environment',
            metavar='<environment>',
            help='The environment variabled')
-def do_container_create(cs, args):
+def do_create(cs, args):
     """Create a container."""
     opts = {}
     opts['name'] = args.name
@@ -66,7 +66,7 @@ def do_container_create(cs, args):
            metavar='<sort-dir>',
            choices=['desc', 'asc'],
            help='Direction to sort. "asc" or "desc".')
-def do_container_list(cs, args):
+def do_list(cs, args):
     """Print a list of available containers."""
     opts = {}
     opts['marker'] = args.marker
@@ -84,7 +84,7 @@ def do_container_list(cs, args):
            metavar='<container>',
            nargs='+',
            help='ID or name of the (container)s to delete.')
-def do_container_delete(cs, args):
+def do_delete(cs, args):
     """Delete specified containers."""
     for container in args.containers:
         try:
@@ -103,7 +103,7 @@ def do_container_delete(cs, args):
            action='store_true',
            default=False,
            help='Print JSON representation of the container.')
-def do_container_show(cs, args):
+def do_show(cs, args):
     """Show details of a container."""
     container = cs.containers.get(args.container)
     if args.json:
@@ -116,7 +116,7 @@ def do_container_show(cs, args):
            metavar='<container>',
            nargs='+',
            help='ID or name of the (container)s to reboot.')
-def do_container_reboot(cs, args):
+def do_reboot(cs, args):
     """Reboot specified containers."""
     for container in args.containers:
         try:
@@ -132,7 +132,7 @@ def do_container_reboot(cs, args):
            metavar='<container>',
            nargs='+',
            help='ID or name of the (container)s to stop.')
-def do_container_stop(cs, args):
+def do_stop(cs, args):
     """Stop specified containers."""
     for container in args.containers:
         try:
@@ -148,7 +148,7 @@ def do_container_stop(cs, args):
            metavar='<container>',
            nargs='+',
            help='ID of the (container)s to start.')
-def do_container_start(cs, args):
+def do_start(cs, args):
     """Start specified containers."""
     for container in args.containers:
         try:
@@ -164,7 +164,7 @@ def do_container_start(cs, args):
            metavar='<container>',
            nargs='+',
            help='ID or name of the (container)s to pause.')
-def do_container_pause(cs, args):
+def do_pause(cs, args):
     """Pause specified containers."""
     for container in args.containers:
         try:
@@ -180,7 +180,7 @@ def do_container_pause(cs, args):
            metavar='<container>',
            nargs='+',
            help='ID or name of the (container)s to unpause.')
-def do_container_unpause(cs, args):
+def do_unpause(cs, args):
     """Unpause specified containers."""
     for container in args.containers:
         try:
@@ -195,7 +195,7 @@ def do_container_unpause(cs, args):
 @utils.arg('container',
            metavar='<container>',
            help='ID or name of the container to get logs for.')
-def do_container_logs(cs, args):
+def do_logs(cs, args):
     """Get logs of a container."""
     logs = cs.containers.logs(args.container)
     print(logs)
@@ -208,7 +208,7 @@ def do_container_logs(cs, args):
            required=True,
            metavar='<command>',
            help='The command to execute')
-def do_container_exec(cs, args):
+def do_exec(cs, args):
     """Execute command in a container."""
     output = cs.containers.execute(args.container, args.command)
     print(output)
