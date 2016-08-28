@@ -103,7 +103,7 @@ class ContainerManager(base.Manager):
     def delete(self, id):
         return self._delete(self._path(id))
 
-    def _action(self, id, action, method='PUT', qparams=None, **kwargs):
+    def _action(self, id, action, method='POST', qparams=None, **kwargs):
         if qparams:
             action = "%s?%s" % (action,
                                 parse.urlencode(qparams))
