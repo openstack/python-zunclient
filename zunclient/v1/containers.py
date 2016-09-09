@@ -100,8 +100,9 @@ class ContainerManager(base.Manager):
                     "Key must be in %s" % ','.join(CREATION_ATTRIBUTES))
         return self._create(self._path(), new)
 
-    def delete(self, id):
-        return self._delete(self._path(id))
+    def delete(self, id, force):
+        return self._delete(self._path(id),
+                            qparams={'force': force})
 
     def _action(self, id, action, method='POST', qparams=None, **kwargs):
         if qparams:

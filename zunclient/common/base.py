@@ -132,7 +132,9 @@ class Manager(object):
         if body:
             return self.resource_class(self, body)
 
-    def _delete(self, url):
+    def _delete(self, url, qparams=None):
+        if qparams:
+            url = "%s?%s" % (url, urlparse.urlencode(qparams))
         self.api.raw_request('DELETE', url)
 
 

@@ -84,11 +84,14 @@ def do_list(cs, args):
            metavar='<container>',
            nargs='+',
            help='ID or name of the (container)s to delete.')
+@utils.arg('--force',
+           action='store_true',
+           help='Force delete the container.')
 def do_delete(cs, args):
     """Delete specified containers."""
     for container in args.containers:
         try:
-            cs.containers.delete(container)
+            cs.containers.delete(container, args.force)
             print("Request to delete container %s has been accepted." %
                   container)
         except Exception as e:
