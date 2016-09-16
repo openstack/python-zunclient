@@ -37,7 +37,8 @@ def _show_container(container):
            help='The container memory size (format: <number><optional unit>, '
                 'where unit = b, k, m or g)')
 @utils.arg('-e', '--environment',
-           metavar='<environment>',
+           metavar='<KEY=VALUE>',
+           action='append', default=[],
            help='The environment variabled')
 def do_create(cs, args):
     """Create a container."""
@@ -46,7 +47,7 @@ def do_create(cs, args):
     opts['image'] = args.image
     opts['command'] = args.command
     opts['memory'] = args.memory
-    opts['environment'] = args.environment
+    opts['environment'] = zun_utils.format_labels(args.environment)
     _show_container(cs.containers.create(**opts))
 
 

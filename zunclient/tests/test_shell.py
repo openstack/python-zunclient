@@ -88,7 +88,7 @@ class ShellTest(utils.TestCase):
     def test_help(self):
         required = [
             '.*?^usage: ',
-            '.*?^\s+container-stop\s+Stop specified container.',
+            '.*?^\s+stop\s+Stop specified container.',
             '.*?^See "zun help COMMAND" for help on a specific command',
         ]
         stdout, stderr = self.shell('help')
@@ -98,11 +98,11 @@ class ShellTest(utils.TestCase):
 
     def test_help_on_subcommand(self):
         required = [
-            '.*?^usage: zun container-create',
+            '.*?^usage: zun create',
             '.*?^Create a container.',
             '.*?^Optional arguments:',
         ]
-        stdout, stderr = self.shell('help container-create')
+        stdout, stderr = self.shell('help create')
         for r in required:
             self.assertThat((stdout + stderr),
                             matchers.MatchesRegex(r, re.DOTALL | re.MULTILINE))
@@ -110,7 +110,7 @@ class ShellTest(utils.TestCase):
     def test_help_no_options(self):
         required = [
             '.*?^usage: ',
-            '.*?^\s+container-stop\s+Stop specified container.',
+            '.*?^\s+stop\s+Stop specified container.',
             '.*?^See "zun help COMMAND" for help on a specific command',
         ]
         stdout, stderr = self.shell('')
@@ -124,8 +124,8 @@ class ShellTest(utils.TestCase):
         required = [
             '.*--json',
             '.*help',
-            '.*container-show',
-            '.*--container']
+            '.*show',
+            '.*--name']
         for r in required:
             self.assertThat((stdout + stderr),
                             matchers.MatchesRegex(r, re.DOTALL | re.MULTILINE))
@@ -195,7 +195,14 @@ class ShellTest(utils.TestCase):
         _, client_kwargs = mock_client.call_args_list[0]
         self.assertEqual('container', client_kwargs['service_type'])
 
-    @mock.patch('zunclient.v1.services_shell.do_services_list')
+    @mock.patch('zunclient.v1.client.Client')
+    def test_container_format_env(self, mock_client):
+        self.make_env()
+        self.shell('create --environment key=value --image test')
+        _, create_args = mock_client.return_value.containers.create.call_args
+        self.assertEqual({'key': 'value'}, create_args['environment'])
+
+    @mock.patch('zunclient.v1.services_shell.do_service_list')
     @mock.patch('zunclient.v1.client.ksa_session')
     def test_insecure(self, mock_session, mock_services_list):
         self.make_env()

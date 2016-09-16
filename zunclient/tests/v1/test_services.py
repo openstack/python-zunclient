@@ -86,7 +86,7 @@ class ServiceManagerTest(testtools.TestCase):
     def setUp(self):
         super(ServiceManagerTest, self).setUp()
         self.api = utils.FakeAPI(fake_responses)
-        self.mgr = services.MServiceManager(self.api)
+        self.mgr = services.ServiceManager(self.api)
 
     def test_service_list(self):
         services = self.mgr.list()
