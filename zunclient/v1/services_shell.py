@@ -20,6 +20,7 @@ from zunclient.common import utils as zun_utils
 def do_service_list(cs, args):
     """Print a list of zun services."""
     services = cs.services.list()
-    columns = ('id', 'host', 'binary', 'state')
+    columns = ('Id', 'Host', 'Binary', 'State', 'Disabled',
+               'Disabled Reason', 'Created At', 'Updated At')
     utils.print_list(services, columns,
                      {'versions': zun_utils.print_list_field('versions')})
