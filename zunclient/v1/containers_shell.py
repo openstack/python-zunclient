@@ -22,21 +22,21 @@ def _show_container(container):
     utils.print_dict(container._info)
 
 
-@utils.arg('--name',
+@utils.arg('-n', '--name',
            metavar='<name>',
            help='name of the container')
-@utils.arg('--image',
+@utils.arg('-i', '--image',
            required=True,
            metavar='<image>',
            help='name or ID of the image')
-@utils.arg('--command',
+@utils.arg('-c', '--command',
            metavar='<command>',
            help='Send command to the container')
-@utils.arg('--memory',
+@utils.arg('-m', '--memory',
            metavar='<memory>',
            help='The container memory size (format: <number><optional unit>, '
                 'where unit = b, k, m or g)')
-@utils.arg('--environment',
+@utils.arg('-e', '--environment',
            metavar='<environment>',
            help='The environment variabled')
 def do_create(cs, args):
@@ -84,7 +84,7 @@ def do_list(cs, args):
            metavar='<container>',
            nargs='+',
            help='ID or name of the (container)s to delete.')
-@utils.arg('--force',
+@utils.arg('-f', '--force',
            action='store_true',
            help='Force delete the container.')
 def do_delete(cs, args):
@@ -207,7 +207,7 @@ def do_logs(cs, args):
 @utils.arg('container',
            metavar='<container>',
            help='ID or name of the container to execute command in.')
-@utils.arg('--command',
+@utils.arg('-c', '--command',
            required=True,
            metavar='<command>',
            help='The command to execute')
