@@ -136,3 +136,7 @@ class ContainerManager(base.Manager):
     def execute(self, id, command):
         return self._action(id, '/execute',
                             qparams={'command': command})[1]
+
+    def kill(self, id, signal=None):
+        return self._action(id, '/kill',
+                            qparams={'signal': signal})[1]
