@@ -52,3 +52,6 @@ ChangeLog
 *~
 .*.swp
 *.DS_Store
+
+# Files created by releasenotes build
+releasenotes/build
