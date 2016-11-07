@@ -1,0 +1,9 @@
+[run]
+branch = True
+source = zunclient
+omit = zunclient/tests/*
+
+[report]
+ignore_errors = True
+exclude_lines =
+    pass
