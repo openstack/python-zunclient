@@ -59,6 +59,17 @@ def _show_container(container):
            action='append', default=[],
            help='Adds a map of labels to a container. '
                 'May be used multiple times.')
+@utils.arg('--image-pull-policy',
+           dest='image_pull_policy',
+           metavar='<policy>',
+           choices=['never', 'always', 'ifnotpresent'],
+           help='The policy which determines if the image should '
+                'be pulled prior to starting the container. '
+                'It can have following values: '
+                '"ifnotpresent": only pull the image if it does not '
+                'already exist on the node. '
+                '"always": Always pull the image from repositery.'
+                '"never": never pull the image')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -72,6 +83,7 @@ def do_create(cs, args):
     opts['ports'] = args.expose
     opts['hostname'] = args.hostname
     opts['labels'] = zun_utils.format_labels(args.label)
+    opts['image_pull_policy'] = args.image_pull_policy
     _show_container(cs.containers.create(**opts))
 
 

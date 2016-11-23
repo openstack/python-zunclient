@@ -51,6 +51,12 @@ class TestCommandLineArgument(utils.TestCase):
         ".*?^Try 'zun help ",
         ]
 
+    _invalid_choice_error = [
+        '.*?^usage: ',
+        '.*?^error: argument .*: invalid choice:',
+        ".*?^Try 'zun help ",
+        ]
+
     def setUp(self):
         super(TestCommandLineArgument, self).setUp()
         self.make_env(fake_env=FAKE_ENV)
