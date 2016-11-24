@@ -271,10 +271,17 @@ class OpenStackZunShell(object):
 #            type=positive_non_zero_float,
 #            help="Set HTTP call timeout (in seconds)")
 
-        parser.add_argument('--os-tenant-id',
-                            metavar='<auth-tenant-id>',
-                            default=cliutils.env('OS_TENANT_ID'),
-                            help='Defaults to env[OS_TENANT_ID].')
+        parser.add_argument('--os-project-id',
+                            metavar='<auth-project-id>',
+                            default=cliutils.env('OS_PROJECT_ID',
+                                                 default=None),
+                            help='Defaults to env[OS_PROJECT_ID].')
+
+        parser.add_argument('--os-project-name',
+                            metavar='<auth-project-name>',
+                            default=cliutils.env('OS_PROJECT_NAME',
+                                                 default=None),
+                            help='Defaults to env[OS_PROJECT_NAME].')
 
         parser.add_argument('--os-user-domain-id',
                             metavar='<auth-user-domain-id>',
@@ -404,6 +411,7 @@ class OpenStackZunShell(object):
                                    action='help',
                                    help=argparse.SUPPRESS,)
             self.subcommands[command] = subparser
+
             for (args, kwargs) in arguments:
                 subparser.add_argument(*args, **kwargs)
             subparser.set_defaults(func=callback)
@@ -459,12 +467,12 @@ class OpenStackZunShell(object):
             self.do_bash_completion(args)
             return 0
 
-        (os_username, os_tenant_name, os_tenant_id,
+        (os_username, os_project_name, os_project_id,
          os_user_domain_id, os_user_domain_name,
          os_project_domain_id, os_project_domain_name,
          os_auth_url, os_auth_system, endpoint_type,
          service_type, bypass_url, insecure) = (
-            (args.os_username, args.os_tenant_name, args.os_tenant_id,
+            (args.os_username, args.os_project_name, args.os_project_id,
              args.os_user_domain_id, args.os_user_domain_name,
              args.os_project_domain_id, args.os_project_domain_name,
              args.os_auth_url, args.os_auth_system, args.endpoint_type,
@@ -499,11 +507,11 @@ class OpenStackZunShell(object):
                                            "via either --os-username or "
                                            "env[OS_USERNAME]")
 
-            if not os_tenant_name and not os_tenant_id:
-                raise exc.CommandError("You must provide a tenant name "
-                                       "or tenant id via --os-tenant-name, "
-                                       "--os-tenant-id, env[OS_TENANT_NAME] "
-                                       "or env[OS_TENANT_ID]")
+            if not os_project_name and not os_project_id:
+                raise exc.CommandError("You must provide a project name "
+                                       "or project id via --os-project-name, "
+                                       "--os-project-id, env[OS_PROJECT_NAME] "
+                                       "or env[OS_PROJECT_ID]")
 
             if not os_auth_url:
                 if os_auth_system and os_auth_system != 'keystone':
@@ -552,8 +560,8 @@ class OpenStackZunShell(object):
 
         self.cs = client.Client(username=os_username,
                                 api_key=os_password,
-                                project_id=os_tenant_id,
-                                project_name=os_tenant_name,
+                                project_id=os_project_id,
+                                project_name=os_project_name,
                                 user_domain_id=os_user_domain_id,
                                 user_domain_name=os_user_domain_name,
                                 project_domain_id=os_project_domain_id,
