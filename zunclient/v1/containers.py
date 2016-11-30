@@ -142,3 +142,10 @@ class ContainerManager(base.Manager):
     def kill(self, id, signal=None):
         return self._action(id, '/kill',
                             qparams={'signal': signal})[1]
+
+    def run(self, **kwargs):
+        if not set(kwargs).issubset(CREATION_ATTRIBUTES):
+            raise exceptions.InvalidAttribute(
+                "Key must be in %s" % ','.join(CREATION_ATTRIBUTES))
+        else:
+            return self._create(self._path() + '/run', kwargs)

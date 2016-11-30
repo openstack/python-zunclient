@@ -276,3 +276,68 @@ def do_kill(cs, args):
         print(
             "kill signal for container %(container)s failed: %(e)s" %
             {'container': args.container, 'e': e})
+
+
+@utils.arg('-n', '--name',
+           metavar='<name>',
+           help='name of the container')
+@utils.arg('-i', '--image',
+           required=True,
+           metavar='<image>',
+           help='name or ID of the image')
+@utils.arg('-c', '--command',
+           metavar='<command>',
+           help='Send command to the container')
+@utils.arg('--cpu',
+           metavar='<cpu>',
+           help='The number of virtual cpus.')
+@utils.arg('-m', '--memory',
+           metavar='<memory>',
+           help='The container memory size (format: <number><optional unit>, '
+                'where unit = b, k, m or g)')
+@utils.arg('-e', '--environment',
+           metavar='<KEY=VALUE>',
+           action='append', default=[],
+           help='The environment variabled')
+@utils.arg('--workdir',
+           metavar='<workdir>',
+           help='The working directory for commands to run in')
+@utils.arg('--expose',
+           metavar='<port>',
+           action='append', default=[],
+           help='A port or a list of ports to expose. '
+                'May be used multiple times.')
+@utils.arg('--hostname',
+           metavar='<hostname>',
+           help='The hostname to use for the container')
+@utils.arg('--label',
+           metavar='<KEY=VALUE>',
+           action='append', default=[],
+           help='Adds a map of labels to a container. '
+                'May be used multiple times.')
+@utils.arg('--image-pull-policy',
+           dest='image_pull_policy',
+           metavar='<policy>',
+           choices=['never', 'always', 'ifnotpresent'],
+           help='The policy which determines if the image should '
+                'be pulled prior to starting the container. '
+                'It can have following values: '
+                '"ifnotpresent": only pull the image if it does not '
+                'already exist on the node. '
+                '"always": Always pull the image from repositery.'
+                '"never": never pull the image')
+def do_run(cs, args):
+    """Run a command in a new container"""
+    opts = {}
+    opts['name'] = args.name
+    opts['image'] = args.image
+    opts['command'] = args.command
+    opts['memory'] = args.memory
+    opts['cpu'] = args.cpu
+    opts['environment'] = zun_utils.format_labels(args.environment)
+    opts['workdir'] = args.workdir
+    opts['ports'] = args.expose
+    opts['hostname'] = args.hostname
+    opts['labels'] = zun_utils.format_labels(args.label)
+    opts['image_pull_policy'] = args.image_pull_policy
+    _show_container(cs.containers.run(**opts))
