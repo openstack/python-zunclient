@@ -1,0 +1,27 @@
+_zun_opts="" # lazy init
+_zun_flags="" # lazy init
+_zun_opts_exp="" # lazy init
+_zun()
+{
+        local cur prev nbc cflags
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+        if [ "x$_zun_opts" == "x" ] ; then
+                nbc="`zun bash-completion | sed -e "s/  *-h  */ /" -e "s/  *-i  */ /"`"
+                _zun_opts="`echo "$nbc" | sed -e "s/--[a-z0-9_-]*//g" -e "s/  */ /g"`"
+                _zun_flags="`echo " $nbc" | sed -e "s/ [^-][^-][a-z0-9_-]*//g" -e "s/  */ /g"`"
+                _zun_opts_exp="`echo "$_zun_opts" | tr ' ' '|'`"
+        fi
+
+        if [[ " ${COMP_WORDS[@]} " =~ " "($_zun_opts_exp)" " && "$prev" != "help" ]] ; then
+                COMPLETION_CACHE=~/.zunclient/*/*-cache
+                cflags="$_zun_flags "$(cat $COMPLETION_CACHE 2> /dev/null | tr '\n' ' ')
+                COMPREPLY=($(compgen -W "${cflags}" -- ${cur}))
+        else
+                COMPREPLY=($(compgen -W "${_zun_opts}" -- ${cur}))
+        fi
+        return 0
+}
+complete -F _zun zun
