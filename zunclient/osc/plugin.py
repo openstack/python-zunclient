@@ -49,7 +49,7 @@ def build_option_parser(parser):
         default=utils.env(
             'OS_CONTAINER_API_VERSION',
             default=DEFAULT_CONTAINER_API_VERSION),
-        help=_("Container API version, default={0}"
-               "(Env:OS_CONTAINER_API_VERSION)").format(
-                   DEFAULT_CONTAINER_API_VERSION))
+        help=("Container API version, default={0}"
+              "(Env:OS_CONTAINER_API_VERSION)").format(
+                  DEFAULT_CONTAINER_API_VERSION))
     return parser
