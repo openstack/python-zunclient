@@ -148,4 +148,4 @@ class ContainerManager(base.Manager):
             raise exceptions.InvalidAttribute(
                 "Key must be in %s" % ','.join(CREATION_ATTRIBUTES))
         else:
-            return self._create(self._path() + '/run', kwargs)
+            return self._create(self._path() + 'run', kwargs)
