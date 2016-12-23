@@ -103,11 +103,11 @@ def do_create(cs, args):
     opts['command'] = args.command
     opts['memory'] = args.memory
     opts['cpu'] = args.cpu
-    opts['environment'] = zun_utils.format_labels(args.environment)
+    opts['environment'] = zun_utils.format_args(args.environment)
     opts['workdir'] = args.workdir
     opts['ports'] = args.expose
     opts['hostname'] = args.hostname
-    opts['labels'] = zun_utils.format_labels(args.label)
+    opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
     _show_container(cs.containers.create(**opts))
 
@@ -355,10 +355,10 @@ def do_run(cs, args):
     opts['command'] = args.command
     opts['memory'] = args.memory
     opts['cpu'] = args.cpu
-    opts['environment'] = zun_utils.format_labels(args.environment)
+    opts['environment'] = zun_utils.format_args(args.environment)
     opts['workdir'] = args.workdir
     opts['ports'] = args.expose
     opts['hostname'] = args.hostname
-    opts['labels'] = zun_utils.format_labels(args.label)
+    opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
     _show_container(cs.containers.run(**opts))

@@ -80,33 +80,35 @@ def args_array_to_patch(op, attributes):
     return patch
 
 
-def format_labels(lbls, parse_comma=True):
-    '''Reformat labels into dict of format expected by the API.'''
+def format_args(args, parse_comma=True):
+    '''Reformat a list of key-value arguments into a dict.
 
-    if not lbls:
+    Convert arguments into format expected by the API.
+    '''
+    if not args:
         return {}
 
     if parse_comma:
-        # expect multiple invocations of --labels but fall back
-        # to either , or ; delimited if only one --labels is specified
-        if len(lbls) == 1:
-            lbls = lbls[0].replace(';', ',').split(',')
+        # expect multiple invocations of --label (or other arguments) but fall
+        # back to either , or ; delimited if only one --label is specified
+        if len(args) == 1:
+            args = args[0].replace(';', ',').split(',')
 
-    labels = {}
-    for l in lbls:
+    fmt_args = {}
+    for arg in args:
         try:
-            (k, v) = l.split(('='), 1)
+            (k, v) = arg.split(('='), 1)
         except ValueError:
-            raise exc.CommandError(_('labels must be a list of KEY=VALUE '
-                                     'not %s') % l)
-        if k not in labels:
-            labels[k] = v
+            raise exc.CommandError(_('arguments must be a list of KEY=VALUE '
+                                     'not %s') % arg)
+        if k not in fmt_args:
+            fmt_args[k] = v
         else:
-            if not isinstance(labels[k], list):
-                labels[k] = [labels[k]]
-            labels[k].append(v)
+            if not isinstance(fmt_args[k], list):
+                fmt_args[k] = [fmt_args[k]]
+            fmt_args[k].append(v)
 
-    return labels
+    return fmt_args
 
 
 def print_list_field(field):
