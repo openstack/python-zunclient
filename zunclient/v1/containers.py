@@ -38,7 +38,7 @@ class ContainerManager(base.Manager):
         if id:
             return '/v1/containers/%s' % id
         else:
-            return '/v1/containers/'
+            return '/v1/containers'
 
     def list(self, marker=None, limit=None, sort_key=None,
              sort_dir=None, detail=False):
@@ -148,4 +148,4 @@ class ContainerManager(base.Manager):
             raise exceptions.InvalidAttribute(
                 "Key must be in %s" % ','.join(CREATION_ATTRIBUTES))
         else:
-            return self._create(self._path() + 'run', kwargs)
+            return self._create(self._path() + '?run=true', kwargs)
