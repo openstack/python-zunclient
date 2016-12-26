@@ -71,11 +71,6 @@ def _list_containers(containers):
 @utils.arg('--workdir',
            metavar='<workdir>',
            help='The working directory for commands to run in')
-@utils.arg('--expose',
-           metavar='<port>',
-           action='append', default=[],
-           help='A port or a list of ports to expose. '
-                'May be used multiple times.')
 @utils.arg('--hostname',
            metavar='<hostname>',
            help='The hostname to use for the container')
@@ -105,7 +100,6 @@ def do_create(cs, args):
     opts['cpu'] = args.cpu
     opts['environment'] = zun_utils.format_labels(args.environment)
     opts['workdir'] = args.workdir
-    opts['ports'] = args.expose
     opts['hostname'] = args.hostname
     opts['labels'] = zun_utils.format_labels(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
@@ -323,11 +317,6 @@ def do_kill(cs, args):
 @utils.arg('--workdir',
            metavar='<workdir>',
            help='The working directory for commands to run in')
-@utils.arg('--expose',
-           metavar='<port>',
-           action='append', default=[],
-           help='A port or a list of ports to expose. '
-                'May be used multiple times.')
 @utils.arg('--hostname',
            metavar='<hostname>',
            help='The hostname to use for the container')
@@ -357,7 +346,6 @@ def do_run(cs, args):
     opts['cpu'] = args.cpu
     opts['environment'] = zun_utils.format_labels(args.environment)
     opts['workdir'] = args.workdir
-    opts['ports'] = args.expose
     opts['hostname'] = args.hostname
     opts['labels'] = zun_utils.format_labels(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
