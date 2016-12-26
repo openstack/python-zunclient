@@ -28,7 +28,6 @@ CONTAINER1 = {'id': '1234',
               'memory': '256m',
               'environment': 'hostname=zunsystem',
               'workdir': '/',
-              'hostname': 'zunsystem',
               'labels': 'faketest',
               }
 
@@ -42,7 +41,6 @@ CONTAINER2 = {'id': '1235',
               'memory': '256m',
               'environment': 'hostname=zunsystem',
               'workdir': '/',
-              'hostname': 'zunsystem',
               'labels': 'faketest',
               }
 
