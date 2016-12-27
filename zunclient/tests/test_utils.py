@@ -105,13 +105,13 @@ class ArgsArrayToPatchTest(test_utils.BaseTestCase):
                           {'op': 'remove', 'path': '/extra/bar'}], patch)
 
 
-class FormatLabelsTest(test_utils.BaseTestCase):
+class FormatArgsTest(test_utils.BaseTestCase):
 
-    def test_format_label_none(self):
-        self.assertEqual({}, utils.format_labels(None))
+    def test_format_args_none(self):
+        self.assertEqual({}, utils.format_args(None))
 
-    def test_format_labels(self):
-        l = utils.format_labels([
+    def test_format_args(self):
+        l = utils.format_args([
             'K1=V1,K2=V2,'
             'K3=V3,K4=V4,'
             'K5=V5'])
@@ -122,8 +122,8 @@ class FormatLabelsTest(test_utils.BaseTestCase):
                           'K5': 'V5'
                           }, l)
 
-    def test_format_labels_semicolon(self):
-        l = utils.format_labels([
+    def test_format_args_semicolon(self):
+        l = utils.format_args([
             'K1=V1;K2=V2;'
             'K3=V3;K4=V4;'
             'K5=V5'])
@@ -134,8 +134,8 @@ class FormatLabelsTest(test_utils.BaseTestCase):
                           'K5': 'V5'
                           }, l)
 
-    def test_format_labels_mix_commas_semicolon(self):
-        l = utils.format_labels([
+    def test_format_args_mix_commas_semicolon(self):
+        l = utils.format_args([
             'K1=V1,K2=V2,'
             'K3=V3;K4=V4,'
             'K5=V5'])
@@ -146,8 +146,8 @@ class FormatLabelsTest(test_utils.BaseTestCase):
                           'K5': 'V5'
                           }, l)
 
-    def test_format_labels_split(self):
-        l = utils.format_labels([
+    def test_format_args_split(self):
+        l = utils.format_args([
             'K1=V1,'
             'K2=V22222222222222222222222222222'
             '222222222222222222222222222,'
@@ -157,8 +157,8 @@ class FormatLabelsTest(test_utils.BaseTestCase):
                           '222222222222222222222222222',
                           'K3': '3.3.3.3'}, l)
 
-    def test_format_labels_multiple(self):
-        l = utils.format_labels([
+    def test_format_args_multiple(self):
+        l = utils.format_args([
             'K1=V1',
             'K2=V22222222222222222222222222222'
             '222222222222222222222222222',
@@ -168,8 +168,8 @@ class FormatLabelsTest(test_utils.BaseTestCase):
                           '222222222222222222222222222',
                           'K3': '3.3.3.3'}, l)
 
-    def test_format_labels_multiple_colon_values(self):
-        l = utils.format_labels([
+    def test_format_args_multiple_colon_values(self):
+        l = utils.format_args([
             'K1=V1',
             'K2=V2,V22,V222,V2222',
             'K3=3.3.3.3'])
@@ -177,32 +177,32 @@ class FormatLabelsTest(test_utils.BaseTestCase):
                           'K2': 'V2,V22,V222,V2222',
                           'K3': '3.3.3.3'}, l)
 
-    def test_format_labels_parse_comma_false(self):
-        l = utils.format_labels(
+    def test_format_args_parse_comma_false(self):
+        l = utils.format_args(
             ['K1=V1,K2=2.2.2.2,K=V'],
             parse_comma=False)
         self.assertEqual({'K1': 'V1,K2=2.2.2.2,K=V'}, l)
 
-    def test_format_labels_multiple_values_per_labels(self):
-        l = utils.format_labels([
+    def test_format_args_multiple_values_per_args(self):
+        l = utils.format_args([
             'K1=V1',
             'K1=V2'])
         self.assertIn('K1', l)
         self.assertIn('V1', l['K1'])
         self.assertIn('V2', l['K1'])
 
-    def test_format_label_bad_label(self):
-        labels = ['K1=V1,K22.2.2.2']
+    def test_format_args_bad_arg(self):
+        args = ['K1=V1,K22.2.2.2']
         ex = self.assertRaises(exc.CommandError,
-                               utils.format_labels, labels)
-        self.assertEqual('labels must be a list of KEY=VALUE '
+                               utils.format_args, args)
+        self.assertEqual('arguments must be a list of KEY=VALUE '
                          'not K22.2.2.2', str(ex))
 
-    def test_format_multiple_bad_label(self):
-        labels = ['K1=V1', 'K22.2.2.2']
+    def test_format_multiple_bad_args(self):
+        args = ['K1=V1', 'K22.2.2.2']
         ex = self.assertRaises(exc.CommandError,
-                               utils.format_labels, labels)
-        self.assertEqual('labels must be a list of KEY=VALUE '
+                               utils.format_args, args)
+        self.assertEqual('arguments must be a list of KEY=VALUE '
                          'not K22.2.2.2', str(ex))
 
 
