@@ -51,17 +51,16 @@ class CreateContainer(command.ShowOne):
         parser.add_argument(
             '--cpu',
             metavar='<cpu>',
-            help='The memory of virtual cpus.')
+            help='The number of virtual cpus.')
         parser.add_argument(
             '--memory',
             metavar='<memory>',
-            help='The container memory size (format: <number><optional unit>, '
-                 'where unit = b, k, m or g)')
+            help='The container memory size in MiB')
         parser.add_argument(
             '--environment',
             metavar='<KEY=VALUE>',
             action='append', default=[],
-            help='The environment variabled')
+            help='The environment variables')
         parser.add_argument(
             '--workdir',
             metavar='<workdir>',

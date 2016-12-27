@@ -62,12 +62,11 @@ def _list_containers(containers):
            help='The number of virtual cpus.')
 @utils.arg('-m', '--memory',
            metavar='<memory>',
-           help='The container memory size (format: <number><optional unit>, '
-                'where unit = b, k, m or g)')
+           help='The container memory size in MiB')
 @utils.arg('-e', '--environment',
            metavar='<KEY=VALUE>',
            action='append', default=[],
-           help='The environment variabled')
+           help='The environment variables')
 @utils.arg('--workdir',
            metavar='<workdir>',
            help='The working directory for commands to run in')
@@ -308,12 +307,11 @@ def do_kill(cs, args):
            help='The number of virtual cpus.')
 @utils.arg('-m', '--memory',
            metavar='<memory>',
-           help='The container memory size (format: <number><optional unit>, '
-                'where unit = b, k, m or g)')
+           help='The container memory size in MiB')
 @utils.arg('-e', '--environment',
            metavar='<KEY=VALUE>',
            action='append', default=[],
-           help='The environment variabled')
+           help='The environment variables')
 @utils.arg('--workdir',
            metavar='<workdir>',
            help='The working directory for commands to run in')
