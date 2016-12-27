@@ -62,21 +62,11 @@ def split_and_deserialize(string):
     return (key, value)
 
 
-def args_array_to_patch(op, attributes):
+def args_array_to_patch(attributes):
     patch = []
     for attr in attributes:
-        # Sanitize
-        if not attr.startswith('/'):
-            attr = '/' + attr
-        if op in ['add', 'replace']:
-            path, value = split_and_deserialize(attr)
-            patch.append({'op': op, 'path': path, 'value': value})
-
-        elif op == "remove":
-            # For remove only the key is needed
-            patch.append({'op': op, 'path': attr})
-        else:
-            raise exc.CommandError(_('Unknown PATCH operation: %s') % op)
+        path, value = split_and_deserialize(attr)
+        patch.append({path: value})
     return patch
 
 

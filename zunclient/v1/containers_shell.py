@@ -16,6 +16,7 @@ import json
 
 from zunclient.common import cliutils as utils
 from zunclient.common import utils as zun_utils
+from zunclient import exceptions as exc
 
 
 def _show_container(container):
@@ -346,3 +347,25 @@ def do_run(cs, args):
 def do_rename(cs, args):
     """Rename a container."""
     cs.containers.rename(args.container, args.name)
+
+
+@utils.arg('container',
+           metavar='<container>',
+           help="ID or name of the container to udate.")
+@utils.arg('--cpu',
+           metavar='<cpu>',
+           help='The number of virtual cpus.')
+@utils.arg('-m', '--memory',
+           metavar='<memory>',
+           help='The container memory size in MiB')
+def do_update(cs, args):
+    """Updates one or more container attributes"""
+    opts = {}
+    if args.memory is not None:
+        opts['memory'] = args.memory
+    if args.cpu is not None:
+        opts['cpu'] = args.cpu
+    if not opts:
+        raise exc.CommandError("You must update at least one property")
+    container = cs.containers.update(args.container, **opts)
+    _show_container(container)
