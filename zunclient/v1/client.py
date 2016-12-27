@@ -18,6 +18,7 @@ from keystoneauth1 import session as ksa_session
 
 from zunclient.common import httpclient
 from zunclient.v1 import containers
+from zunclient.v1 import images
 from zunclient.v1 import services
 
 
@@ -108,4 +109,5 @@ class Client(object):
             session=session,
             **client_kwargs)
         self.containers = containers.ContainerManager(self.http_client)
+        self.images = images.ImageManager(self.http_client)
         self.services = services.ServiceManager(self.http_client)
