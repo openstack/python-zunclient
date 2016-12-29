@@ -53,7 +53,7 @@ force_delete2 = True
 signal = "SIGTERM"
 
 fake_responses = {
-    '/v1/containers/':
+    '/v1/containers':
     {
         'GET': (
             {},
@@ -193,7 +193,7 @@ fake_responses = {
             None,
         ),
     },
-    '/v1/containers/run':
+    '/v1/containers?run=true':
     {
         'POST': (
             {},
@@ -213,7 +213,7 @@ class ContainerManagerTest(testtools.TestCase):
     def test_container_create(self):
         containers = self.mgr.create(**CREATE_CONTAINER1)
         expect = [
-            ('POST', '/v1/containers/', {}, CREATE_CONTAINER1)
+            ('POST', '/v1/containers', {}, CREATE_CONTAINER1)
         ]
         self.assertEqual(expect, self.api.calls)
         self.assertTrue(containers)
@@ -230,7 +230,7 @@ class ContainerManagerTest(testtools.TestCase):
     def test_containers_list(self):
         containers = self.mgr.list()
         expect = [
-            ('GET', '/v1/containers/', {}, None),
+            ('GET', '/v1/containers', {}, None),
         ]
         self.assertEqual(expect, self.api.calls)
         self.assertThat(containers, matchers.HasLength(2))
@@ -411,7 +411,7 @@ class ContainerManagerTest(testtools.TestCase):
     def test_container_run(self):
         containers = self.mgr.run(**CREATE_CONTAINER1)
         expect = [
-            ('POST', '/v1/containers/run', {}, CREATE_CONTAINER1)
+            ('POST', '/v1/containers?run=true', {}, CREATE_CONTAINER1)
         ]
         self.assertEqual(expect, self.api.calls)
         self.assertTrue(containers)
