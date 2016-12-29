@@ -66,16 +66,6 @@ class CreateContainer(command.ShowOne):
             metavar='<workdir>',
             help='The working directory for commands to run in')
         parser.add_argument(
-            '--expose',
-            metavar='<port>',
-            action='append', default=[],
-            help='A port or a list of ports to expose. '
-                 'May be used multiple times.')
-        parser.add_argument(
-            '--hostname',
-            metavar='<hostname>',
-            help='The hostname to use for the container')
-        parser.add_argument(
             '--label',
             metavar='<KEY=VALUE>',
             action='append', default=[],
@@ -103,11 +93,9 @@ class CreateContainer(command.ShowOne):
         opts['command'] = parsed_args.command
         opts['memory'] = parsed_args.memory
         opts['cpu'] = parsed_args.cpu
-        opts['environment'] = zun_utils.format_labels(parsed_args.environment)
+        opts['environment'] = zun_utils.format_args(parsed_args.environment)
         opts['workdir'] = parsed_args.workdir
-        opts['ports'] = parsed_args.expose
-        opts['hostname'] = parsed_args.hostname
-        opts['labels'] = zun_utils.format_labels(parsed_args.label)
+        opts['labels'] = zun_utils.format_args(parsed_args.label)
         opts['image_pull_policy'] = parsed_args.image_pull_policy
 
         container = client.containers.create(**opts)
