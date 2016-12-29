@@ -70,9 +70,6 @@ def _list_containers(containers):
 @utils.arg('--workdir',
            metavar='<workdir>',
            help='The working directory for commands to run in')
-@utils.arg('--hostname',
-           metavar='<hostname>',
-           help='The hostname to use for the container')
 @utils.arg('--label',
            metavar='<KEY=VALUE>',
            action='append', default=[],
@@ -99,7 +96,6 @@ def do_create(cs, args):
     opts['cpu'] = args.cpu
     opts['environment'] = zun_utils.format_args(args.environment)
     opts['workdir'] = args.workdir
-    opts['hostname'] = args.hostname
     opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
     _show_container(cs.containers.create(**opts))
@@ -315,9 +311,6 @@ def do_kill(cs, args):
 @utils.arg('--workdir',
            metavar='<workdir>',
            help='The working directory for commands to run in')
-@utils.arg('--hostname',
-           metavar='<hostname>',
-           help='The hostname to use for the container')
 @utils.arg('--label',
            metavar='<KEY=VALUE>',
            action='append', default=[],
@@ -344,7 +337,6 @@ def do_run(cs, args):
     opts['cpu'] = args.cpu
     opts['environment'] = zun_utils.format_args(args.environment)
     opts['workdir'] = args.workdir
-    opts['hostname'] = args.hostname
     opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
     _show_container(cs.containers.run(**opts))
