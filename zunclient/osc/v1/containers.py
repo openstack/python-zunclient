@@ -16,6 +16,7 @@ from osc_lib.command import command
 from osc_lib import utils
 
 from zunclient.common import utils as zun_utils
+from zunclient.i18n import _
 
 
 def _container_columns(container):
@@ -164,3 +165,35 @@ class ListContainer(command.Lister):
         columns = ['uuid', 'name', 'status', 'image', 'command']
         return (columns, (utils.get_item_properties(container, columns)
                           for container in containers))
+
+
+class DeleteContainer(command.Command):
+    """Delete a container"""
+
+    log = logging.getLogger(__name__ + ".Deletecontainer")
+
+    def get_parser(self, prog_name):
+        parser = super(DeleteContainer, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            nargs='+',
+            help='ID or name of the (container)s to delete.')
+        parser.add_argument(
+            '--force',
+            action='store_true',
+            help='Force delete the container.')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        containers = parsed_args.container
+        force = getattr(parsed_args, 'force')
+        for container in containers:
+            try:
+                client.containers.delete(container, force)
+                print(_('Request to delete container %s has been accepted.')
+                      % container)
+            except Exception as e:
+                print("Delete for container %(container)s failed: %(e)s" %
+                      {'container': container, 'e': e})
