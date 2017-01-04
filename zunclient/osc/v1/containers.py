@@ -197,3 +197,29 @@ class DeleteContainer(command.Command):
             except Exception as e:
                 print("Delete for container %(container)s failed: %(e)s" %
                       {'container': container, 'e': e})
+
+
+class RebootContainer(command.Command):
+    """Reboot specified container"""
+    log = logging.getLogger(__name__ + ".RebootContainer")
+
+    def get_parser(self, prog_name):
+        parser = super(RebootContainer, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            nargs='+',
+            help='ID or name of the (container)s to reboot.')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        containers = parsed_args.container
+        for container in containers:
+            try:
+                client.containers.reboot(container)
+                print(_('Request to reboot container %s has been accepted')
+                      % container)
+            except Exception as e:
+                print("Reboot for container %(container)s failed: %(e)s" %
+                      {'container': container, 'e': e})
