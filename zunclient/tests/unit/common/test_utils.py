@@ -21,7 +21,7 @@ import six
 from zunclient.common import cliutils
 from zunclient.common import utils
 from zunclient import exceptions as exc
-from zunclient.tests import utils as test_utils
+from zunclient.tests.unit import utils as test_utils
 
 
 class CommonFiltersTest(test_utils.BaseTestCase):

@@ -12,7 +12,7 @@
 
 import mock
 
-from zunclient.tests.v1 import shell_test_base
+from zunclient.tests.unit.v1 import shell_test_base
 from zunclient.v1 import containers_shell
 
 

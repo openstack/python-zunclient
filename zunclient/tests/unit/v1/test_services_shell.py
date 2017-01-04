@@ -14,7 +14,7 @@
 
 import mock
 
-from zunclient.tests.v1 import shell_test_base
+from zunclient.tests.unit.v1 import shell_test_base
 
 
 class ShellTest(shell_test_base.TestCommandLineArgument):

@@ -21,7 +21,7 @@ import six
 from zunclient.common.apiclient.exceptions import GatewayTimeout
 from zunclient.common import httpclient as http
 from zunclient import exceptions as exc
-from zunclient.tests import utils
+from zunclient.tests.unit import utils
 
 
 def _get_error_body(faultstring=None, debuginfo=None):

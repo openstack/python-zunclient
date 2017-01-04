@@ -13,7 +13,7 @@
 import testtools
 from testtools import matchers
 
-from zunclient.tests import utils
+from zunclient.tests.unit import utils
 from zunclient.v1 import images
 
 
