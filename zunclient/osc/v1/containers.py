@@ -223,3 +223,29 @@ class RebootContainer(command.Command):
             except Exception as e:
                 print("Reboot for container %(container)s failed: %(e)s" %
                       {'container': container, 'e': e})
+
+
+class StartContainer(command.Command):
+    """Start specified container"""
+    log = logging.getLogger(__name__ + ".StartContainer")
+
+    def get_parser(self, prog_name):
+        parser = super(StartContainer, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            nargs='+',
+            help='ID or name of the (container)s to start.')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        containers = parsed_args.container
+        for container in containers:
+            try:
+                client.containers.start(container)
+                print(_('Request to start container %s has been accepted')
+                      % container)
+            except Exception as e:
+                print("Start for container %(container)s failed: %(e)s" %
+                      {'container': container, 'e': e})
