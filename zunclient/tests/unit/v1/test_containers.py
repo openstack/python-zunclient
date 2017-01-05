@@ -55,6 +55,8 @@ force_delete2 = True
 signal = "SIGTERM"
 name = "new-name"
 timeout = 10
+tty_height = "56"
+tty_weight = "121"
 
 fake_responses = {
     '/v1/containers':
@@ -205,6 +207,22 @@ fake_responses = {
     },
     '/v1/containers/%s/rename?%s' % (CONTAINER1['id'],
                                      parse.urlencode({'name': name})):
+    {
+        'POST': (
+            {},
+            None,
+        ),
+    },
+    '/v1/containers/%s/attach' % CONTAINER1['id']:
+    {
+        'GET': (
+            {},
+            None,
+        ),
+    },
+    '/v1/containers/%s/resize?%s'
+    % (CONTAINER1['id'], parse.urlencode({'h': tty_height,
+                                          'w': tty_weight})):
     {
         'POST': (
             {},
@@ -445,3 +463,23 @@ class ContainerManagerTest(testtools.TestCase):
         ]
         self.assertEqual(expect, self.api.calls)
         self.assertTrue(containers)
+
+    def test_containers_attach(self):
+        containers = self.mgr.attach(CONTAINER1['id'])
+        expect = [
+            ('GET', '/v1/containers/%s/attach' % CONTAINER1['id'],
+             {'Content-Length': '0'}, None)
+        ]
+        self.assertEqual(expect, self.api.calls)
+        self.assertIsNone(containers)
+
+    def test_containers_resize(self):
+        containers = self.mgr.resize(CONTAINER1['id'], tty_weight, tty_height)
+        expect = [
+            ('POST', '/v1/containers/%s/resize?%s'
+             % (CONTAINER1['id'], parse.urlencode({'h': tty_height,
+                                                   'w': tty_weight})),
+             {'Content-Length': '0'}, None)
+        ]
+        self.assertEqual(expect, self.api.calls)
+        self.assertIsNone(containers)
