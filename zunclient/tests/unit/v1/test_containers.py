@@ -15,7 +15,7 @@ from six.moves.urllib import parse
 import testtools
 from testtools import matchers
 from zunclient import exceptions
-from zunclient.tests import utils
+from zunclient.tests.unit import utils
 from zunclient.v1 import containers
 
 CONTAINER1 = {'id': '1234',

@@ -23,7 +23,7 @@ from testtools import matchers
 
 from zunclient import exceptions
 import zunclient.shell
-from zunclient.tests import utils
+from zunclient.tests.unit import utils
 
 FAKE_ENV = {'OS_USERNAME': 'username',
             'OS_PASSWORD': 'password',

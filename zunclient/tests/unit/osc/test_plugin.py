@@ -13,7 +13,7 @@
 import mock
 
 from zunclient.osc import plugin
-from zunclient.tests import base
+from zunclient.tests.unit import base
 
 
 class TestContainerPlugin(base.TestCase):
