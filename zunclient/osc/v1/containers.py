@@ -324,3 +324,22 @@ class ExecContainer(command.Command):
         command = getattr(parsed_args, 'command')
         output = client.containers.execute(container, command)
         print(output)
+
+
+class LogsContainer(command.Command):
+    """Get logs of a container"""
+    log = logging.getLogger(__name__ + ".LogsContainer")
+
+    def get_parser(self, prog_name):
+        parser = super(LogsContainer, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help='ID or name of the container to get logs for.')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        container = parsed_args.container
+        logs = client.containers.logs(container)
+        print(logs)
