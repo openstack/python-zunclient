@@ -343,3 +343,36 @@ class LogsContainer(command.Command):
         container = parsed_args.container
         logs = client.containers.logs(container)
         print(logs)
+
+
+class KillContainer(command.Command):
+    """Kill signal to a container"""
+
+    log = logging.getLogger(__name__ + ".KillContainers")
+
+    def get_parser(self, prog_name):
+        parser = super(KillContainer, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help='ID or name of the container to kill signal to.')
+        parser.add_argument(
+            '--signal',
+            metavar='<signal>',
+            default=None,
+            help='The signal to kill')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        container = parsed_args.container
+        opts = {}
+        opts['id'] = parsed_args.container
+        opts['signal'] = parsed_args.signal
+        try:
+            client.containers.kill(**opts)
+            print(_('Request to send kill signal to container %s has '
+                    'been accepted') % container)
+        except Exception as e:
+            print("kill signal for container %(container)s failed: %(e)s" %
+                  {'container': container, 'e': e})
