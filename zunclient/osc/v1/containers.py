@@ -41,8 +41,7 @@ class CreateContainer(command.ShowOne):
             metavar='<name>',
             help='name of the container')
         parser.add_argument(
-            '--image',
-            required=True,
+            'image',
             metavar='<image>',
             help='name or ID of the image')
         parser.add_argument(
