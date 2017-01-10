@@ -264,27 +264,29 @@ def do_exec(cs, args):
     print(output)
 
 
-@utils.arg('container',
+@utils.arg('containers',
            metavar='<container>',
-           help='ID or name of the container to kill signal to.')
+           nargs='+',
+           help='ID or name of the (container)s to kill signal to.')
 @utils.arg('-s', '--signal',
            metavar='<signal>',
            default=None,
            help='The signal to kill')
 def do_kill(cs, args):
-    """kill signal to a container."""
-    opts = {}
-    opts['id'] = args.container
-    opts['signal'] = args.signal
-    try:
-        cs.containers.kill(**opts)
-        print(
-            "Request to kill signal to container %s has been accepted." %
-            args.container)
-    except Exception as e:
-        print(
-            "kill signal for container %(container)s failed: %(e)s" %
-            {'container': args.container, 'e': e})
+    """kill signal to containers."""
+    for container in args.containers:
+        opts = {}
+        opts['id'] = container
+        opts['signal'] = args.signal
+        try:
+            cs.containers.kill(**opts)
+            print(
+                "Request to kill signal to container %s has been accepted." %
+                container)
+        except Exception as e:
+            print(
+                "kill signal for container %(container)s failed: %(e)s" %
+                {'container': container, 'e': e})
 
 
 @utils.arg('-n', '--name',
