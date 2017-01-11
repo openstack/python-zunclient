@@ -29,6 +29,7 @@ CONTAINER1 = {'id': '1234',
               'environment': 'hostname=zunsystem',
               'workdir': '/',
               'labels': 'faketest',
+              'restart_policy': 'no',
               }
 
 CONTAINER2 = {'id': '1235',
@@ -42,6 +43,7 @@ CONTAINER2 = {'id': '1235',
               'environment': 'hostname=zunsystem',
               'workdir': '/',
               'labels': 'faketest',
+              'restart_policy': 'on-failure:5',
               }
 
 CREATE_CONTAINER1 = copy.deepcopy(CONTAINER1)
