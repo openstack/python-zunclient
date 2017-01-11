@@ -17,13 +17,12 @@ from osc_lib import utils
 
 from zunclient import api_versions
 
-
 LOG = logging.getLogger(__name__)
 
-DEFAULT_CONTAINER_API_VERSION = "1.2"
+DEFAULT_CONTAINER_API_VERSION = api_versions.DEFAULT_API_VERSION
 API_VERSION_OPTION = "os_container_api_version"
 API_NAME = "container"
-LAST_KNOWN_API_VERSION = 2
+LAST_KNOWN_API_VERSION = 3
 API_VERSIONS = {
     '1.%d' % i: 'zunclient.v1.client.Client'
     for i in range(1, LAST_KNOWN_API_VERSION + 1)
@@ -40,12 +39,14 @@ def make_client(instance):
     LOG.debug("Instantiating zun client: {0}".format(
               zun_client))
 
+    # TODO(hongbin): Instead of hard-coding api-version to 'latest', it is
+    # better to read micro-version from CLI (bug #1701939).
     api_version = api_versions.get_api_version(instance._api_version[API_NAME])
     client = zun_client(
-        api_version=api_version,
         region_name=instance._region_name,
         session=instance.session,
         service_type='container',
+        api_version=api_version,
     )
     return client
 
@@ -70,6 +71,7 @@ def build_option_parser(parser):
 
 class ReplaceLatestVersion(argparse.Action):
     """Replaces `latest` keyword by last known version."""
+
     def __call__(self, parser, namespace, values, option_string=None):
         latest = values == 'latest'
         if latest:

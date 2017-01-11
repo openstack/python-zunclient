@@ -49,6 +49,9 @@ def _show_container(container):
 @utils.arg('--workdir',
            metavar='<workdir>',
            help='The working directory for commands to run in')
+@utils.arg('--rm',
+           action='store_true',
+           help='Automatically remove the container when it exits')
 @utils.arg('--label',
            metavar='<KEY=VALUE>',
            action='append', default=[],
@@ -117,6 +120,7 @@ def do_create(cs, args):
     opts['memory'] = args.memory
     opts['cpu'] = args.cpu
     opts['environment'] = zun_utils.format_args(args.environment)
+    opts['auto_remove'] = args.rm
     opts['workdir'] = args.workdir
     opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
@@ -408,6 +412,9 @@ def do_kill(cs, args):
 @utils.arg('--workdir',
            metavar='<workdir>',
            help='The working directory for commands to run in')
+@utils.arg('--rm',
+           action='store_true',
+           help='Automatically remove the container when it exits')
 @utils.arg('--label',
            metavar='<KEY=VALUE>',
            action='append', default=[],
@@ -477,6 +484,7 @@ def do_run(cs, args):
     opts['cpu'] = args.cpu
     opts['environment'] = zun_utils.format_args(args.environment)
     opts['workdir'] = args.workdir
+    opts['auto_remove'] = args.rm
     opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
     opts['image_driver'] = args.image_driver
