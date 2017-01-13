@@ -50,10 +50,6 @@ def _list_containers(containers):
 @utils.arg('-n', '--name',
            metavar='<name>',
            help='name of the container')
-@utils.arg('-i', '--image',
-           required=True,
-           metavar='<image>',
-           help='name or ID of the image')
 @utils.arg('-c', '--command',
            metavar='<command>',
            help='Send command to the container')
@@ -86,6 +82,7 @@ def _list_containers(containers):
                 'already exist on the node. '
                 '"always": Always pull the image from repositery.'
                 '"never": never pull the image')
+@utils.arg('image', metavar='<image>', help='name or ID of the image')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -292,10 +289,6 @@ def do_kill(cs, args):
 @utils.arg('-n', '--name',
            metavar='<name>',
            help='name of the container')
-@utils.arg('-i', '--image',
-           required=True,
-           metavar='<image>',
-           help='name or ID of the image')
 @utils.arg('-c', '--command',
            metavar='<command>',
            help='Send command to the container')
@@ -328,6 +321,7 @@ def do_kill(cs, args):
                 'already exist on the node. '
                 '"always": Always pull the image from repositery.'
                 '"never": never pull the image')
+@utils.arg('image', metavar='<image>', help='name or ID of the image')
 def do_run(cs, args):
     """Run a command in a new container"""
     opts = {}

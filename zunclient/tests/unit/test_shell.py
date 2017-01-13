@@ -198,7 +198,7 @@ class ShellTest(utils.TestCase):
     @mock.patch('zunclient.v1.client.Client')
     def test_container_format_env(self, mock_client):
         self.make_env()
-        self.shell('create --environment key=value --image test')
+        self.shell('create --environment key=value test')
         _, create_args = mock_client.return_value.containers.create.call_args
         self.assertEqual({'key': 'value'}, create_args['environment'])
 
