@@ -327,10 +327,10 @@ class OpenStackZunShell(object):
         parser.add_argument('--zun-api-version',
                             metavar='<zun-api-ver>',
                             default=cliutils.env(
-                                'MAGNUM_API_VERSION',
+                                'ZUN_API_VERSION',
                                 default=DEFAULT_API_VERSION),
                             help='Accepts "api", '
-                                 'defaults to env[MAGNUM_API_VERSION].')
+                                 'defaults to env[ZUN_API_VERSION].')
         parser.add_argument('--zun_api_version',
                             help=argparse.SUPPRESS)
 
@@ -351,7 +351,7 @@ class OpenStackZunShell(object):
                             help=argparse.SUPPRESS)
 
         parser.add_argument('--insecure',
-                            default=cliutils.env('MAGNUMCLIENT_INSECURE',
+                            default=cliutils.env('ZUNCLIENT_INSECURE',
                                                  default=False),
                             action='store_true',
                             help="Do not verify https connections")

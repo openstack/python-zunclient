@@ -52,8 +52,8 @@ class ContainerManager(base.Manager):
             1) limit > 0, the maximum number of containers to return.
             2) limit == 0, return the entire list of containers.
             3) limit param is NOT specified (None), the number of items
-               returned respect the maximum imposed by the Magnum API
-               (see Magnum's api.max_limit option).
+               returned respect the maximum imposed by the ZUN API
+               (see Zun's api.max_limit option).
 
         :param sort_key: Optional, field used for sorting.
 
