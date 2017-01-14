@@ -300,3 +300,27 @@ class UnpauseContainer(command.Command):
             except Exception as e:
                 print("unpause for container %(container)s failed: %(e)s" %
                       {'container': container, 'e': e})
+
+
+class ExecContainer(command.Command):
+    """Execute specified container"""
+    log = logging.getLogger(__name__ + ".ExecContainer")
+
+    def get_parser(self, prog_name):
+        parser = super(ExecContainer, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help='ID or name of the container to execute command in.')
+        parser.add_argument(
+            'command',
+            metavar='<command>',
+            help='The command to execute.')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        container = parsed_args.container
+        command = getattr(parsed_args, 'command')
+        output = client.containers.execute(container, command)
+        print(output)
