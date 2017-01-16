@@ -51,6 +51,7 @@ del CREATE_CONTAINER1['uuid']
 force_delete1 = False
 force_delete2 = True
 signal = "SIGTERM"
+name = "new-name"
 
 fake_responses = {
     '/v1/containers':
@@ -198,6 +199,14 @@ fake_responses = {
         'POST': (
             {},
             CREATE_CONTAINER1,
+        ),
+    },
+    '/v1/containers/%s/rename?%s' % (CONTAINER1['id'],
+                                     parse.urlencode({'name': name})):
+    {
+        'POST': (
+            {},
+            None,
         ),
     },
 }
@@ -424,3 +433,13 @@ class ContainerManagerTest(testtools.TestCase):
                                  ','.join(containers.CREATION_ATTRIBUTES)),
                                 self.mgr.run, **run_container_fail)
         self.assertEqual([], self.api.calls)
+
+    def test_containers_rename(self):
+        containers = self.mgr.rename(CONTAINER1['id'], name)
+        expect = [
+            ('POST', '/v1/containers/%s/rename?%s'
+             % (CONTAINER1['id'], parse.urlencode({'name': name})),
+             {'Content-Length': '0'}, None)
+        ]
+        self.assertEqual(expect, self.api.calls)
+        self.assertTrue(containers)

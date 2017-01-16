@@ -148,3 +148,7 @@ class ContainerManager(base.Manager):
                 "Key must be in %s" % ','.join(CREATION_ATTRIBUTES))
         else:
             return self._create(self._path() + '?run=true', kwargs)
+
+    def rename(self, id, name):
+        return self._action(id, '/rename',
+                            qparams={'name': name})

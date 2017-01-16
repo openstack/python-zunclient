@@ -335,3 +335,14 @@ def do_run(cs, args):
     opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
     _show_container(cs.containers.run(**opts))
+
+
+@utils.arg('container',
+           metavar='<container>',
+           help='ID or name of the container to rename.')
+@utils.arg('name',
+           metavar='<name>',
+           help='The new name for the container')
+def do_rename(cs, args):
+    """Rename a container."""
+    cs.containers.rename(args.container, args.name)
