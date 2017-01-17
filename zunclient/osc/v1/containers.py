@@ -477,3 +477,32 @@ class RunContainer(command.ShowOne):
         container = client.containers.run(**opts)
         columns = _container_columns(container)
         return columns, utils.get_item_properties(container, columns)
+
+
+class RenameContainer(command.Command):
+    """rename specified container"""
+    log = logging.getLogger(__name__ + ".RenameContainer")
+
+    def get_parser(self, prog_name):
+        parser = super(RenameContainer, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help='ID or name of the container to rename.')
+        parser.add_argument(
+            'name',
+            metavar='<name>',
+            help='The new name for the container')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        container = parsed_args.container
+        name = parsed_args.name
+        try:
+            client.containers.rename(container, name)
+            print(_('Request to rename container %s has been accepted')
+                  % container)
+        except Exception as e:
+            print("rename for container %(container)s failed: %(e)s" %
+                  {'container': container, 'e': e})
