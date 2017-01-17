@@ -57,6 +57,8 @@ name = "new-name"
 timeout = 10
 tty_height = "56"
 tty_width = "121"
+path = "/tmp/test.txt"
+data = "/tmp/test.tar"
 
 fake_responses = {
     '/v1/containers':
@@ -240,6 +242,22 @@ fake_responses = {
     '/v1/containers/%s/top?ps_args=None' % (CONTAINER1['id']):
     {
         'GET': (
+            {},
+            None,
+        ),
+    },
+    '/v1/containers/%s/get_archive?%s'
+    % (CONTAINER1['id'], parse.urlencode({'path': path})):
+    {
+        'GET': (
+            {},
+            None,
+        ),
+    },
+    '/v1/containers/%s/put_archive?%s'
+    % (CONTAINER1['id'], parse.urlencode({'path': path, 'data': data})):
+    {
+        'POST': (
             {},
             None,
         ),
@@ -514,3 +532,24 @@ class ContainerManagerTest(testtools.TestCase):
         ]
         self.assertEqual(expect, self.api.calls)
         self.assertIsNone(containers)
+
+    def test_containers_get_archive(self):
+        containers = self.mgr.get_archive(CONTAINER1['id'], path)
+        expect = [
+            ('GET', '/v1/containers/%s/get_archive?%s'
+             % (CONTAINER1['id'], parse.urlencode({'path': path})),
+             {'Content-Length': '0'}, None)
+        ]
+        self.assertEqual(expect, self.api.calls)
+        self.assertIsNone(containers)
+
+    def test_containers_put_archive(self):
+        containers = self.mgr.put_archive(CONTAINER1['id'], path, data)
+        expect = [
+            ('POST', '/v1/containers/%s/put_archive?%s'
+             % (CONTAINER1['id'], parse.urlencode({'path': path,
+                                                   'data': data})),
+             {'Content-Length': '0'}, None)
+        ]
+        self.assertEqual(expect, self.api.calls)
+        self.assertTrue(containers)
