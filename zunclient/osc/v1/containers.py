@@ -209,6 +209,11 @@ class RebootContainer(command.Command):
             metavar='<container>',
             nargs='+',
             help='ID or name of the (container)s to reboot.')
+        parser.add_argument(
+            '--timeout',
+            metavar='<timeout>',
+            default=10,
+            help='Seconds to wait for stop before rebooting (container)s')
         return parser
 
     def take_action(self, parsed_args):
@@ -216,7 +221,7 @@ class RebootContainer(command.Command):
         containers = parsed_args.container
         for container in containers:
             try:
-                client.containers.reboot(container)
+                client.containers.reboot(container, parsed_args.timeout)
                 print(_('Request to reboot container %s has been accepted')
                       % container)
             except Exception as e:

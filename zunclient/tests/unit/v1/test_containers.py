@@ -52,6 +52,7 @@ force_delete1 = False
 force_delete2 = True
 signal = "SIGTERM"
 name = "new-name"
+timeout = 10
 
 fake_responses = {
     '/v1/containers':
@@ -150,7 +151,7 @@ fake_responses = {
             None,
         ),
     },
-    '/v1/containers/%s/reboot' % CONTAINER1['id']:
+    '/v1/containers/%s/reboot?timeout=10' % CONTAINER1['id']:
     {
         'POST': (
             {},
@@ -361,9 +362,9 @@ class ContainerManagerTest(testtools.TestCase):
         self.assertTrue(containers)
 
     def test_containers_reboot(self):
-        containers = self.mgr.reboot(CONTAINER1['id'])
+        containers = self.mgr.reboot(CONTAINER1['id'], timeout)
         expect = [
-            ('POST', '/v1/containers/%s/reboot' % CONTAINER1['id'],
+            ('POST', '/v1/containers/%s/reboot?timeout=10' % CONTAINER1['id'],
              {'Content-Length': '0'}, None)
         ]
         self.assertEqual(expect, self.api.calls)
