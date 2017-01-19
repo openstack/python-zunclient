@@ -390,6 +390,11 @@ class StopContainer(command.Command):
             metavar='<container>',
             nargs='+',
             help='ID or name of the (container)s to stop.')
+        parser.add_argument(
+            '--timeout',
+            metavar='<timeout>',
+            default=10,
+            help='Seconds to wait for stop before killing (container)s')
         return parser
 
     def take_action(self, parsed_args):
@@ -397,7 +402,7 @@ class StopContainer(command.Command):
         containers = parsed_args.container
         for container in containers:
             try:
-                client.containers.stop(container)
+                client.containers.stop(container, parsed_args.timeout)
                 print(_('Request to stop container %s has been accepted.')
                       % container)
             except Exception as e:

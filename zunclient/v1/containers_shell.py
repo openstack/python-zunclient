@@ -180,11 +180,15 @@ def do_reboot(cs, args):
            metavar='<container>',
            nargs='+',
            help='ID or name of the (container)s to stop.')
+@utils.arg('-t', '--timeout',
+           metavar='<timeout>',
+           default=10,
+           help='Seconds to wait for stop before killing (container)s')
 def do_stop(cs, args):
     """Stop specified containers."""
     for container in args.containers:
         try:
-            cs.containers.stop(container)
+            cs.containers.stop(container, args.timeout)
             print("Request to stop container %s has been accepted." %
                   container)
         except Exception as e:
