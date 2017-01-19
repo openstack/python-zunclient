@@ -164,11 +164,15 @@ def do_show(cs, args):
            metavar='<container>',
            nargs='+',
            help='ID or name of the (container)s to reboot.')
+@utils.arg('-t', '--timeout',
+           metavar='<timeout>',
+           default=10,
+           help='Seconds to wait for stop before rebooting (container)s')
 def do_reboot(cs, args):
     """Reboot specified containers."""
     for container in args.containers:
         try:
-            cs.containers.reboot(container)
+            cs.containers.reboot(container, args.timeout)
             print("Request to reboot container %s has been accepted." %
                   container)
         except Exception as e:
