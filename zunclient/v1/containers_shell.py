@@ -47,6 +47,16 @@ def _list_containers(containers):
                      sortby_index=None)
 
 
+def _check_restart_policy(policy):
+    if ":" in policy:
+        name, count = policy.split(":")
+        restart_policy = {"Name": name, "MaximumRetryCount": count}
+    else:
+        restart_policy = {"Name": policy,
+                          "MaximumRetryCount": '0'}
+    return restart_policy
+
+
 @utils.arg('-n', '--name',
            metavar='<name>',
            help='name of the container')
@@ -83,6 +93,10 @@ def _list_containers(containers):
                 '"always": Always pull the image from repositery.'
                 '"never": never pull the image')
 @utils.arg('image', metavar='<image>', help='name or ID of the image')
+@utils.arg('--restart',
+           metavar='<restart>',
+           help='Restart policy to apply when a container exits'
+                '(no, on-failure[:max-retry], always, unless-stopped)')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -95,6 +109,8 @@ def do_create(cs, args):
     opts['workdir'] = args.workdir
     opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
+    if args.restart:
+        opts['restart_policy'] = _check_restart_policy(args.restart)
     _show_container(cs.containers.create(**opts))
 
 
@@ -330,6 +346,10 @@ def do_kill(cs, args):
                 '"always": Always pull the image from repositery.'
                 '"never": never pull the image')
 @utils.arg('image', metavar='<image>', help='name or ID of the image')
+@utils.arg('--restart',
+           metavar='<restart>',
+           help='Restart policy to apply when a container exits'
+                '(no, on-failure[:max-retry], always, unless-stopped)')
 def do_run(cs, args):
     """Run a command in a new container"""
     opts = {}
@@ -342,6 +362,8 @@ def do_run(cs, args):
     opts['workdir'] = args.workdir
     opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
+    if args.restart:
+        opts['restart_policy'] = _check_restart_policy(args.restart)
     _show_container(cs.containers.run(**opts))
 
 

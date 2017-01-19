@@ -29,6 +29,16 @@ def _get_client(obj, parsed_args):
     return obj.app.client_manager.container
 
 
+def _check_restart_policy(policy):
+    if ":" in policy:
+        name, count = policy.split(":")
+        restart_policy = {"Name": name, "MaximumRetryCount": count}
+    else:
+        restart_policy = {"Name": policy,
+                          "MaximumRetryCount": '0'}
+    return restart_policy
+
+
 class CreateContainer(command.ShowOne):
     """Create a container"""
 
@@ -83,6 +93,11 @@ class CreateContainer(command.ShowOne):
                  'already exist on the node. '
                  '"always": Always pull the image from repositery.'
                  '"never": never pull the image')
+        parser.add_argument(
+            '--restart',
+            metavar='<restart>',
+            help='Restart policy to apply when a container exits'
+                 '(no, on-failure[:max-retry], always, unless-stopped)')
         return parser
 
     def take_action(self, parsed_args):
@@ -97,6 +112,8 @@ class CreateContainer(command.ShowOne):
         opts['workdir'] = parsed_args.workdir
         opts['labels'] = zun_utils.format_args(parsed_args.label)
         opts['image_pull_policy'] = parsed_args.image_pull_policy
+        if parsed_args.restart:
+            opts['restart_policy'] = _check_restart_policy(parsed_args.restart)
 
         container = client.containers.create(**opts)
         columns = _container_columns(container)
@@ -469,6 +486,11 @@ class RunContainer(command.ShowOne):
                  'already exist on the node. '
                  '"always": Always pull the image from repositery.'
                  '"never": never pull the image')
+        parser.add_argument(
+            '--restart',
+            metavar='<restart>',
+            help='Restart policy to apply when a container exits'
+                 '(no, on-failure[:max-retry], always, unless-stopped)')
         return parser
 
     def take_action(self, parsed_args):
@@ -483,6 +505,8 @@ class RunContainer(command.ShowOne):
         opts['workdir'] = parsed_args.workdir
         opts['labels'] = zun_utils.format_args(parsed_args.label)
         opts['image_pull_policy'] = parsed_args.image_pull_policy
+        if parsed_args.restart:
+            opts['restart_policy'] = _check_restart_policy(parsed_args.restart)
 
         container = client.containers.run(**opts)
         columns = _container_columns(container)
