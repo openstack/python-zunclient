@@ -97,6 +97,16 @@ def _check_restart_policy(policy):
            metavar='<restart>',
            help='Restart policy to apply when a container exits'
                 '(no, on-failure[:max-retry], always, unless-stopped)')
+@utils.arg('-t', '--tty',
+           dest='tty',
+           action='store_true',
+           default=False,
+           help='Allocate a pseudo-TTY')
+@utils.arg('-i', '--interactive',
+           dest='stdin_open',
+           action='store_true',
+           default=False,
+           help='Keep STDIN open even if not attached')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -111,6 +121,10 @@ def do_create(cs, args):
     opts['image_pull_policy'] = args.image_pull_policy
     if args.restart:
         opts['restart_policy'] = _check_restart_policy(args.restart)
+    if args.tty:
+        opts['tty'] = True
+    if args.stdin_open:
+        opts['stdin_open'] = True
     _show_container(cs.containers.create(**opts))
 
 
@@ -350,6 +364,16 @@ def do_kill(cs, args):
            metavar='<restart>',
            help='Restart policy to apply when a container exits'
                 '(no, on-failure[:max-retry], always, unless-stopped)')
+@utils.arg('-t', '--tty',
+           dest='tty',
+           action='store_true',
+           default=False,
+           help='Allocate a pseudo-TTY')
+@utils.arg('-i', '--interactive',
+           dest='stdin_open',
+           action='store_true',
+           default=False,
+           help='Keep STDIN open even if not attached')
 def do_run(cs, args):
     """Run a command in a new container"""
     opts = {}
@@ -364,6 +388,10 @@ def do_run(cs, args):
     opts['image_pull_policy'] = args.image_pull_policy
     if args.restart:
         opts['restart_policy'] = _check_restart_policy(args.restart)
+    if args.tty:
+        opts['tty'] = True
+    if args.stdin_open:
+        opts['stdin_open'] = True
     _show_container(cs.containers.run(**opts))
 
 
