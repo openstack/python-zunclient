@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import argparse
 import json
 
 from zunclient.common import cliutils as utils
@@ -292,10 +293,11 @@ def do_logs(cs, args):
            help='ID or name of the container to execute command in.')
 @utils.arg('command',
            metavar='<command>',
+           nargs=argparse.REMAINDER,
            help='The command to execute in a container')
 def do_exec(cs, args):
     """Execute command in a container."""
-    output = cs.containers.execute(args.container, args.command)
+    output = cs.containers.execute(args.container, ' '.join(args.command))
     print(output)
 
 
