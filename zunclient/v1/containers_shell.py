@@ -460,3 +460,21 @@ def do_attach(cs, args):
                   {'e': e, 'container': args.container})
     else:
         raise exceptions.InvalidWebSocketLink(args.container)
+
+
+@utils.arg('container',
+           metavar='<container>',
+           help='ID or name of the container to display progesses.')
+@utils.arg('ps_args',
+           metavar='<ps_args>',
+           nargs=argparse.REMAINDER,
+           help='The args of the ps command.')
+def do_top(cs, args):
+    """Displays the running processes inside the container."""
+    output = cs.containers.top(args.container, ' '.join(args.ps_args))
+    for titles in output['Titles']:
+        print("%-20s") % titles,
+    for process in output['Processes']:
+        print("")
+        for info in process:
+            print("%-20s") % info,

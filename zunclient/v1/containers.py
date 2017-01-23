@@ -170,3 +170,7 @@ class ContainerManager(base.Manager):
     def resize(self, id, width, height):
         return self._action(id, '/resize',
                             qparams={'w': width, 'h': height})[1]
+
+    def top(self, id, ps_args=None):
+        return self._action(id, '/top', method='GET',
+                            qparams={'ps_args': ps_args})[1]

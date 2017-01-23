@@ -542,3 +542,33 @@ class RenameContainer(command.Command):
         except Exception as e:
             print("rename for container %(container)s failed: %(e)s" %
                   {'container': container, 'e': e})
+
+
+class TopContainer(command.Command):
+    """display the running progesses inside the container"""
+    log = logging.getLogger(__name__ + ".TopContainer")
+
+    def get_parser(self, prog_name):
+        parser = super(TopContainer, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help='ID or name of the container to display progesses.')
+        parser.add_argument(
+            'ps_args',
+            metavar='<ps_args>',
+            nargs=argparse.REMAINDER,
+            help='The args of the ps command.')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        container = parsed_args.container
+        ps = ' '.join(parsed_args.ps_args)
+        output = client.containers.top(container, ps)
+        for titles in output['Titles']:
+            print("%-20s") % titles,
+        for process in output['Processes']:
+            print("")
+            for info in process:
+                print("%-20s") % info,

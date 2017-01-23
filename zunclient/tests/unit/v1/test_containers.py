@@ -230,6 +230,13 @@ fake_responses = {
             None,
         ),
     },
+    '/v1/containers/%s/top?ps_args=None' % (CONTAINER1['id']):
+    {
+        'GET': (
+            {},
+            None,
+        ),
+    },
 }
 
 
@@ -482,6 +489,15 @@ class ContainerManagerTest(testtools.TestCase):
             ('POST', '/v1/containers/%s/resize?%s'
              % (CONTAINER1['id'], parse.urlencode({'h': tty_height,
                                                    'w': tty_weight})),
+             {'Content-Length': '0'}, None)
+        ]
+        self.assertEqual(expect, self.api.calls)
+        self.assertIsNone(containers)
+
+    def test_containers_top(self):
+        containers = self.mgr.top(CONTAINER1['id'])
+        expect = [
+            ('GET', '/v1/containers/%s/top?ps_args=None' % CONTAINER1['id'],
              {'Content-Length': '0'}, None)
         ]
         self.assertEqual(expect, self.api.calls)
