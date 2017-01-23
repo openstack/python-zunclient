@@ -155,3 +155,6 @@ class ContainerManager(base.Manager):
     def rename(self, id, name):
         return self._action(id, '/rename',
                             qparams={'name': name})
+
+    def update(self, id, **patch):
+        return self._update(self._path(id), patch)

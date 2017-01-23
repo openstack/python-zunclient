@@ -75,34 +75,13 @@ class ArgsArrayToPatchTest(test_utils.BaseTestCase):
         my_args = {
             'attributes': ['str=foo', 'int=1', 'bool=true',
                            'list=[1, 2, 3]', 'dict={"foo": "bar"}'],
-            'op': 'add',
         }
-        patch = utils.args_array_to_patch(my_args['op'],
-                                          my_args['attributes'])
-        self.assertEqual([{'op': 'add', 'value': 'foo', 'path': '/str'},
-                          {'op': 'add', 'value': 1, 'path': '/int'},
-                          {'op': 'add', 'value': True, 'path': '/bool'},
-                          {'op': 'add', 'value': [1, 2, 3], 'path': '/list'},
-                          {'op': 'add', 'value': {"foo": "bar"},
-                           'path': '/dict'}], patch)
-
-    def test_args_array_to_patch_format_error(self):
-        my_args = {
-            'attributes': ['foobar'],
-            'op': 'add',
-        }
-        self.assertRaises(exc.CommandError, utils.args_array_to_patch,
-                          my_args['op'], my_args['attributes'])
-
-    def test_args_array_to_patch_remove(self):
-        my_args = {
-            'attributes': ['/foo', 'extra/bar'],
-            'op': 'remove',
-        }
-        patch = utils.args_array_to_patch(my_args['op'],
-                                          my_args['attributes'])
-        self.assertEqual([{'op': 'remove', 'path': '/foo'},
-                          {'op': 'remove', 'path': '/extra/bar'}], patch)
+        patch = utils.args_array_to_patch(my_args['attributes'])
+        self.assertEqual([{'str': 'foo'},
+                          {'int': 1},
+                          {'bool': True},
+                          {'list': [1, 2, 3]},
+                          {'dict': {"foo": "bar"}}], patch)
 
 
 class FormatArgsTest(test_utils.BaseTestCase):
