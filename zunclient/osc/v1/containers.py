@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import argparse
 import logging
 
 from osc_lib.command import command
@@ -337,13 +338,14 @@ class ExecContainer(command.Command):
         parser.add_argument(
             'command',
             metavar='<command>',
+            nargs=argparse.REMAINDER,
             help='The command to execute.')
         return parser
 
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         container = parsed_args.container
-        command = getattr(parsed_args, 'command')
+        command = ' '.join(parsed_args.command)
         output = client.containers.execute(container, command)
         print(output)
 
