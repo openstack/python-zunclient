@@ -4,6 +4,7 @@
 
 pbr>=1.8 # Apache-2.0
 PrettyTable>=0.7.1,<0.8 # BSD
+python-openstackclient>=3.3.0 # Apache-2.0
 osc-lib>=1.2.0 # Apache-2.0
 oslo.i18n>=2.1.0 # Apache-2.0
 oslo.utils>=3.16.0 # Apache-2.0
