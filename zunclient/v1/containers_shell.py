@@ -283,9 +283,15 @@ def do_unpause(cs, args):
 @utils.arg('container',
            metavar='<container>',
            help='ID or name of the container to get logs for.')
+@utils.arg('--stdout',
+           action='store_true',
+           help='Only stdout logs of container.')
+@utils.arg('--stderr',
+           action='store_true',
+           help='Only stderr logs of container.')
 def do_logs(cs, args):
     """Get logs of a container."""
-    logs = cs.containers.logs(args.container)
+    logs = cs.containers.logs(args.container, args.stdout, args.stderr)
     print(logs)
 
 
