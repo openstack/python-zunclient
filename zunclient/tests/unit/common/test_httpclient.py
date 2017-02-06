@@ -18,7 +18,7 @@ import json
 import mock
 import six
 
-from zunclient.common.apiclient.exceptions import GatewayTimeout
+from zunclient.common.apiclient import exceptions
 from zunclient.common import httpclient as http
 from zunclient import exceptions as exc
 from zunclient.tests.unit import utils
@@ -294,6 +294,6 @@ class SessionClientTest(utils.BaseTestCase):
         fake_session.request.side_effect = [fake_response]
         client = http.SessionClient(
             session=fake_session, endpoint_override='http://zun')
-        self.assertRaises(GatewayTimeout,
+        self.assertRaises(exceptions.GatewayTimeout,
                           client.json_request,
                           'GET', '/v1/resources')
