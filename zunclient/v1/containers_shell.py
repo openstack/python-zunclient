@@ -59,6 +59,14 @@ def _check_restart_policy(policy):
     return restart_policy
 
 
+def _remove_null_parms(**kwargs):
+    new = {}
+    for (key, value) in kwargs.items():
+        if value:
+            new[key] = value
+    return new
+
+
 @utils.arg('-n', '--name',
            metavar='<name>',
            help='name of the container')
@@ -127,6 +135,7 @@ def do_create(cs, args):
         opts['tty'] = True
     if args.stdin_open:
         opts['stdin_open'] = True
+    opts = _remove_null_parms(**opts)
     _show_container(cs.containers.create(**opts))
 
 
@@ -153,6 +162,7 @@ def do_list(cs, args):
     opts['limit'] = args.limit
     opts['sort_key'] = args.sort_key
     opts['sort_dir'] = args.sort_dir
+    opts = _remove_null_parms(**opts)
     containers = cs.containers.list(**opts)
     _list_containers(containers)
 
@@ -395,6 +405,7 @@ def do_run(cs, args):
         opts['tty'] = True
     if args.stdin_open:
         opts['stdin_open'] = True
+    opts = _remove_null_parms(**opts)
     _show_container(cs.containers.run(**opts))
 
 
