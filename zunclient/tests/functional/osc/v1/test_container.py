@@ -13,6 +13,7 @@
 #    under the License.
 
 import ddt
+from tempest.lib.common.utils import data_utils
 
 from zunclient.tests.functional.osc.v1 import base
 
@@ -28,5 +29,59 @@ class ContainerTests(base.TestCase):
         """Check container list command.
 
         """
+        container = self.container_create(name='test')
         container_list = self.container_list()
-        self.assertFalse(container_list)
+        self.assertIn(container['name'], [x['name'] for x in
+                      container_list])
+        self.assertIn(container['uuid'], [x['uuid'] for x in
+                      container_list])
+
+        # Now delete the container and then see the list
+        self.container_delete(container['name'])
+
+    def test_create(self):
+        """Check container create command.
+
+        """
+        name = data_utils.rand_name('test_container')
+        container_info = self.container_create(name=name)
+        self.assertEqual(container_info['name'], name)
+        self.assertEqual(container_info['image'], 'cirros')
+        container_list = self.container_list()
+        self.assertIn(name, [x['name'] for x in container_list])
+        self.container_delete(container_info['name'])
+
+    def test_delete(self):
+        """Check container delete command with name/UUID argument.
+
+        Test steps:
+        1) Create container in setUp.
+        2) Delete container by name/UUID.
+        3) Check that node deleted successfully.
+        """
+        container = self.container_create(name='test_del')
+        container_list = self.container_list()
+        self.assertIn(container['name'],
+                      [x['name'] for x in container_list])
+        self.assertIn(container['uuid'],
+                      [x['uuid'] for x in container_list])
+        self.container_delete(container['name'])
+        container_list = self.container_list()
+        self.assertNotIn(container['name'],
+                         [x['name'] for x in container_list])
+        self.assertNotIn(container['uuid'],
+                         [x['uuid'] for x in container_list])
+
+    def test_show(self):
+        """Check container show command with name and UUID arguments.
+
+        Test steps:
+        1) Create container in setUp.
+        2) Show container calling it with name and UUID arguments.
+        3) Check name, uuid and image in container show output.
+        """
+        container = self.container_create(name='test_show')
+        self.container_show(container['name'])
+        self.assertEqual(container['name'], container['name'])
+        self.assertEqual(container['image'], container['image'])
+        self.container_delete(container['name'])
