@@ -163,3 +163,10 @@ class ContainerManager(base.Manager):
 
     def update(self, id, **patch):
         return self._update(self._path(id), patch)
+
+    def attach(self, id):
+        return self._action(id, '/attach', method='GET')[1]
+
+    def resize(self, id, width, height):
+        return self._action(id, '/resize',
+                            qparams={'w': width, 'h': height})[1]

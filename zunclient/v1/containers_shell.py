@@ -17,6 +17,8 @@ import json
 
 from zunclient.common import cliutils as utils
 from zunclient.common import utils as zun_utils
+from zunclient.common.websocketclient import exceptions
+from zunclient.common.websocketclient import websocketclient
 from zunclient import exceptions as exc
 
 
@@ -435,3 +437,26 @@ def do_update(cs, args):
         raise exc.CommandError("You must update at least one property")
     container = cs.containers.update(args.container, **opts)
     _show_container(container)
+
+
+@utils.arg('container',
+           metavar='<container>',
+           help='ID or name of the container to be attahed to.')
+def do_attach(cs, args):
+    """Attach to a container."""
+    response = cs.containers.attach(args.container)
+    if response.startswith("ws://"):
+        try:
+            wscls = websocketclient.WebSocketClient(host_url=response,
+                                                    id=args.container,
+                                                    escape="~",
+                                                    close_wait=0.5)
+            wscls.init_httpclient()
+            wscls.connect()
+            wscls.handle_resize()
+            wscls.start_loop()
+        except exceptions.ContainerWebSocketException as e:
+            print("%(e)s:%(container)s" %
+                  {'e': e, 'container': args.container})
+    else:
+        raise exceptions.InvalidWebSocketLink(args.container)
