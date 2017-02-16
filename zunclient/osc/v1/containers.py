@@ -403,6 +403,7 @@ class KillContainer(command.Command):
         opts = {}
         opts['id'] = parsed_args.container
         opts['signal'] = parsed_args.signal
+        opts = _remove_null_parms(**opts)
         try:
             client.containers.kill(**opts)
             print(_('Request to send kill signal to container %s has '

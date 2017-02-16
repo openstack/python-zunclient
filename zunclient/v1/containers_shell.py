@@ -64,7 +64,7 @@ def _check_restart_policy(policy):
 def _remove_null_parms(**kwargs):
     new = {}
     for (key, value) in kwargs.items():
-        if value:
+        if value is not None:
             new[key] = value
     return new
 
@@ -334,6 +334,7 @@ def do_kill(cs, args):
         opts = {}
         opts['id'] = container
         opts['signal'] = args.signal
+        opts = _remove_null_parms(**opts)
         try:
             cs.containers.kill(**opts)
             print(
@@ -440,10 +441,9 @@ def do_rename(cs, args):
 def do_update(cs, args):
     """Updates one or more container attributes"""
     opts = {}
-    if args.memory is not None:
-        opts['memory'] = args.memory
-    if args.cpu is not None:
-        opts['cpu'] = args.cpu
+    opts['memory'] = args.memory
+    opts['cpu'] = args.cpu
+    opts = _remove_null_parms(**opts)
     if not opts:
         raise exc.CommandError("You must update at least one property")
     container = cs.containers.update(args.container, **opts)
