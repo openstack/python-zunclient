@@ -41,3 +41,7 @@ class ConnectionFailed(ContainerWebSocketException):
 
 class InvalidWebSocketLink(ContainerWebSocketException):
     message = "Invalid websocket link when attach container"
+
+
+class ContainerFailtoStart(ContainerWebSocketException):
+    message = "Container fail to start"

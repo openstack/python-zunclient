@@ -103,3 +103,28 @@ def format_args(args, parse_comma=True):
 
 def print_list_field(field):
     return lambda obj: ', '.join(getattr(obj, field))
+
+
+def check_restart_policy(policy):
+    if ":" in policy:
+        name, count = policy.split(":")
+        restart_policy = {"Name": name, "MaximumRetryCount": count}
+    else:
+        restart_policy = {"Name": policy,
+                          "MaximumRetryCount": '0'}
+    return restart_policy
+
+
+def remove_null_parms(**kwargs):
+    new = {}
+    for (key, value) in kwargs.items():
+        if value is not None:
+            new[key] = value
+    return new
+
+
+def check_container_status(container, status):
+    if getattr(container, 'status', None) == status:
+        return True
+    else:
+        return False

@@ -12,11 +12,14 @@
 
 import argparse
 import logging
+import time
 
 from osc_lib.command import command
 from osc_lib import utils
 
 from zunclient.common import utils as zun_utils
+from zunclient.common.websocketclient import exceptions
+from zunclient.common.websocketclient import websocketclient
 from zunclient import exceptions as exc
 from zunclient.i18n import _
 
@@ -31,22 +34,22 @@ def _get_client(obj, parsed_args):
     return obj.app.client_manager.container
 
 
-def _check_restart_policy(policy):
-    if ":" in policy:
-        name, count = policy.split(":")
-        restart_policy = {"Name": name, "MaximumRetryCount": count}
+def _websocket_attach(url, container, escape, close_wait):
+    if url.startswith("ws://"):
+        try:
+            wscls = websocketclient.WebSocketClient(host_url=url,
+                                                    id=container,
+                                                    escape=escape,
+                                                    close_wait=close_wait)
+            wscls.init_httpclient()
+            wscls.connect()
+            wscls.handle_resize()
+            wscls.start_loop()
+        except exceptions.ContainerWebSocketException as e:
+            print("%(e)s:%(container)s" %
+                  {'e': e, 'container': container})
     else:
-        restart_policy = {"Name": policy,
-                          "MaximumRetryCount": '0'}
-    return restart_policy
-
-
-def _remove_null_parms(**kwargs):
-    new = {}
-    for (key, value) in kwargs.items():
-        if value is not None:
-            new[key] = value
-    return new
+        raise exceptions.InvalidWebSocketLink(container)
 
 
 class CreateContainer(command.ShowOne):
@@ -115,6 +118,18 @@ class CreateContainer(command.ShowOne):
                  'It can have following values: '
                  '"docker": pull the image from Docker Hub. '
                  '"glance": pull the image from Glance. ')
+        parser.add_argument(
+            '--tty',
+            dest='tty',
+            action='store_true',
+            default=False,
+            help='Allocate a pseudo-TTY')
+        parser.add_argument(
+            '--interactive',
+            dest='stdin_open',
+            action='store_true',
+            default=False,
+            help='Keep STDIN open even if not attached')
         return parser
 
     def take_action(self, parsed_args):
@@ -131,9 +146,14 @@ class CreateContainer(command.ShowOne):
         opts['image_pull_policy'] = parsed_args.image_pull_policy
         opts['image_driver'] = parsed_args.image_driver
         if parsed_args.restart:
-            opts['restart_policy'] = _check_restart_policy(parsed_args.restart)
+            opts['restart_policy'] = \
+                zun_utils.check_restart_policy(parsed_args.restart)
+        if parsed_args.tty:
+            opts['tty'] = True
+        if parsed_args.stdin_open:
+            opts['stdin_open'] = True
 
-        opts = _remove_null_parms(**opts)
+        opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.create(**opts)
         columns = _container_columns(container)
         return columns, utils.get_item_properties(container, columns)
@@ -196,7 +216,7 @@ class ListContainer(command.Lister):
         opts['limit'] = parsed_args.limit
         opts['sort_key'] = parsed_args.sort_key
         opts['sort_dir'] = parsed_args.sort_dir
-        opts = _remove_null_parms(**opts)
+        opts = zun_utils.remove_null_parms(**opts)
         containers = client.containers.list(**opts)
         columns = ['uuid', 'name', 'status', 'image', 'command']
         return (columns, (utils.get_item_properties(container, columns)
@@ -422,7 +442,7 @@ class KillContainer(command.Command):
         opts = {}
         opts['id'] = parsed_args.container
         opts['signal'] = parsed_args.signal
-        opts = _remove_null_parms(**opts)
+        opts = zun_utils.remove_null_parms(**opts)
         try:
             client.containers.kill(**opts)
             print(_('Request to send kill signal to container %s has '
@@ -530,6 +550,18 @@ class RunContainer(command.ShowOne):
                  'It can have following values: '
                  '"docker": pull the image from Docker Hub. '
                  '"glance": pull the image from Glance. ')
+        parser.add_argument(
+            '--tty',
+            dest='tty',
+            action='store_true',
+            default=False,
+            help='Allocate a pseudo-TTY')
+        parser.add_argument(
+            '--interactive',
+            dest='stdin_open',
+            action='store_true',
+            default=False,
+            help='Keep STDIN open even if not attached')
         return parser
 
     def take_action(self, parsed_args):
@@ -546,11 +578,34 @@ class RunContainer(command.ShowOne):
         opts['image_pull_policy'] = parsed_args.image_pull_policy
         opts['image_driver'] = parsed_args.image_driver
         if parsed_args.restart:
-            opts['restart_policy'] = _check_restart_policy(parsed_args.restart)
+            opts['restart_policy'] = \
+                zun_utils.check_restart_policy(parsed_args.restart)
+        if parsed_args.tty:
+            opts['tty'] = True
+        if parsed_args.stdin_open:
+            opts['stdin_open'] = True
 
-        opts = _remove_null_parms(**opts)
+        opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.run(**opts)
         columns = _container_columns(container)
+        container_uuid = getattr(container, 'uuid', None)
+        if parsed_args.tty and parsed_args.stdin_open:
+            ready_for_attach = False
+            while True:
+                container = client.containers.get(container_uuid)
+                if utils.check_container_status(container, 'Running'):
+                    ready_for_attach = True
+                    break
+                if utils.check_container_status(container, 'Error'):
+                    break
+                print("Waiting for container start")
+                time.sleep(1)
+            if ready_for_attach is True:
+                response = client.containers.attach(container_uuid)
+                _websocket_attach(response, container_uuid, "~", 0.5)
+            else:
+                raise exceptions.InvalidWebSocketLink(container_uuid)
+
         return columns, utils.get_item_properties(container, columns)
 
 
@@ -639,7 +694,7 @@ class UpdateContainer(command.Command):
         opts = {}
         opts['memory'] = parsed_args.memory
         opts['cpu'] = parsed_args.cpu
-        opts = _remove_null_parms(**opts)
+        opts = zun_utils.remove_null_parms(**opts)
         if not opts:
             raise exc.CommandError("You must update at least one property")
         try:
@@ -649,3 +704,22 @@ class UpdateContainer(command.Command):
         except Exception as e:
             print("update for container %(container)s failed: %(e)s" %
                   {'container': container, 'e': e})
+
+
+class AttachContainer(command.Command):
+    """Attach to a specified containers"""
+
+    log = logging.getLogger(__name__ + ".AttachContainer")
+
+    def get_parser(self, prog_name):
+        parser = super(AttachContainer, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help='ID or name of the container to be attahed to.')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        response = client.containers.attach(parsed_args.container)
+        _websocket_attach(response, parsed_args.container, "~", 0.5)

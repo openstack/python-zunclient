@@ -14,6 +14,7 @@
 
 import argparse
 import json
+import time
 import yaml
 
 from zunclient.common import cliutils as utils
@@ -42,6 +43,24 @@ def _format_container_addresses(container):
     container._info['addresses'] = ', '.join(output)
 
 
+def _websocket_attach(url, container, escape, close_wait):
+    if url.startswith("ws://"):
+        try:
+            wscls = websocketclient.WebSocketClient(host_url=url,
+                                                    id=container,
+                                                    escape=escape,
+                                                    close_wait=close_wait)
+            wscls.init_httpclient()
+            wscls.connect()
+            wscls.handle_resize()
+            wscls.start_loop()
+        except exceptions.ContainerWebSocketException as e:
+            print("%(e)s:%(container)s" %
+                  {'e': e, 'container': container})
+    else:
+        raise exceptions.InvalidWebSocketLink(container)
+
+
 def _list_containers(containers):
     for c in containers:
         _format_container_addresses(c)
@@ -50,24 +69,6 @@ def _list_containers(containers):
     utils.print_list(containers, columns,
                      {'versions': zun_utils.print_list_field('versions')},
                      sortby_index=None)
-
-
-def _check_restart_policy(policy):
-    if ":" in policy:
-        name, count = policy.split(":")
-        restart_policy = {"Name": name, "MaximumRetryCount": count}
-    else:
-        restart_policy = {"Name": policy,
-                          "MaximumRetryCount": '0'}
-    return restart_policy
-
-
-def _remove_null_parms(**kwargs):
-    new = {}
-    for (key, value) in kwargs.items():
-        if value is not None:
-            new[key] = value
-    return new
 
 
 @utils.arg('-n', '--name',
@@ -140,12 +141,12 @@ def do_create(cs, args):
     opts['image_pull_policy'] = args.image_pull_policy
     opts['image_driver'] = args.image_driver
     if args.restart:
-        opts['restart_policy'] = _check_restart_policy(args.restart)
+        opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
     if args.tty:
         opts['tty'] = True
     if args.stdin_open:
         opts['stdin_open'] = True
-    opts = _remove_null_parms(**opts)
+    opts = zun_utils.remove_null_parms(**opts)
     _show_container(cs.containers.create(**opts))
 
 
@@ -172,7 +173,7 @@ def do_list(cs, args):
     opts['limit'] = args.limit
     opts['sort_key'] = args.sort_key
     opts['sort_dir'] = args.sort_dir
-    opts = _remove_null_parms(**opts)
+    opts = zun_utils.remove_null_parms(**opts)
     containers = cs.containers.list(**opts)
     _list_containers(containers)
 
@@ -348,7 +349,7 @@ def do_kill(cs, args):
         opts = {}
         opts['id'] = container
         opts['signal'] = args.signal
-        opts = _remove_null_parms(**opts)
+        opts = zun_utils.remove_null_parms(**opts)
         try:
             cs.containers.kill(**opts)
             print(
@@ -430,13 +431,31 @@ def do_run(cs, args):
     opts['image_pull_policy'] = args.image_pull_policy
     opts['image_driver'] = args.image_driver
     if args.restart:
-        opts['restart_policy'] = _check_restart_policy(args.restart)
+        opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
     if args.tty:
         opts['tty'] = True
     if args.stdin_open:
         opts['stdin_open'] = True
-    opts = _remove_null_parms(**opts)
-    _show_container(cs.containers.run(**opts))
+    opts = zun_utils.remove_null_parms(**opts)
+    container = cs.containers.run(**opts)
+    _show_container(container)
+    container_uuid = getattr(container, 'uuid', None)
+    if args.tty and args.stdin_open:
+        ready_for_attach = False
+        while True:
+            container = cs.containers.get(container_uuid)
+            if zun_utils.check_container_status(container, 'Running'):
+                ready_for_attach = True
+                break
+            if zun_utils.check_container_status(container, 'Error'):
+                break
+            print("Waiting for container start")
+            time.sleep(1)
+        if ready_for_attach is True:
+            response = cs.containers.attach(container_uuid)
+            _websocket_attach(response, container_uuid, "~", 0.5)
+        else:
+            raise exceptions.InvalidWebSocketLink(container_uuid)
 
 
 @utils.arg('container',
@@ -464,7 +483,7 @@ def do_update(cs, args):
     opts = {}
     opts['memory'] = args.memory
     opts['cpu'] = args.cpu
-    opts = _remove_null_parms(**opts)
+    opts = zun_utils.remove_null_parms(**opts)
     if not opts:
         raise exc.CommandError("You must update at least one property")
     container = cs.containers.update(args.container, **opts)
@@ -477,21 +496,7 @@ def do_update(cs, args):
 def do_attach(cs, args):
     """Attach to a container."""
     response = cs.containers.attach(args.container)
-    if response.startswith("ws://"):
-        try:
-            wscls = websocketclient.WebSocketClient(host_url=response,
-                                                    id=args.container,
-                                                    escape="~",
-                                                    close_wait=0.5)
-            wscls.init_httpclient()
-            wscls.connect()
-            wscls.handle_resize()
-            wscls.start_loop()
-        except exceptions.ContainerWebSocketException as e:
-            print("%(e)s:%(container)s" %
-                  {'e': e, 'container': args.container})
-    else:
-        raise exceptions.InvalidWebSocketLink(args.container)
+    zun_utils.websocket_attach(response, args.container, "~", 0.5)
 
 
 @utils.arg('container',
