@@ -40,6 +40,14 @@ def _check_restart_policy(policy):
     return restart_policy
 
 
+def _remove_null_parms(**kwargs):
+    new = {}
+    for (key, value) in kwargs.items():
+        if value:
+            new[key] = value
+    return new
+
+
 class CreateContainer(command.ShowOne):
     """Create a container"""
 
@@ -116,6 +124,7 @@ class CreateContainer(command.ShowOne):
         if parsed_args.restart:
             opts['restart_policy'] = _check_restart_policy(parsed_args.restart)
 
+        opts = _remove_null_parms(**opts)
         container = client.containers.create(**opts)
         columns = _container_columns(container)
         return columns, utils.get_item_properties(container, columns)
@@ -178,6 +187,7 @@ class ListContainer(command.Lister):
         opts['limit'] = parsed_args.limit
         opts['sort_key'] = parsed_args.sort_key
         opts['sort_dir'] = parsed_args.sort_dir
+        opts = _remove_null_parms(**opts)
         containers = client.containers.list(**opts)
         columns = ['uuid', 'name', 'status', 'image', 'command']
         return (columns, (utils.get_item_properties(container, columns)
@@ -510,6 +520,7 @@ class RunContainer(command.ShowOne):
         if parsed_args.restart:
             opts['restart_policy'] = _check_restart_policy(parsed_args.restart)
 
+        opts = _remove_null_parms(**opts)
         container = client.containers.run(**opts)
         columns = _container_columns(container)
         return columns, utils.get_item_properties(container, columns)
