@@ -17,6 +17,7 @@ from osc_lib.command import command
 from osc_lib import utils
 
 from zunclient.common import utils as zun_utils
+from zunclient import exceptions as exc
 from zunclient.i18n import _
 
 
@@ -593,3 +594,42 @@ class TopContainer(command.Command):
             print("")
             for info in process:
                 print("%-20s") % info,
+
+
+class UpdateContainer(command.Command):
+    """Updates one or more container attributes"""
+    log = logging.getLogger(__name__ + ".UpdateContainer")
+
+    def get_parser(self, prog_name):
+        parser = super(UpdateContainer, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help="ID or name of the container to udate.")
+        parser.add_argument(
+            '--cpu',
+            metavar='<cpu>',
+            help='The number of virtual cpus.')
+        parser.add_argument(
+            '--memory',
+            metavar='<memory>',
+            help='The container memory size in MiB')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        container = parsed_args.container
+        opts = {}
+        if parsed_args.memory is not None:
+            opts['memory'] = parsed_args.memory
+        if parsed_args.cpu is not None:
+            opts['cpu'] = parsed_args.cpu
+        if not opts:
+            raise exc.CommandError("You must update at least one property")
+        try:
+            client.containers.update(container, **opts)
+            print(_('Request to update container %s has been accepted')
+                  % container)
+        except Exception as e:
+            print("update for container %(container)s failed: %(e)s" %
+                  {'container': container, 'e': e})
