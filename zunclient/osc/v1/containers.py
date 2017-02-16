@@ -107,6 +107,13 @@ class CreateContainer(command.ShowOne):
             metavar='<restart>',
             help='Restart policy to apply when a container exits'
                  '(no, on-failure[:max-retry], always, unless-stopped)')
+        parser.add_argument(
+            '--image-driver',
+            metavar='<image_driver>',
+            help='The image driver to use to pull container image. '
+                 'It can have following values: '
+                 '"docker": pull the image from Docker Hub. '
+                 '"glance": pull the image from Glance. ')
         return parser
 
     def take_action(self, parsed_args):
@@ -121,6 +128,7 @@ class CreateContainer(command.ShowOne):
         opts['workdir'] = parsed_args.workdir
         opts['labels'] = zun_utils.format_args(parsed_args.label)
         opts['image_pull_policy'] = parsed_args.image_pull_policy
+        opts['image_driver'] = parsed_args.image_driver
         if parsed_args.restart:
             opts['restart_policy'] = _check_restart_policy(parsed_args.restart)
 
@@ -503,6 +511,13 @@ class RunContainer(command.ShowOne):
             metavar='<restart>',
             help='Restart policy to apply when a container exits'
                  '(no, on-failure[:max-retry], always, unless-stopped)')
+        parser.add_argument(
+            '--image-driver',
+            metavar='<image_driver>',
+            help='The image driver to use to pull container image. '
+                 'It can have following values: '
+                 '"docker": pull the image from Docker Hub. '
+                 '"glance": pull the image from Glance. ')
         return parser
 
     def take_action(self, parsed_args):
@@ -517,6 +532,7 @@ class RunContainer(command.ShowOne):
         opts['workdir'] = parsed_args.workdir
         opts['labels'] = zun_utils.format_args(parsed_args.label)
         opts['image_pull_policy'] = parsed_args.image_pull_policy
+        opts['image_driver'] = parsed_args.image_driver
         if parsed_args.restart:
             opts['restart_policy'] = _check_restart_policy(parsed_args.restart)
 
