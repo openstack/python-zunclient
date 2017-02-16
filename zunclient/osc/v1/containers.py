@@ -360,12 +360,22 @@ class LogsContainer(command.Command):
             'container',
             metavar='<container>',
             help='ID or name of the container to get logs for.')
+        parser.add_argument(
+            '--stdout',
+            action='store_true',
+            help='Only stdout logs of container.')
+        parser.add_argument(
+            '--stderr',
+            action='store_true',
+            help='Only stderr logs of container.')
         return parser
 
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         container = parsed_args.container
-        logs = client.containers.logs(container)
+        stdout = parsed_args.stdout
+        stderr = parsed_args.stderr
+        logs = client.containers.logs(container, stdout, stderr)
         print(logs)
 
 
