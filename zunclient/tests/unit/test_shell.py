@@ -122,7 +122,7 @@ class ShellTest(utils.TestCase):
         stdout, stderr = self.shell('bash-completion')
         # just check we have some output
         required = [
-            '.*--json',
+            '.*--format',
             '.*help',
             '.*show',
             '.*--name']
