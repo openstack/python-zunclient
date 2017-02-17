@@ -59,11 +59,25 @@ cat etc/tempest.conf
 
 sudo -E tox -eall-plugin -- zun.tests.tempest.api --concurrency=1
 
-# NOTE(Namrata): Add more tests which uses OSC.
+echo "Running OSC commands test for Zun"
+
+export ZUNCLIENT_DIR="$BASE/new/python-zunclient"
+
+sudo chown -R jenkins:stack $ZUNCLIENT_DIR
+
+# Go to the zunclient dir
+cd $ZUNCLIENT_DIR
+
+# Run tests
+set +e
+source $BASE/new/devstack/openrc admin admin
+sudo -E -H -u jenkins ./tools/run_functional.sh
+
 EXIT_CODE=$?
 
-popd
+set -e
 
+popd
 
 $XTRACE
 exit $EXIT_CODE
