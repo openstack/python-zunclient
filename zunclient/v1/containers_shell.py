@@ -14,6 +14,7 @@
 
 import argparse
 import json
+import yaml
 
 from zunclient.common import cliutils as utils
 from zunclient.common import utils as zun_utils
@@ -191,16 +192,22 @@ def do_delete(cs, args):
 @utils.arg('container',
            metavar='<container>',
            help='ID or name of the container to show.')
-@utils.arg('--json',
-           action='store_true',
-           default=False,
-           help='Print JSON representation of the container.')
+@utils.arg('-f', '--format',
+           metavar='<format>',
+           action='store',
+           choices=['json', 'yaml', 'table'],
+           default='table',
+           help='Print representation of the container.'
+                'The choices of the output format is json,table,yaml.'
+                'Defaults to table.')
 def do_show(cs, args):
     """Show details of a container."""
     container = cs.containers.get(args.container)
-    if args.json:
-        print(json.dumps(container._info))
-    else:
+    if args.format == 'json':
+        print(json.dumps(container._info, indent=4, sort_keys=True))
+    elif args.format == 'yaml':
+        print(yaml.safe_dump(container._info, default_flow_style=False))
+    elif args.format == 'table':
         _show_container(container)
 
 
