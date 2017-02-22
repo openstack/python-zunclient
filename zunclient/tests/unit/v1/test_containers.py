@@ -221,9 +221,16 @@ fake_responses = {
             None,
         ),
     },
-    '/v1/containers/%s/resize?%s'
-    % (CONTAINER1['id'], parse.urlencode({'h': tty_height,
-                                          'w': tty_weight})):
+    '/v1/containers/%s/resize?w=%s&h=%s'
+    % (CONTAINER1['id'], tty_weight, tty_height):
+    {
+        'POST': (
+            {},
+            None,
+        ),
+    },
+    '/v1/containers/%s/resize?h=%s&w=%s'
+    % (CONTAINER1['id'], tty_height, tty_weight):
     {
         'POST': (
             {},
@@ -485,13 +492,18 @@ class ContainerManagerTest(testtools.TestCase):
 
     def test_containers_resize(self):
         containers = self.mgr.resize(CONTAINER1['id'], tty_weight, tty_height)
-        expect = [
-            ('POST', '/v1/containers/%s/resize?%s'
-             % (CONTAINER1['id'], parse.urlencode({'h': tty_height,
-                                                   'w': tty_weight})),
+        expects = []
+        expects.append([
+            ('POST', '/v1/containers/%s/resize?w=%s&h=%s'
+             % (CONTAINER1['id'], tty_weight, tty_height),
              {'Content-Length': '0'}, None)
-        ]
-        self.assertEqual(expect, self.api.calls)
+        ])
+        expects.append([
+            ('POST', '/v1/containers/%s/resize?h=%s&w=%s'
+             % (CONTAINER1['id'], tty_height, tty_weight),
+             {'Content-Length': '0'}, None)
+        ])
+        self.assertTrue(self.api.calls in expects)
         self.assertIsNone(containers)
 
     def test_containers_top(self):
