@@ -120,6 +120,12 @@ def _remove_null_parms(**kwargs):
            action='store_true',
            default=False,
            help='Keep STDIN open even if not attached')
+@utils.arg('--image-driver',
+           metavar='<image_driver>',
+           help='The image driver to use to pull container image. '
+                'It can have following values: '
+                '"docker": pull the image from Docker Hub. '
+                '"glance": pull the image from Glance. ')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -132,6 +138,7 @@ def do_create(cs, args):
     opts['workdir'] = args.workdir
     opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
+    opts['image_driver'] = args.image_driver
     if args.restart:
         opts['restart_policy'] = _check_restart_policy(args.restart)
     if args.tty:
@@ -402,6 +409,12 @@ def do_kill(cs, args):
            action='store_true',
            default=False,
            help='Keep STDIN open even if not attached')
+@utils.arg('--image-driver',
+           metavar='<image_driver>',
+           help='The image driver to use to pull container image. '
+                'It can have following values: '
+                '"docker": pull the image from Docker Hub. '
+                '"glance": pull the image from Glance. ')
 def do_run(cs, args):
     """Run a command in a new container"""
     opts = {}
@@ -414,6 +427,7 @@ def do_run(cs, args):
     opts['workdir'] = args.workdir
     opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
+    opts['image_driver'] = args.image_driver
     if args.restart:
         opts['restart_policy'] = _check_restart_policy(args.restart)
     if args.tty:
