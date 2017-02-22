@@ -637,10 +637,9 @@ class UpdateContainer(command.Command):
         client = _get_client(self, parsed_args)
         container = parsed_args.container
         opts = {}
-        if parsed_args.memory is not None:
-            opts['memory'] = parsed_args.memory
-        if parsed_args.cpu is not None:
-            opts['cpu'] = parsed_args.cpu
+        opts['memory'] = parsed_args.memory
+        opts['cpu'] = parsed_args.cpu
+        opts = _remove_null_parms(**opts)
         if not opts:
             raise exc.CommandError("You must update at least one property")
         try:
