@@ -44,7 +44,7 @@ def _check_restart_policy(policy):
 def _remove_null_parms(**kwargs):
     new = {}
     for (key, value) in kwargs.items():
-        if value:
+        if value is not None:
             new[key] = value
     return new
 
