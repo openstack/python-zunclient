@@ -14,6 +14,7 @@
 
 import ddt
 from tempest.lib.common.utils import data_utils
+import time
 
 from zunclient.tests.functional.osc.v1 import base
 
@@ -65,6 +66,15 @@ class ContainerTests(base.TestCase):
                       [x['name'] for x in container_list])
         self.assertIn(container['uuid'],
                       [x['uuid'] for x in container_list])
+        count = 0
+        while count < 5:
+            self.container_show(container['name'])
+            if container['status'] == 'Running':
+                break
+            if container['status'] == 'Error':
+                break
+            time.sleep(2)
+            count = count + 1
         self.container_delete(container['name'])
         container_list = self.container_list()
         self.assertNotIn(container['name'],
