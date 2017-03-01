@@ -501,7 +501,7 @@ def do_attach(cs, args):
 
 @utils.arg('container',
            metavar='<container>',
-           help='ID or name of the container to display progesses.')
+           help='ID or name of the container to display processes.')
 @utils.arg('ps_args',
            metavar='<ps_args>',
            nargs=argparse.REMAINDER,

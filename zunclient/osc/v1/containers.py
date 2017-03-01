@@ -639,7 +639,7 @@ class RenameContainer(command.Command):
 
 
 class TopContainer(command.Command):
-    """display the running progesses inside the container"""
+    """display the running processes inside the container"""
     log = logging.getLogger(__name__ + ".TopContainer")
 
     def get_parser(self, prog_name):
@@ -647,7 +647,7 @@ class TopContainer(command.Command):
         parser.add_argument(
             'container',
             metavar='<container>',
-            help='ID or name of the container to display progesses.')
+            help='ID or name of the container to display processes.')
         parser.add_argument(
             'ps_args',
             metavar='<ps_args>',
