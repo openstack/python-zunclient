@@ -21,9 +21,11 @@ from zunclient import exceptions as exc
 from zunclient.i18n import _
 
 
-def common_filters(marker=None, limit=None, sort_key=None, sort_dir=None):
+def common_filters(marker=None, limit=None, sort_key=None,
+                   sort_dir=None, all_tenants=False):
     """Generate common filters for any list request.
 
+    :param all_tenants: list containers in all tenants or not
     :param marker: entity ID from which to start returning entities.
     :param limit: maximum number of entities to return.
     :param sort_key: field to use for sorting.
@@ -31,6 +33,8 @@ def common_filters(marker=None, limit=None, sort_key=None, sort_dir=None):
     :returns: list of string filters.
     """
     filters = []
+    if all_tenants is True:
+        filters.append('all_tenants=1')
     if isinstance(limit, int):
         filters.append('limit=%s' % limit)
     if marker is not None:
