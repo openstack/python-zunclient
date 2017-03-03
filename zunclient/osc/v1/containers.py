@@ -407,14 +407,36 @@ class LogsContainer(command.Command):
             '--stderr',
             action='store_true',
             help='Only stderr logs of container.')
+        parser.add_argument(
+            '--since',
+            metavar='<since>',
+            default=None,
+            help='Show logs since a given datetime or integer '
+                 'epoch (in seconds).')
+        parser.add_argument(
+            '--timestamps',
+            dest='timestamps',
+            action='store_true',
+            default=False,
+            help='Show timestamps.')
+        parser.add_argument(
+            '--tail',
+            metavar='<tail>',
+            default='all',
+            help='Number of lines to show from the end of the logs.')
         return parser
 
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
-        container = parsed_args.container
-        stdout = parsed_args.stdout
-        stderr = parsed_args.stderr
-        logs = client.containers.logs(container, stdout, stderr)
+        opts = {}
+        opts['id'] = parsed_args.container
+        opts['stdout'] = parsed_args.stdout
+        opts['stderr'] = parsed_args.stderr
+        opts['since'] = parsed_args.since
+        opts['timestamps'] = parsed_args.timestamps
+        opts['tail'] = parsed_args.tail
+        opts = zun_utils._remove_null_parms(**opts)
+        logs = client.containers.logs(**opts)
         print(logs)
 
 

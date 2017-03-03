@@ -134,13 +134,12 @@ class ContainerManager(base.Manager):
     def unpause(self, id):
         return self._action(id, '/unpause')
 
-    def logs(self, id, stdout, stderr):
-        if stdout is False and stderr is False:
-            stdout = True
-            stderr = True
+    def logs(self, id, **kwargs):
+        if kwargs['stdout'] is False and kwargs['stderr'] is False:
+            kwargs['stdout'] = True
+            kwargs['stderr'] = True
         return self._action(id, '/logs', method='GET',
-                            qparams={'stdout': stdout,
-                                     'stderr': stderr})[1]
+                            qparams=kwargs)[1]
 
     def execute(self, id, command):
         return self._action(id, '/execute',

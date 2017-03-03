@@ -316,9 +316,31 @@ def do_unpause(cs, args):
 @utils.arg('--stderr',
            action='store_true',
            help='Only stderr logs of container.')
+@utils.arg('--since',
+           metavar='<since>',
+           default=None,
+           help='Show logs since a given datetime or integer '
+                'epoch (in seconds).')
+@utils.arg('-t', '--timestamps',
+           dest='timestamps',
+           action='store_true',
+           default=False,
+           help='Show timestamps.')
+@utils.arg('--tail',
+           metavar='<tail>',
+           default='all',
+           help='Number of lines to show from the end of the logs.')
 def do_logs(cs, args):
     """Get logs of a container."""
-    logs = cs.containers.logs(args.container, args.stdout, args.stderr)
+    opts = {}
+    opts['id'] = args.container
+    opts['stdout'] = args.stdout
+    opts['stderr'] = args.stderr
+    opts['since'] = args.since
+    opts['timestamps'] = args.timestamps
+    opts['tail'] = args.tail
+    opts = zun_utils._remove_null_parms(**opts)
+    logs = cs.containers.logs(**opts)
     print(logs)
 
 

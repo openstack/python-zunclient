@@ -176,7 +176,9 @@ fake_responses = {
         ),
     },
     '/v1/containers/%s/logs?%s'
-    % (CONTAINER1['id'], parse.urlencode({'stdout': True, 'stderr': True})):
+    % (CONTAINER1['id'], parse.urlencode({'stdout': True, 'stderr': True,
+                                          'timestamps': False, 'tail': 'all',
+                                          'since': None})):
     {
         'GET': (
             {},
@@ -423,11 +425,15 @@ class ContainerManagerTest(testtools.TestCase):
         self.assertTrue(containers)
 
     def test_containers_logs(self):
-        containers = self.mgr.logs(CONTAINER1['id'], stdout=True, stderr=True)
+        containers = self.mgr.logs(CONTAINER1['id'], stdout=True, stderr=True,
+                                   timestamps=False, tail='all', since=None)
         expect = [
             ('GET', '/v1/containers/%s/logs?%s'
              % (CONTAINER1['id'], parse.urlencode({'stdout': True,
-                                                   'stderr': True})),
+                                                   'stderr': True,
+                                                   'timestamps': False,
+                                                   'tail': 'all',
+                                                   'since': None})),
              {'Content-Length': '0'}, None)
         ]
         self.assertEqual(expect, self.api.calls)
