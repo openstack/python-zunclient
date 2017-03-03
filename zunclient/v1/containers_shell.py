@@ -518,7 +518,7 @@ def do_update(cs, args):
 def do_attach(cs, args):
     """Attach to a container."""
     response = cs.containers.attach(args.container)
-    zun_utils.websocket_attach(response, args.container, "~", 0.5)
+    _websocket_attach(response, args.container, "~", 0.5)
 
 
 @utils.arg('container',
