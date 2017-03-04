@@ -339,7 +339,7 @@ def do_logs(cs, args):
     opts['since'] = args.since
     opts['timestamps'] = args.timestamps
     opts['tail'] = args.tail
-    opts = zun_utils._remove_null_parms(**opts)
+    opts = zun_utils.remove_null_parms(**opts)
     logs = cs.containers.logs(**opts)
     print(logs)
 

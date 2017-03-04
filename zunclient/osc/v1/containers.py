@@ -435,7 +435,7 @@ class LogsContainer(command.Command):
         opts['since'] = parsed_args.since
         opts['timestamps'] = parsed_args.timestamps
         opts['tail'] = parsed_args.tail
-        opts = zun_utils._remove_null_parms(**opts)
+        opts = zun_utils.remove_null_parms(**opts)
         logs = client.containers.logs(**opts)
         print(logs)
 
