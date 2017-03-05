@@ -573,7 +573,7 @@ class OpenStackZunShell(object):
                                 endpoint_type=endpoint_type,
                                 insecure=insecure)
 
-        args.func(self.cs, args)
+        return args.func(self.cs, args)
 
     def _dump_timings(self, timings):
         class Tyme(object):
@@ -631,8 +631,8 @@ class OpenStackHelpFormatter(argparse.HelpFormatter):
 
 def main():
     try:
-        OpenStackZunShell().main(map(encodeutils.safe_decode, sys.argv[1:]))
-
+        return OpenStackZunShell().main(
+            map(encodeutils.safe_decode, sys.argv[1:]))
     except Exception as e:
         logger.debug(e, exc_info=1)
         print("ERROR: %s" % encodeutils.safe_encode(six.text_type(e)),
@@ -641,4 +641,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

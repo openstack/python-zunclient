@@ -386,8 +386,11 @@ class ExecContainer(command.Command):
         client = _get_client(self, parsed_args)
         container = parsed_args.container
         command = ' '.join(parsed_args.command)
-        output = client.containers.execute(container, command)
+        response = client.containers.execute(container, command)
+        output = response['output']
+        exit_code = response['exit_code']
         print(output)
+        return exit_code
 
 
 class LogsContainer(command.Command):

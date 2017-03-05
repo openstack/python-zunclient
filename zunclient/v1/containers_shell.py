@@ -359,8 +359,11 @@ def do_logs(cs, args):
            help='The command to execute in a container')
 def do_exec(cs, args):
     """Execute command in a container."""
-    output = cs.containers.execute(args.container, ' '.join(args.command))
+    response = cs.containers.execute(args.container, ' '.join(args.command))
+    output = response['output']
+    exit_code = response['exit_code']
     print(output)
+    return exit_code
 
 
 @utils.arg('containers',
