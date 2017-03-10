@@ -151,6 +151,10 @@ def do_create(cs, args):
     _show_container(cs.containers.create(**opts))
 
 
+@utils.arg('--all-tenants',
+           action="store_true",
+           default=False,
+           help='List containers in all tenants')
 @utils.arg('--marker',
            metavar='<marker>',
            default=None,
@@ -170,6 +174,7 @@ def do_create(cs, args):
 def do_list(cs, args):
     """Print a list of available containers."""
     opts = {}
+    opts['all_tenants'] = args.all_tenants
     opts['marker'] = args.marker
     opts['limit'] = args.limit
     opts['sort_key'] = args.sort_key
