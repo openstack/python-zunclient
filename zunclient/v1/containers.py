@@ -173,3 +173,11 @@ class ContainerManager(base.Manager):
     def top(self, id, ps_args=None):
         return self._action(id, '/top', method='GET',
                             qparams={'ps_args': ps_args})[1]
+
+    def get_archive(self, id, path):
+        return self._action(id, '/get_archive', method='GET',
+                            qparams={'path': path})[1]
+
+    def put_archive(self, id, path, data):
+        return self._action(id, '/put_archive',
+                            qparams={'path': path, 'data': data})

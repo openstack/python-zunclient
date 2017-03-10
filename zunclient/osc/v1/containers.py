@@ -12,6 +12,7 @@
 
 import argparse
 import logging
+import os
 import time
 
 from osc_lib.command import command
@@ -745,3 +746,53 @@ class AttachContainer(command.Command):
         client = _get_client(self, parsed_args)
         response = client.containers.attach(parsed_args.container)
         _websocket_attach(response, parsed_args.container, "~", 0.5)
+
+
+class CopyContainer(command.Command):
+    """Copy files/tars between a container and the local filesystem."""
+    log = logging.getLogger(__name__ + ".CopyContainer")
+
+    def get_parser(self, prog_name):
+        parser = super(CopyContainer, self).get_parser(prog_name)
+        parser.add_argument(
+            'source',
+            metavar='<source>',
+            help='The source should be copied to the container or localhost.'
+                 'The format of this parameter is [container:]src_path.')
+        parser.add_argument(
+            'destination',
+            metavar='<destination>',
+            help='The directory destination where save the source.'
+                 'The format of this parameter is [container:]dest_path.')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        if ':' in parsed_args.source:
+            source_parts = parsed_args.source.split(':', 1)
+            container_id = source_parts[0]
+            container_path = source_parts[1]
+            opts = {}
+            opts['id'] = container_id
+            opts['path'] = container_path
+
+            res = client.containers.get_archive(**opts)
+            filename = os.path.split(container_path)[1]
+            dest_path = parsed_args.destination + '/' + filename
+            with open(dest_path, 'w') as outfile:
+                outfile.write(res[0][0])
+
+        elif ':' in parsed_args.destination:
+            dest_parts = parsed_args.destination.split(':', 1)
+            container_id = dest_parts[0]
+            container_path = dest_parts[1]
+            opts = {}
+            opts['id'] = container_id
+            opts['path'] = container_path
+            opts['data'] = parsed_args.source
+            client.containers.put_archive(**opts)
+        else:
+            print("Please check the parameters for zun copy!")
+            print("Usage:")
+            print("zun cp container:src_path dest_path|-")
+            print("zun cp src_path|- container:dest_path")
