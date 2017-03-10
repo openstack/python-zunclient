@@ -2,16 +2,16 @@
 # of appearance. Changing the order has an impact on the overall integration
 # process, which may cause wedges in the gate later.
 
-bandit>=1.0.1 # Apache-2.0
+bandit>=1.1.0 # Apache-2.0
 coverage>=4.0 # Apache-2.0
 doc8 # Apache-2.0
 ddt>=1.0.1 # MIT
-hacking>=0.12.0,!=0.13.0,<0.14  # Apache-2.0
-oslosphinx!=3.4.0,>=2.5.0 # Apache-2.0
+hacking!=0.13.0,<0.14,>=0.12.0 # Apache-2.0
+oslosphinx>=4.7.0 # Apache-2.0
 oslotest>=1.10.0 # Apache-2.0
 os-testr>=0.8.0 # Apache-2.0
 python-subunit>=0.0.18 # Apache-2.0/BSD
-sphinx!=1.3b1,<1.4,>=1.2.1 # BSD
+sphinx>=1.5.1 # BSD
 tempest>=14.0.0 # Apache-2.0
 testresources>=0.2.4 # Apache-2.0/BSD
 testrepository>=0.0.18 # Apache-2.0/BSD
@@ -19,4 +19,4 @@ testscenarios>=0.4 # Apache-2.0/BSD
 testtools>=1.4.0 # MIT
 
 # releasenotes
-reno>=1.8.0 # Apache2
+reno>=1.8.0 # Apache-2.0
