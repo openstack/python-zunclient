@@ -13,8 +13,11 @@
 #    under the License.
 
 import argparse
+from contextlib import closing
+import io
 import json
 import os
+import tarfile
 import time
 import yaml
 
@@ -550,11 +553,11 @@ def do_top(cs, args):
 
 @utils.arg('source',
            metavar='<source>',
-           help='The source should be copied to the container or localhost.'
+           help='The source should be copied to the container or localhost. '
                 'The format of this parameter is [container:]src_path.')
 @utils.arg('destination',
            metavar='<destination>',
-           help='The directory destination where save the source.'
+           help='The directory destination where save the source. '
                 'The format of this parameter is [container:]dest_path.')
 def do_cp(cs, args):
     """Copy files/tars between a container and the local filesystem."""
@@ -567,19 +570,23 @@ def do_cp(cs, args):
         opts['path'] = container_path
 
         res = cs.containers.get_archive(**opts)
-        filename = os.path.split(container_path)[1]
-        dest_path = args.destination + '/' + filename
-        with open(dest_path, 'w') as outfile:
-            outfile.write(res[0][0])
+        dest_path = args.destination
+        tardata = io.BytesIO(res['data'].encode())
+        with closing(tarfile.open(fileobj=tardata)) as tar:
+            tar.extractall(dest_path)
 
     elif ':' in args.destination:
         dest_parts = args.destination.split(':', 1)
         container_id = dest_parts[0]
         container_path = dest_parts[1]
+        filename = os.path.split(args.source)[1]
         opts = {}
         opts['id'] = container_id
         opts['path'] = container_path
-        opts['data'] = args.source
+        tardata = io.BytesIO()
+        with closing(tarfile.open(fileobj=tardata, mode='w')) as tar:
+            tar.add(args.source, arcname=filename)
+        opts['data'] = tardata.getvalue()
         cs.containers.put_archive(**opts)
 
     else:

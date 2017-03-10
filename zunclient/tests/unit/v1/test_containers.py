@@ -257,11 +257,11 @@ fake_responses = {
         ),
     },
     '/v1/containers/%s/put_archive?%s'
-    % (CONTAINER1['id'], parse.urlencode({'path': path, 'data': data})):
+    % (CONTAINER1['id'], parse.urlencode({'path': path})):
     {
         'POST': (
             {},
-            None,
+            {'data': data},
         ),
     },
 }
@@ -553,9 +553,9 @@ class ContainerManagerTest(testtools.TestCase):
         containers = self.mgr.put_archive(CONTAINER1['id'], path, data)
         expect = [
             ('POST', '/v1/containers/%s/put_archive?%s'
-             % (CONTAINER1['id'], parse.urlencode({'path': path,
-                                                   'data': data})),
-             {'Content-Length': '0'}, None)
+             % (CONTAINER1['id'], parse.urlencode({'path': path})),
+             {'Content-Length': '0'},
+             {'data': data})
         ]
         self.assertEqual(expect, self.api.calls)
         self.assertTrue(containers)

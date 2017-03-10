@@ -11,8 +11,11 @@
 # under the License.
 
 import argparse
+from contextlib import closing
+import io
 import logging
 import os
+import tarfile
 import time
 
 from osc_lib.command import command
@@ -760,12 +763,12 @@ class CopyContainer(command.Command):
         parser.add_argument(
             'source',
             metavar='<source>',
-            help='The source should be copied to the container or localhost.'
+            help='The source should be copied to the container or localhost. '
                  'The format of this parameter is [container:]src_path.')
         parser.add_argument(
             'destination',
             metavar='<destination>',
-            help='The directory destination where save the source.'
+            help='The directory destination where save the source. '
                  'The format of this parameter is [container:]dest_path.')
         return parser
 
@@ -780,19 +783,23 @@ class CopyContainer(command.Command):
             opts['path'] = container_path
 
             res = client.containers.get_archive(**opts)
-            filename = os.path.split(container_path)[1]
-            dest_path = parsed_args.destination + '/' + filename
-            with open(dest_path, 'w') as outfile:
-                outfile.write(res[0][0])
+            dest_path = parsed_args.destination
+            tardata = io.BytesIO(res['data'].encode())
+            with closing(tarfile.open(fileobj=tardata)) as tar:
+                tar.extractall(dest_path)
 
         elif ':' in parsed_args.destination:
             dest_parts = parsed_args.destination.split(':', 1)
             container_id = dest_parts[0]
             container_path = dest_parts[1]
+            filename = os.path.split(parsed_args.source)[1]
             opts = {}
             opts['id'] = container_id
             opts['path'] = container_path
-            opts['data'] = parsed_args.source
+            tardata = io.BytesIO()
+            with closing(tarfile.open(fileobj=tardata, mode='w')) as tar:
+                tar.add(parsed_args.source, arcname=filename)
+            opts['data'] = tardata.getvalue()
             client.containers.put_archive(**opts)
         else:
             print("Please check the parameters for zun copy!")
