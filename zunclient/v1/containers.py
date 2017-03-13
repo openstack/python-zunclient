@@ -183,4 +183,5 @@ class ContainerManager(base.Manager):
 
     def put_archive(self, id, path, data):
         return self._action(id, '/put_archive',
-                            qparams={'path': path, 'data': data})
+                            qparams={'path': path},
+                            body={'data': data})
