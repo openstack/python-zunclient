@@ -144,9 +144,13 @@ class ContainerManager(base.Manager):
         return self._action(id, '/logs', method='GET',
                             qparams=kwargs)[1]
 
-    def execute(self, id, command):
+    def execute(self, id, **kwargs):
         return self._action(id, '/execute',
-                            qparams={'command': command})[1]
+                            qparams=kwargs)[1]
+
+    def execute_resize(self, id, exec_id, width, height):
+        self._action(id, '/execute_resize',
+                     qparams={'exec_id': exec_id, 'w': width, 'h': height})[1]
 
     def kill(self, id, signal=None):
         return self._action(id, '/kill',

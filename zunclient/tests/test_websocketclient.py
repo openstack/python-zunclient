@@ -32,11 +32,11 @@ class WebSocketClientTest(testtools.TestCase):
     def test_websocketclient_variables(self):
         mock_client = mock.Mock()
         wsclient = websocketclient.WebSocketClient(zunclient=mock_client,
-                                                   host_url=URL,
+                                                   url=URL,
                                                    id=CONTAINER_ID,
                                                    escape=ESCAPE_FLAG,
                                                    close_wait=WAIT_TIME)
-        self.assertEqual(wsclient.host_url, URL)
+        self.assertEqual(wsclient.url, URL)
         self.assertEqual(wsclient.id, CONTAINER_ID)
         self.assertEqual(wsclient.escape, ESCAPE_FLAG)
         self.assertEqual(wsclient.close_wait, WAIT_TIME)

@@ -313,13 +313,28 @@ def do_logs(cs, args):
            metavar='<command>',
            nargs=argparse.REMAINDER,
            help='The command to execute in a container')
+@utils.arg('-i', '--interactive',
+           dest='interactive',
+           action='store_true',
+           default=False,
+           help='Keep STDIN open and allocate a pseudo-TTY for interactive')
 def do_exec(cs, args):
     """Execute command in a running container."""
-    response = cs.containers.execute(args.container, ' '.join(args.command))
-    output = response['output']
-    exit_code = response['exit_code']
-    print(output)
-    return exit_code
+    opts = {}
+    opts['command'] = ' '.join(args.command)
+    if args.interactive:
+        opts['interactive'] = True
+        opts['run'] = False
+    response = cs.containers.execute(args.container, **opts)
+    if args.interactive:
+        exec_id = response['exec_id']
+        url = response['url']
+        websocketclient.do_exec(cs, url, args.container, exec_id, "~", 0.5)
+    else:
+        output = response['output']
+        exit_code = response['exit_code']
+        print(output)
+        return exit_code
 
 
 @utils.arg('containers',

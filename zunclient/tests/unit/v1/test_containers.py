@@ -458,7 +458,8 @@ class ContainerManagerTest(testtools.TestCase):
         self.assertIsNone(containers)
 
     def test_containers_execute(self):
-        containers = self.mgr.execute(CONTAINER1['id'], CONTAINER1['command'])
+        containers = self.mgr.execute(CONTAINER1['id'],
+                                      command=CONTAINER1['command'])
         expect = [
             ('POST', '/v1/containers/%s/execute?%s'
              % (CONTAINER1['id'], parse.urlencode({'command':

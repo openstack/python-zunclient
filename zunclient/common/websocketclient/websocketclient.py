@@ -31,6 +31,8 @@ import time
 import tty
 import websocket
 
+import docker
+
 from zunclient.common.websocketclient import exceptions
 
 LOG = logging.getLogger(__name__)
@@ -40,40 +42,42 @@ DEFAULT_ENDPOINT_TYPE = 'publicURL'
 DEFAULT_SERVICE_TYPE = 'container'
 
 
-class WebSocketClient(object):
+class BaseClient(object):
 
-    def __init__(self, zunclient, host_url, id, escape='~',
+    def __init__(self, zunclient, url, id, escape='~',
                  close_wait=0.5):
+        self.url = url
         self.id = id
         self.escape = escape
         self.close_wait = close_wait
-        self.host_url = host_url
         self.cs = zunclient
 
     def connect(self):
-        url = self.host_url
-        LOG.debug('connecting to: %s', url)
-        usr_agent = "User-Agent: " + self.id
-        header = [usr_agent, "x-custom: header"]
-        try:
-            self.ws = websocket.create_connection(url,
-                                                  skip_utf8_validation=True,
-                                                  header=header
-                                                  )
-            print('connected to %s ,press Enter to continue' % self.id)
-            print('type %s. to disconnect' % self.escape)
-        except socket.error as e:
-            raise exceptions.ConnectionFailed(e)
-        except websocket.WebSocketConnectionClosedException as e:
-            raise exceptions.ConnectionFailed(e)
-        except websocket.WebSocketBadStatusException as e:
-            raise exceptions.ConnectionFailed(e)
+        raise NotImplementedError()
+
+    def fileno(self):
+        raise NotImplementedError()
+
+    def send(self, data):
+        raise NotImplementedError()
+
+    def recv(self):
+        raise NotImplementedError()
+
+    def tty_resize(self, height, width):
+        """Resize the tty session
+
+            Get the client and send the tty size data to zun api server
+            The environment variables need to get when implement sending
+            operation.
+        """
+        raise NotImplementedError()
 
     def start_loop(self):
         self.poll = select.poll()
         self.poll.register(sys.stdin,
                            select.POLLIN | select.POLLHUP | select.POLLPRI)
-        self.poll.register(self.ws,
+        self.poll.register(self.fileno(),
                            select.POLLIN | select.POLLHUP | select.POLLPRI)
 
         self.start_of_line = False
@@ -98,8 +102,8 @@ class WebSocketClient(object):
         while True:
             try:
                 for fd, event in self.poll.poll(500):
-                    if fd == self.ws.fileno():
-                        self.handle_websocket(event)
+                    if fd == self.fileno():
+                        self.handle_socket(event)
                     elif fd == sys.stdin.fileno():
                         self.handle_stdin(event)
             except select.error as e:
@@ -111,12 +115,12 @@ class WebSocketClient(object):
                     raise e
 
             if self.quit and not quitting:
-                self.log.debug('entering close_wait')
+                LOG.debug('entering close_wait')
                 quitting = True
                 when = time.time() + self.close_wait
 
             if quitting and time.time() > when:
-                self.log.debug('quitting')
+                LOG.debug('quitting')
                 break
 
     def setup_tty(self):
@@ -154,27 +158,26 @@ class WebSocketClient(object):
             raise exceptions.UserExit()
         elif self.read_escape:
             self.read_escape = False
-            self.ws.send(self.escape)
+            self.send(self.escape)
 
-        self.ws.send(data)
+        self.send(data)
 
         if data == '\r':
             self.start_of_line = True
         else:
             self.start_of_line = False
 
-    def handle_websocket(self, event):
+    def handle_socket(self, event):
         if event in (select.POLLHUP, select.POLLNVAL):
-            LOG.debug('event %d on websocket', event)
-
-            LOG.debug('eof on websocket')
-            self.poll.unregister(self.ws)
+            self.poll.unregister(self.fileno())
             self.quit = True
 
-        data = self.ws.recv()
-        LOG.debug('read %s (%d bytes) from websocket from container',
+        data = self.recv()
+        LOG.debug('read %s (%d bytes) from socket from container',
                   repr(data), len(data))
         if not data:
+            self.poll.unregister(self.fileno())
+            self.quit = True
             return
 
         sys.stdout.write(data)
@@ -221,6 +224,42 @@ class WebSocketClient(object):
 
         return dims
 
+
+class WebSocketClient(BaseClient):
+
+    def __init__(self, zunclient, url, id, escape='~',
+                 close_wait=0.5):
+        super(WebSocketClient, self).__init__(
+            zunclient, url, id, escape, close_wait)
+
+    def connect(self):
+        url = self.url
+        LOG.debug('connecting to: %s', url)
+        usr_agent = "User-Agent: " + self.id
+        header = [usr_agent, "x-custom: header"]
+        try:
+            self.ws = websocket.create_connection(url,
+                                                  skip_utf8_validation=True,
+                                                  header=header
+                                                  )
+            print('connected to %s ,press Enter to continue' % self.id)
+            print('type %s. to disconnect' % self.escape)
+        except socket.error as e:
+            raise exceptions.ConnectionFailed(e)
+        except websocket.WebSocketConnectionClosedException as e:
+            raise exceptions.ConnectionFailed(e)
+        except websocket.WebSocketBadStatusException as e:
+            raise exceptions.ConnectionFailed(e)
+
+    def fileno(self):
+        return self.ws.fileno()
+
+    def send(self, data):
+        self.ws.send(data)
+
+    def recv(self):
+        return self.ws.recv()
+
     def tty_resize(self, height, width):
         """Resize the tty session
 
@@ -232,6 +271,46 @@ class WebSocketClient(object):
         width = str(width)
 
         self.cs.containers.resize(self.id, width, height)
+
+
+class HTTPClient(BaseClient):
+
+    def __init__(self, zunclient, url, exec_id, id, escape='~',
+                 close_wait=0.5):
+        super(HTTPClient, self).__init__(zunclient, url, id, escape,
+                                         close_wait)
+        self.exec_id = exec_id
+
+    def connect(self):
+        try:
+            client = docker.Client(base_url=self.url)
+            self.socket = client.exec_start(self.exec_id, socket=True,
+                                            tty=True)
+            print('connected to container "%s"' % self.id)
+            print('type %s. to disconnect' % self.escape)
+        except docker.errors.APIError as e:
+            raise exceptions.ConnectionFailed(e)
+
+    def fileno(self):
+        return self.socket.fileno()
+
+    def send(self, data):
+        self.socket.send(data)
+
+    def recv(self):
+        return self.socket.recv(4096)
+
+    def tty_resize(self, height, width):
+        """Resize the tty session
+
+            Get the client and send the tty size data to zun api server
+            The environment variables need to get when implement sending
+            operation.
+        """
+        height = str(height)
+        width = str(width)
+
+        self.cs.containers.execute_resize(self.id, self.exec_id, width, height)
 
 
 class WINCHHandler(object):
@@ -292,17 +371,25 @@ class WINCHHandler(object):
             signal.signal(signal.SIGWINCH, self.original_handler)
 
 
-def do_attach(zunclient, url, container, escape, close_wait):
+def do_attach(zunclient, url, container_id, escape, close_wait):
     if url.startswith("ws://"):
         try:
-            wscls = WebSocketClient(zunclient=zunclient, host_url=url,
-                                    id=container, escape=escape,
+            wscls = WebSocketClient(zunclient=zunclient, url=url,
+                                    id=container_id, escape=escape,
                                     close_wait=close_wait)
             wscls.connect()
             wscls.handle_resize()
             wscls.start_loop()
         except exceptions.ContainerWebSocketException as e:
             print("%(e)s:%(container)s" %
-                  {'e': e, 'container': container})
+                  {'e': e, 'container': container_id})
     else:
-        raise exceptions.InvalidWebSocketLink(container)
+        raise exceptions.InvalidWebSocketLink(container_id)
+
+
+def do_exec(zunclient, url, container_id, exec_id, escape, close_wait):
+    httpcls = HTTPClient(zunclient=zunclient, url=url, exec_id=exec_id,
+                         id=container_id, escape="~", close_wait=0.5)
+    httpcls.connect()
+    httpcls.handle_resize()
+    httpcls.start_loop()
