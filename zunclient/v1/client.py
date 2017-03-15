@@ -15,11 +15,14 @@
 
 from keystoneauth1 import loading
 from keystoneauth1 import session as ksa_session
+from oslo_utils import importutils
 
 from zunclient.common import httpclient
 from zunclient.v1 import containers
 from zunclient.v1 import images
 from zunclient.v1 import services
+
+profiler = importutils.try_import("osprofiler.profiler")
 
 
 class Client(object):
@@ -31,7 +34,8 @@ class Client(object):
                  session=None, password=None, auth_type='password',
                  interface='public', service_name=None, insecure=False,
                  user_domain_id=None, user_domain_name=None,
-                 project_domain_id=None, project_domain_name=None):
+                 project_domain_id=None, project_domain_name=None,
+                 **kwargs):
 
         # We have to keep the api_key are for backwards compat, but let's
         # remove it from the rest of our code since it's not a keystone
@@ -111,3 +115,13 @@ class Client(object):
         self.containers = containers.ContainerManager(self.http_client)
         self.images = images.ImageManager(self.http_client)
         self.services = services.ServiceManager(self.http_client)
+
+        profile = kwargs.pop("profile", None)
+        if profiler and profile:
+            # Initialize the root of the future trace: the created trace ID
+            # will be used as the very first parent to which all related
+            # traces will be bound to. The given HMAC key must correspond to
+            # the one set in zun-api zun.conf, otherwise the latter
+            # will fail to check the request signature and will skip
+            # initialization of osprofiler on the server side.
+            profiler.init(profile)

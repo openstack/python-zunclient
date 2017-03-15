@@ -30,8 +30,11 @@ import os
 import sys
 
 from oslo_utils import encodeutils
+from oslo_utils import importutils
 from oslo_utils import strutils
 import six
+
+profiler = importutils.try_import("osprofiler.profiler")
 
 HAS_KEYRING = False
 all_errors = ValueError
@@ -356,6 +359,20 @@ class OpenStackZunShell(object):
                             action='store_true',
                             help="Do not verify https connections")
 
+        if profiler:
+            parser.add_argument('--profile',
+                                metavar='HMAC_KEY',
+                                help='HMAC key to use for encrypting context '
+                                     'data for performance profiling of '
+                                     'operation. This key should be the '
+                                     'value of the HMAC key configured for '
+                                     'the OSprofiler middleware in nova; it '
+                                     'is specified in the Zun configuration '
+                                     'file at "/etc/zun/zun.conf". Without '
+                                     'the key, profiling functions will not '
+                                     'be triggered even if OSprofiler is '
+                                     'enabled on the server side.')
+
         # The auth-system-plugins might require some extra options
         auth.load_auth_system_opts(parser)
 
@@ -558,6 +575,10 @@ class OpenStackZunShell(object):
         except KeyError:
             client = client_v1
 
+        kwargs = {}
+        if profiler:
+            kwargs["profile"] = args.profile
+
         self.cs = client.Client(username=os_username,
                                 api_key=os_password,
                                 project_id=os_project_id,
@@ -571,9 +592,15 @@ class OpenStackZunShell(object):
                                 region_name=args.os_region_name,
                                 zun_url=bypass_url,
                                 endpoint_type=endpoint_type,
-                                insecure=insecure)
+                                insecure=insecure,
+                                **kwargs)
 
-        return args.func(self.cs, args)
+        args.func(self.cs, args)
+
+        if profiler and args.profile:
+            trace_id = profiler.get().get_base_id()
+            print("To display trace use the command:\n\n"
+                  "  osprofiler trace show --html %s " % trace_id)
 
     def _dump_timings(self, timings):
         class Tyme(object):

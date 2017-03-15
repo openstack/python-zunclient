@@ -22,11 +22,13 @@ import socket
 import ssl
 
 from keystoneauth1 import adapter
+from oslo_utils import importutils
 import six
 import six.moves.urllib.parse as urlparse
 
 from zunclient import exceptions
 
+osprofiler_web = importutils.try_import("osprofiler.web")
 
 LOG = logging.getLogger(__name__)
 USER_AGENT = 'python-zunclient'
@@ -315,6 +317,11 @@ class SessionClient(adapter.LegacyJsonAdapter):
         kwargs.setdefault('user_agent', self.user_agent)
         kwargs.setdefault('auth', self.auth)
         kwargs.setdefault('endpoint_override', self.endpoint_override)
+
+        # NOTE(kevinz): osprofiler_web.get_trace_id_headers does not add any
+        # headers in case if osprofiler is not initialized.
+        if osprofiler_web:
+            kwargs['headers'].update(osprofiler_web.get_trace_id_headers())
 
         endpoint_filter = kwargs.setdefault('endpoint_filter', {})
         endpoint_filter.setdefault('interface', self.interface)
