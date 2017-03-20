@@ -85,3 +85,17 @@ class ContainerTests(base.TestCase):
         self.assertEqual(container['name'], container['name'])
         self.assertEqual(container['image'], container['image'])
         self.container_delete(container['name'])
+
+    def test_rename(self):
+        """Check container rename command with name and UUID arguments.
+
+        Test steps:
+        1) Create container in setUp.
+        2) rename container calling it with name and UUID arguments.
+        3) Check new name.
+        """
+        container = self.container_create(name='test_rename')
+        new_name = 'test_new'
+        self.container_rename(container['name'], new_name)
+        container_list = self.container_list()
+        self.assertIn(new_name, [x['name'] for x in container_list])

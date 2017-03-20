@@ -77,7 +77,7 @@ class TestCase(base.FunctionalTestBase):
 
         :param List fields: List of fields to show
         :param String params: Additional kwargs
-        :return: list of JSON node objects
+        :return: list of JSON container objects
         """
         opts = self.get_opts(fields=fields)
         output = self.openstack('appcontainer list {0} {1}'
@@ -85,14 +85,23 @@ class TestCase(base.FunctionalTestBase):
         return json.loads(output)
 
     def container_show(self, identifier, fields=None, params=''):
-        """Show specified baremetal node.
+        """Show specified container.
 
-        :param String identifier: Name or UUID of the node
+        :param String identifier: Name or UUID of the container
         :param List fields: List of fields to show
         :param List params: Additional kwargs
-        :return: JSON object of node
+        :return: JSON object of container
         """
         opts = self.get_opts(fields)
         output = self.openstack('appcontainer show {0} {1} {2}'
                                 .format(opts, identifier, params))
         return json.loads(output)
+
+    def container_rename(self, identifier, name):
+        """Rename specified container.
+
+        :param String identifier: Name or UUID of the container
+        :param String name: new name for the container
+        """
+        self.openstack('appcontainer rename {0} {1}'
+                       .format(identifier, name))
