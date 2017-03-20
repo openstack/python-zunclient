@@ -566,3 +566,29 @@ def do_stats(cs, args):
     """Display stats snapshot of the container."""
     stats_info = cs.containers.stats(args.container)
     utils.print_dict(stats_info)
+
+
+@utils.arg('container',
+           metavar='<container>',
+           help='ID or name of the container to commit.')
+@utils.arg('--repository',
+           metavar='<repository>',
+           required=True,
+           help='The repository of the image.')
+@utils.arg('--tag',
+           metavar='<tag>',
+           help='The tag of the image')
+def do_commit(cs, args):
+    """Create a new image from a container's changes."""
+    opts = {}
+    if args.repository is not None:
+        opts['repository'] = args.repository
+    if args.tag is not None:
+        opts['tag'] = args.tag
+    try:
+        cs.containers.commit(args.container, **opts)
+        print("Request to commit container %s has been accepted." %
+              args.container)
+    except Exception as e:
+        print("Commit for container %(container)s failed: %(e)s" %
+              {'container': args.container, 'e': e})

@@ -192,3 +192,11 @@ class ContainerManager(base.Manager):
 
     def stats(self, id):
         return self._action(id, '/stats', method='GET')[1]
+
+    def commit(self, id, repository, tag=None):
+        if tag is not None:
+            return self._action(id, '/commit', qparams={
+                                'repository': repository, 'tag': tag})[1]
+        else:
+            return self._action(id, '/commit', qparams={
+                                'repository': repository})[1]
