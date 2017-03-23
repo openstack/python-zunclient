@@ -94,16 +94,11 @@ def _list_containers(containers):
            metavar='<restart>',
            help='Restart policy to apply when a container exits'
                 '(no, on-failure[:max-retry], always, unless-stopped)')
-@utils.arg('-t', '--tty',
-           dest='tty',
-           action='store_true',
-           default=False,
-           help='Allocate a pseudo-TTY')
 @utils.arg('-i', '--interactive',
            dest='stdin_open',
            action='store_true',
            default=False,
-           help='Keep STDIN open even if not attached')
+           help='Keep STDIN open even if not attached, allocate a pseudo-TTY')
 @utils.arg('--image-driver',
            metavar='<image_driver>',
            help='The image driver to use to pull container image. '
@@ -130,10 +125,9 @@ def do_create(cs, args):
         opts['command'] = ' '.join(args.command)
     if args.restart:
         opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
-    if args.tty:
-        opts['tty'] = True
     if args.stdin_open:
         opts['stdin_open'] = True
+        opts['tty'] = True
     opts = zun_utils.remove_null_parms(**opts)
     _show_container(cs.containers.create(**opts))
 
@@ -416,16 +410,11 @@ def do_kill(cs, args):
            metavar='<restart>',
            help='Restart policy to apply when a container exits'
                 '(no, on-failure[:max-retry], always, unless-stopped)')
-@utils.arg('-t', '--tty',
-           dest='tty',
-           action='store_true',
-           default=False,
-           help='Allocate a pseudo-TTY')
 @utils.arg('-i', '--interactive',
            dest='stdin_open',
            action='store_true',
            default=False,
-           help='Keep STDIN open even if not attached')
+           help='Keep STDIN open even if not attached, allocate a pseudo-TTY')
 @utils.arg('--image-driver',
            metavar='<image_driver>',
            help='The image driver to use to pull container image. '
@@ -452,15 +441,14 @@ def do_run(cs, args):
         opts['command'] = ' '.join(args.command)
     if args.restart:
         opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
-    if args.tty:
-        opts['tty'] = True
     if args.stdin_open:
         opts['stdin_open'] = True
+        opts['tty'] = True
     opts = zun_utils.remove_null_parms(**opts)
     container = cs.containers.run(**opts)
     _show_container(container)
     container_uuid = getattr(container, 'uuid', None)
-    if args.tty and args.stdin_open:
+    if args.stdin_open:
         ready_for_attach = False
         while True:
             container = cs.containers.get(container_uuid)

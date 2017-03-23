@@ -101,17 +101,11 @@ class CreateContainer(command.ShowOne):
                  '"docker": pull the image from Docker Hub. '
                  '"glance": pull the image from Glance. ')
         parser.add_argument(
-            '--tty',
-            dest='tty',
-            action='store_true',
-            default=False,
-            help='Allocate a pseudo-TTY')
-        parser.add_argument(
             '--interactive',
             dest='stdin_open',
             action='store_true',
             default=False,
-            help='Keep STDIN open even if not attached')
+            help='Keep STDIN open even if not attached, allocate a pseudo-TTY')
         parser.add_argument(
             'command',
             metavar='<command>',
@@ -136,10 +130,9 @@ class CreateContainer(command.ShowOne):
         if parsed_args.restart:
             opts['restart_policy'] = \
                 zun_utils.check_restart_policy(parsed_args.restart)
-        if parsed_args.tty:
-            opts['tty'] = True
         if parsed_args.stdin_open:
             opts['stdin_open'] = True
+            opts['tty'] = True
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.create(**opts)
@@ -571,17 +564,11 @@ class RunContainer(command.ShowOne):
                  '"docker": pull the image from Docker Hub. '
                  '"glance": pull the image from Glance. ')
         parser.add_argument(
-            '--tty',
-            dest='tty',
-            action='store_true',
-            default=False,
-            help='Allocate a pseudo-TTY')
-        parser.add_argument(
             '--interactive',
             dest='stdin_open',
             action='store_true',
             default=False,
-            help='Keep STDIN open even if not attached')
+            help='Keep STDIN open even if not attached, allocate a pseudo-TTY')
         parser.add_argument(
             'command',
             metavar='<command>',
@@ -606,10 +593,9 @@ class RunContainer(command.ShowOne):
         if parsed_args.restart:
             opts['restart_policy'] = \
                 zun_utils.check_restart_policy(parsed_args.restart)
-        if parsed_args.tty:
-            opts['tty'] = True
         if parsed_args.stdin_open:
             opts['stdin_open'] = True
+            opts['tty'] = True
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.run(**opts)
