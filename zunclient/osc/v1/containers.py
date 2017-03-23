@@ -804,5 +804,5 @@ class CopyContainer(command.Command):
         else:
             print("Please check the parameters for zun copy!")
             print("Usage:")
-            print("zun cp container:src_path dest_path|-")
-            print("zun cp src_path|- container:dest_path")
+            print("openstack appcontainer cp container:src_path dest_path|-")
+            print("openstack appcontainer cp src_path|- container:dest_path")
