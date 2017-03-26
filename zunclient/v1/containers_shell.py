@@ -47,24 +47,6 @@ def _format_container_addresses(container):
     container._info['addresses'] = ', '.join(output)
 
 
-def _websocket_attach(url, container, escape, close_wait):
-    if url.startswith("ws://"):
-        try:
-            wscls = websocketclient.WebSocketClient(host_url=url,
-                                                    id=container,
-                                                    escape=escape,
-                                                    close_wait=close_wait)
-            wscls.init_httpclient()
-            wscls.connect()
-            wscls.handle_resize()
-            wscls.start_loop()
-        except exceptions.ContainerWebSocketException as e:
-            print("%(e)s:%(container)s" %
-                  {'e': e, 'container': container})
-    else:
-        raise exceptions.InvalidWebSocketLink(container)
-
-
 def _list_containers(containers):
     for c in containers:
         _format_container_addresses(c)
@@ -487,7 +469,7 @@ def do_run(cs, args):
             time.sleep(1)
         if ready_for_attach is True:
             response = cs.containers.attach(container_uuid)
-            _websocket_attach(response, container_uuid, "~", 0.5)
+            websocketclient.do_attach(response, container_uuid, "~", 0.5)
         else:
             raise exceptions.InvalidWebSocketLink(container_uuid)
 
@@ -530,7 +512,7 @@ def do_update(cs, args):
 def do_attach(cs, args):
     """Attach to a container."""
     response = cs.containers.attach(args.container)
-    _websocket_attach(response, args.container, "~", 0.5)
+    websocketclient.do_attach(response, args.container, "~", 0.5)
 
 
 @utils.arg('container',
