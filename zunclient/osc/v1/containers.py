@@ -613,7 +613,8 @@ class RunContainer(command.ShowOne):
                 time.sleep(1)
             if ready_for_attach is True:
                 response = client.containers.attach(container_uuid)
-                websocketclient.do_attach(response, container_uuid, "~", 0.5)
+                websocketclient.do_attach(client, response, container_uuid,
+                                          "~", 0.5)
             else:
                 raise exceptions.InvalidWebSocketLink(container_uuid)
 
@@ -733,7 +734,8 @@ class AttachContainer(command.Command):
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         response = client.containers.attach(parsed_args.container)
-        websocketclient.do_attach(response, parsed_args.container, "~", 0.5)
+        websocketclient.do_attach(client, response, parsed_args.container,
+                                  "~", 0.5)
 
 
 class CopyContainer(command.Command):

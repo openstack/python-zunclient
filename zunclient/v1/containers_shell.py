@@ -461,7 +461,7 @@ def do_run(cs, args):
             time.sleep(1)
         if ready_for_attach is True:
             response = cs.containers.attach(container_uuid)
-            websocketclient.do_attach(response, container_uuid, "~", 0.5)
+            websocketclient.do_attach(cs, response, container_uuid, "~", 0.5)
         else:
             raise exceptions.InvalidWebSocketLink(container_uuid)
 
@@ -504,7 +504,7 @@ def do_update(cs, args):
 def do_attach(cs, args):
     """Attach to a running container."""
     response = cs.containers.attach(args.container)
-    websocketclient.do_attach(response, args.container, "~", 0.5)
+    websocketclient.do_attach(cs, response, args.container, "~", 0.5)
 
 
 @utils.arg('container',

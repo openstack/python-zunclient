@@ -30,7 +30,9 @@ WAIT_TIME = 0.5
 class WebSocketClientTest(testtools.TestCase):
 
     def test_websocketclient_variables(self):
-        wsclient = websocketclient.WebSocketClient(host_url=URL,
+        mock_client = mock.Mock()
+        wsclient = websocketclient.WebSocketClient(zunclient=mock_client,
+                                                   host_url=URL,
                                                    id=CONTAINER_ID,
                                                    escape=ESCAPE_FLAG,
                                                    close_wait=WAIT_TIME)
@@ -38,14 +40,3 @@ class WebSocketClientTest(testtools.TestCase):
         self.assertEqual(wsclient.id, CONTAINER_ID)
         self.assertEqual(wsclient.escape, ESCAPE_FLAG)
         self.assertEqual(wsclient.close_wait, WAIT_TIME)
-
-    @mock.patch('zunclient.v1.client.Client')
-    def test_init_httpclient(self, mock_client):
-        wsclient = websocketclient.WebSocketClient(host_url=URL,
-                                                   id=CONTAINER_ID,
-                                                   escape=ESCAPE_FLAG,
-                                                   close_wait=WAIT_TIME)
-        mock_client.return_value = 'Client Object'
-        wsclient.init_httpclient()
-        self.assertEqual(wsclient.cs, 'Client Object')
-        self.assertTrue(mock_client.called)
