@@ -706,7 +706,7 @@ class UpdateContainer(command.Command):
         parser.add_argument(
             'container',
             metavar='<container>',
-            help="ID or name of the container to udate.")
+            help="ID or name of the container to update.")
         parser.add_argument(
             '--cpu',
             metavar='<cpu>',
