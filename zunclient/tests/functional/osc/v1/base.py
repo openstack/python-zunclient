@@ -48,8 +48,8 @@ class TestCase(base.FunctionalTestBase):
 
         opts = self.get_opts()
         output = self.openstack('appcontainer create {0}'
-                                ' {1} --name {2} {3}'
-                                .format(opts, image, name, params))
+                                ' --name {1} {2} {3}'
+                                .format(opts, name, image, params))
         container = json.loads(output)
 
         if not output:
