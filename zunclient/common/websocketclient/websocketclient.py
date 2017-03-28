@@ -328,3 +328,19 @@ class WINCHHandler(object):
 
         if self.original_handler is not None:
             signal.signal(signal.SIGWINCH, self.original_handler)
+
+
+def do_attach(url, container, escape, close_wait):
+    if url.startswith("ws://"):
+        try:
+            wscls = WebSocketClient(host_url=url, id=container,
+                                    escape=escape, close_wait=close_wait)
+            wscls.init_httpclient()
+            wscls.connect()
+            wscls.handle_resize()
+            wscls.start_loop()
+        except exceptions.ContainerWebSocketException as e:
+            print("%(e)s:%(container)s" %
+                  {'e': e, 'container': container})
+    else:
+        raise exceptions.InvalidWebSocketLink(container)

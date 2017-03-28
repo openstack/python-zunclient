@@ -38,24 +38,6 @@ def _get_client(obj, parsed_args):
     return obj.app.client_manager.container
 
 
-def _websocket_attach(url, container, escape, close_wait):
-    if url.startswith("ws://"):
-        try:
-            wscls = websocketclient.WebSocketClient(host_url=url,
-                                                    id=container,
-                                                    escape=escape,
-                                                    close_wait=close_wait)
-            wscls.init_httpclient()
-            wscls.connect()
-            wscls.handle_resize()
-            wscls.start_loop()
-        except exceptions.ContainerWebSocketException as e:
-            print("%(e)s:%(container)s" %
-                  {'e': e, 'container': container})
-    else:
-        raise exceptions.InvalidWebSocketLink(container)
-
-
 class CreateContainer(command.ShowOne):
     """Create a container"""
 
@@ -631,7 +613,7 @@ class RunContainer(command.ShowOne):
                 time.sleep(1)
             if ready_for_attach is True:
                 response = client.containers.attach(container_uuid)
-                _websocket_attach(response, container_uuid, "~", 0.5)
+                websocketclient.do_attach(response, container_uuid, "~", 0.5)
             else:
                 raise exceptions.InvalidWebSocketLink(container_uuid)
 
@@ -751,7 +733,7 @@ class AttachContainer(command.Command):
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         response = client.containers.attach(parsed_args.container)
-        _websocket_attach(response, parsed_args.container, "~", 0.5)
+        websocketclient.do_attach(response, parsed_args.container, "~", 0.5)
 
 
 class CopyContainer(command.Command):
