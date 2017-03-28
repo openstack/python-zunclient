@@ -175,6 +175,11 @@ class ListContainer(command.Lister):
     def get_parser(self, prog_name):
         parser = super(ListContainer, self).get_parser(prog_name)
         parser.add_argument(
+            '--all-tenants',
+            action="store_true",
+            default=False,
+            help='List containers in all tenants')
+        parser.add_argument(
             '--marker',
             metavar='<marker>',
             help='The last container UUID of the previous page; '
@@ -198,6 +203,7 @@ class ListContainer(command.Lister):
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         opts = {}
+        opts['all_tenants'] = parsed_args.all_tenants
         opts['marker'] = parsed_args.marker
         opts['limit'] = parsed_args.limit
         opts['sort_key'] = parsed_args.sort_key
