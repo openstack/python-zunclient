@@ -604,10 +604,10 @@ class RunContainer(command.ShowOne):
             ready_for_attach = False
             while True:
                 container = client.containers.get(container_uuid)
-                if utils.check_container_status(container, 'Running'):
+                if zun_utils.check_container_status(container, 'Running'):
                     ready_for_attach = True
                     break
-                if utils.check_container_status(container, 'Error'):
+                if zun_utils.check_container_status(container, 'Error'):
                     break
                 print("Waiting for container start")
                 time.sleep(1)
