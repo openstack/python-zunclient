@@ -60,9 +60,6 @@ def _list_containers(containers):
 @utils.arg('-n', '--name',
            metavar='<name>',
            help='name of the container')
-@utils.arg('-c', '--command',
-           metavar='<command>',
-           help='Send command to the container')
 @utils.arg('--cpu',
            metavar='<cpu>',
            help='The number of virtual cpus.')
@@ -113,12 +110,15 @@ def _list_containers(containers):
                 'It can have following values: '
                 '"docker": pull the image from Docker Hub. '
                 '"glance": pull the image from Glance. ')
+@utils.arg('command',
+           metavar='<command>',
+           nargs=argparse.REMAINDER,
+           help='Send command to the container')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
     opts['name'] = args.name
     opts['image'] = args.image
-    opts['command'] = args.command
     opts['memory'] = args.memory
     opts['cpu'] = args.cpu
     opts['environment'] = zun_utils.format_args(args.environment)
@@ -126,6 +126,8 @@ def do_create(cs, args):
     opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
     opts['image_driver'] = args.image_driver
+    if args.command:
+        opts['command'] = ' '.join(args.command)
     if args.restart:
         opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
     if args.tty:
@@ -380,9 +382,6 @@ def do_kill(cs, args):
 @utils.arg('-n', '--name',
            metavar='<name>',
            help='name of the container')
-@utils.arg('-c', '--command',
-           metavar='<command>',
-           help='Send command to the container')
 @utils.arg('--cpu',
            metavar='<cpu>',
            help='The number of virtual cpus.')
@@ -433,12 +432,15 @@ def do_kill(cs, args):
                 'It can have following values: '
                 '"docker": pull the image from Docker Hub. '
                 '"glance": pull the image from Glance. ')
+@utils.arg('command',
+           metavar='<command>',
+           nargs=argparse.REMAINDER,
+           help='Send command to the container')
 def do_run(cs, args):
     """Run a command in a new container"""
     opts = {}
     opts['name'] = args.name
     opts['image'] = args.image
-    opts['command'] = args.command
     opts['memory'] = args.memory
     opts['cpu'] = args.cpu
     opts['environment'] = zun_utils.format_args(args.environment)
@@ -446,6 +448,8 @@ def do_run(cs, args):
     opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
     opts['image_driver'] = args.image_driver
+    if args.command:
+        opts['command'] = ' '.join(args.command)
     if args.restart:
         opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
     if args.tty:

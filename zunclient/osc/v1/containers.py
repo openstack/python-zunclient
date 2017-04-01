@@ -54,10 +54,6 @@ class CreateContainer(command.ShowOne):
             metavar='<image>',
             help='name or ID of the image')
         parser.add_argument(
-            '--command',
-            metavar='<command>',
-            help='Send command to the container')
-        parser.add_argument(
             '--cpu',
             metavar='<cpu>',
             help='The number of virtual cpus.')
@@ -116,6 +112,11 @@ class CreateContainer(command.ShowOne):
             action='store_true',
             default=False,
             help='Keep STDIN open even if not attached')
+        parser.add_argument(
+            'command',
+            metavar='<command>',
+            nargs=argparse.REMAINDER,
+            help='Send command to the container')
         return parser
 
     def take_action(self, parsed_args):
@@ -123,7 +124,6 @@ class CreateContainer(command.ShowOne):
         opts = {}
         opts['name'] = parsed_args.name
         opts['image'] = parsed_args.image
-        opts['command'] = parsed_args.command
         opts['memory'] = parsed_args.memory
         opts['cpu'] = parsed_args.cpu
         opts['environment'] = zun_utils.format_args(parsed_args.environment)
@@ -131,6 +131,8 @@ class CreateContainer(command.ShowOne):
         opts['labels'] = zun_utils.format_args(parsed_args.label)
         opts['image_pull_policy'] = parsed_args.image_pull_policy
         opts['image_driver'] = parsed_args.image_driver
+        if parsed_args.command:
+            opts['command'] = ' '.join(parsed_args.command)
         if parsed_args.restart:
             opts['restart_policy'] = \
                 zun_utils.check_restart_policy(parsed_args.restart)
@@ -579,6 +581,11 @@ class RunContainer(command.ShowOne):
             action='store_true',
             default=False,
             help='Keep STDIN open even if not attached')
+        parser.add_argument(
+            'command',
+            metavar='<command>',
+            nargs=argparse.REMAINDER,
+            help='Send command to the container')
         return parser
 
     def take_action(self, parsed_args):
@@ -586,7 +593,6 @@ class RunContainer(command.ShowOne):
         opts = {}
         opts['name'] = parsed_args.name
         opts['image'] = parsed_args.image
-        opts['command'] = parsed_args.command
         opts['memory'] = parsed_args.memory
         opts['cpu'] = parsed_args.cpu
         opts['environment'] = zun_utils.format_args(parsed_args.environment)
@@ -594,6 +600,8 @@ class RunContainer(command.ShowOne):
         opts['labels'] = zun_utils.format_args(parsed_args.label)
         opts['image_pull_policy'] = parsed_args.image_pull_policy
         opts['image_driver'] = parsed_args.image_driver
+        if parsed_args.command:
+            opts['command'] = ' '.join(parsed_args.command)
         if parsed_args.restart:
             opts['restart_policy'] = \
                 zun_utils.check_restart_policy(parsed_args.restart)
