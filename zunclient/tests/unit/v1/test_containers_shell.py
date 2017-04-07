@@ -12,6 +12,7 @@
 
 import mock
 
+from zunclient.common import utils as zun_utils
 from zunclient.tests.unit.v1 import shell_test_base
 from zunclient.v1 import containers_shell
 
@@ -26,7 +27,7 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
         self._test_arg_success('create x')
         mock_show_container.assert_called_once_with('container')
 
-    @mock.patch('zunclient.v1.containers_shell._list_containers')
+    @mock.patch('zunclient.common.utils.list_containers')
     @mock.patch('zunclient.v1.containers.ContainerManager.list')
     def test_zun_container_list_success(self, mock_list, mock_list_containers):
         mock_list.return_value = ['container']
@@ -59,7 +60,7 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
         fake_container = mock.MagicMock()
         fake_container._info = {}
         fake_container.addresses = {'private': [{'addr': '10.0.0.1'}]}
-        containers_shell._list_containers([fake_container])
+        zun_utils.list_containers([fake_container])
         self.assertTrue(mock_print_list.called)
         self.assertEqual(fake_container.addresses, '10.0.0.1')
 

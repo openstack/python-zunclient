@@ -29,32 +29,8 @@ from zunclient import exceptions as exc
 
 
 def _show_container(container):
-    _format_container_addresses(container)
+    zun_utils.format_container_addresses(container)
     utils.print_dict(container._info)
-
-
-def _format_container_addresses(container):
-    addresses = getattr(container, 'addresses', {})
-    output = []
-    try:
-        for _, address_list in addresses.items():
-            for a in address_list:
-                output.append(a['addr'])
-    except Exception:
-        pass
-
-    setattr(container, 'addresses', ', '.join(output))
-    container._info['addresses'] = ', '.join(output)
-
-
-def _list_containers(containers):
-    for c in containers:
-        _format_container_addresses(c)
-    columns = ('uuid', 'name', 'image', 'status', 'task_state', 'addresses',
-               'ports')
-    utils.print_list(containers, columns,
-                     {'versions': zun_utils.print_list_field('versions')},
-                     sortby_index=None)
 
 
 @utils.arg('-n', '--name',
@@ -162,7 +138,7 @@ def do_list(cs, args):
     opts['sort_dir'] = args.sort_dir
     opts = zun_utils.remove_null_parms(**opts)
     containers = cs.containers.list(**opts)
-    _list_containers(containers)
+    zun_utils.list_containers(containers)
 
 
 @utils.arg('containers',

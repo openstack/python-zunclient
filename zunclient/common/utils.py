@@ -16,6 +16,7 @@
 
 import json
 
+from zunclient.common import cliutils as utils
 from zunclient import exceptions as exc
 from zunclient.i18n import _
 
@@ -131,3 +132,27 @@ def check_container_status(container, status):
         return True
     else:
         return False
+
+
+def format_container_addresses(container):
+    addresses = getattr(container, 'addresses', {})
+    output = []
+    try:
+        for address_name, address_list in addresses.items():
+            for a in address_list:
+                output.append(a['addr'])
+    except Exception:
+        pass
+
+    setattr(container, 'addresses', ', '.join(output))
+    container._info['addresses'] = ', '.join(output)
+
+
+def list_containers(containers):
+    for c in containers:
+        format_container_addresses(c)
+    columns = ('uuid', 'name', 'image', 'status', 'task_state', 'addresses',
+               'ports')
+    utils.print_list(containers, columns,
+                     {'versions': print_list_field('versions')},
+                     sortby_index=None)
