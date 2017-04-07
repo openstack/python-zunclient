@@ -69,7 +69,7 @@ class ContainerTests(base.TestCase):
         count = 0
         while count < 5:
             self.container_show(container['name'])
-            if container['status'] == 'Running':
+            if container['status'] == 'Created':
                 break
             if container['status'] == 'Error':
                 break
