@@ -211,7 +211,7 @@ class ListContainer(command.Lister):
 
 
 class DeleteContainer(command.Command):
-    """Delete a container"""
+    """Delete specified container(s)"""
 
     log = logging.getLogger(__name__ + ".Deletecontainer")
 
@@ -221,7 +221,7 @@ class DeleteContainer(command.Command):
             'container',
             metavar='<container>',
             nargs='+',
-            help='ID or name of the (container)s to delete.')
+            help='ID or name of the container(s) to delete.')
         parser.add_argument(
             '--force',
             action='store_true',
