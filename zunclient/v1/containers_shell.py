@@ -339,7 +339,7 @@ def do_logs(cs, args):
            nargs=argparse.REMAINDER,
            help='The command to execute in a container')
 def do_exec(cs, args):
-    """Execute command in a container."""
+    """Execute command in a running container."""
     response = cs.containers.execute(args.container, ' '.join(args.command))
     output = response['output']
     exit_code = response['exit_code']
@@ -356,7 +356,7 @@ def do_exec(cs, args):
            default=None,
            help='The signal to kill')
 def do_kill(cs, args):
-    """kill signal to containers."""
+    """Kill one or more running container(s)."""
     for container in args.containers:
         opts = {}
         opts['id'] = container
@@ -426,7 +426,7 @@ def do_kill(cs, args):
            nargs=argparse.REMAINDER,
            help='Send command to the container')
 def do_run(cs, args):
-    """Run a command in a new container"""
+    """Run a command in a new container."""
     opts = {}
     opts['name'] = args.name
     opts['image'] = args.image
@@ -487,7 +487,7 @@ def do_rename(cs, args):
            metavar='<memory>',
            help='The container memory size in MiB')
 def do_update(cs, args):
-    """Updates one or more container attributes"""
+    """Update one or more attributes of the container."""
     opts = {}
     opts['memory'] = args.memory
     opts['cpu'] = args.cpu
@@ -502,7 +502,7 @@ def do_update(cs, args):
            metavar='<container>',
            help='ID or name of the container to be attahed to.')
 def do_attach(cs, args):
-    """Attach to a container."""
+    """Attach to a running container."""
     response = cs.containers.attach(args.container)
     websocketclient.do_attach(response, args.container, "~", 0.5)
 
@@ -515,7 +515,7 @@ def do_attach(cs, args):
            nargs=argparse.REMAINDER,
            help='The args of the ps command.')
 def do_top(cs, args):
-    """Displays the running processes inside the container."""
+    """Display the running processes inside the container."""
     output = cs.containers.top(args.container, ' '.join(args.ps_args))
     for titles in output['Titles']:
         print("%-20s") % titles,

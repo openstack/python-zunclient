@@ -352,7 +352,7 @@ class UnpauseContainer(command.Command):
 
 
 class ExecContainer(command.Command):
-    """Execute specified container"""
+    """Execute command in a running container"""
     log = logging.getLogger(__name__ + ".ExecContainer")
 
     def get_parser(self, prog_name):
@@ -431,8 +431,7 @@ class LogsContainer(command.Command):
 
 
 class KillContainer(command.Command):
-    """Kill specified containers"""
-
+    """Kill one or more running container(s)"""
     log = logging.getLogger(__name__ + ".KillContainers")
 
     def get_parser(self, prog_name):
@@ -498,7 +497,7 @@ class StopContainer(command.Command):
 
 
 class RunContainer(command.ShowOne):
-    """Creates and run a new container"""
+    """Create and run a new container"""
 
     log = logging.getLogger(__name__ + ".RunContainer")
 
@@ -622,7 +621,7 @@ class RunContainer(command.ShowOne):
 
 
 class RenameContainer(command.Command):
-    """rename specified container"""
+    """Rename specified container"""
     log = logging.getLogger(__name__ + ".RenameContainer")
 
     def get_parser(self, prog_name):
@@ -651,7 +650,7 @@ class RenameContainer(command.Command):
 
 
 class TopContainer(command.Command):
-    """display the running processes inside the container"""
+    """Display the running processes inside the container"""
     log = logging.getLogger(__name__ + ".TopContainer")
 
     def get_parser(self, prog_name):
@@ -681,7 +680,7 @@ class TopContainer(command.Command):
 
 
 class UpdateContainer(command.Command):
-    """Updates one or more container attributes"""
+    """Update one or more attributes of the container"""
     log = logging.getLogger(__name__ + ".UpdateContainer")
 
     def get_parser(self, prog_name):
@@ -719,7 +718,7 @@ class UpdateContainer(command.Command):
 
 
 class AttachContainer(command.Command):
-    """Attach to a specified containers"""
+    """Attach to a running container"""
 
     log = logging.getLogger(__name__ + ".AttachContainer")
 
