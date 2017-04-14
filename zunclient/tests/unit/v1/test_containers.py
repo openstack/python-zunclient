@@ -415,8 +415,8 @@ class ContainerManagerTest(testtools.TestCase):
         self.assertEqual(expect, self.api.calls)
         self.assertTrue(containers)
 
-    def test_containers_reboot(self):
-        containers = self.mgr.reboot(CONTAINER1['id'], timeout)
+    def test_containers_restart(self):
+        containers = self.mgr.restart(CONTAINER1['id'], timeout)
         expect = [
             ('POST', '/v1/containers/%s/reboot?timeout=10' % CONTAINER1['id'],
              {'Content-Length': '0'}, None)
