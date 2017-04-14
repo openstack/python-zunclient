@@ -205,7 +205,10 @@ class ListContainer(command.Lister):
         opts['sort_dir'] = parsed_args.sort_dir
         opts = zun_utils.remove_null_parms(**opts)
         containers = client.containers.list(**opts)
-        columns = ['uuid', 'name', 'status', 'image', 'command']
+        for c in containers:
+            zun_utils.format_container_addresses(c)
+        columns = ('uuid', 'name', 'image', 'status', 'task_state',
+                   'addresses', 'ports')
         return (columns, (utils.get_item_properties(container, columns)
                           for container in containers))
 
