@@ -90,9 +90,10 @@ class ContainerManager(base.Manager):
                                          "containers",
                                          limit=limit)
 
-    def get(self, id):
+    def get(self, id, **kwargs):
         try:
-            return self._list(self._path(id))[0]
+            return self._list(self._path(id),
+                              qparams=kwargs)[0]
         except IndexError:
             return None
 
@@ -106,9 +107,9 @@ class ContainerManager(base.Manager):
                     "Key must be in %s" % ','.join(CREATION_ATTRIBUTES))
         return self._create(self._path(), new)
 
-    def delete(self, id, force):
+    def delete(self, id, **kwargs):
         return self._delete(self._path(id),
-                            qparams={'force': force})
+                            qparams=kwargs)
 
     def _action(self, id, action, method='POST', qparams=None, **kwargs):
         if qparams:

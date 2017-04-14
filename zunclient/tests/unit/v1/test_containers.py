@@ -56,6 +56,7 @@ del CREATE_CONTAINER1['uuid']
 
 force_delete1 = False
 force_delete2 = True
+all_tenants = True
 signal = "SIGTERM"
 name = "new-name"
 timeout = 10
@@ -149,6 +150,13 @@ fake_responses = {
         ),
     },
     '/v1/containers/%s?force=%s' % (CONTAINER1['id'], force_delete2):
+    {
+        'DELETE': (
+            {},
+            None,
+        ),
+    },
+    '/v1/containers/%s?all_tenants=%s' % (CONTAINER1['id'], all_tenants):
     {
         'DELETE': (
             {},
@@ -411,7 +419,7 @@ class ContainerManagerTest(testtools.TestCase):
         self.assertTrue(containers)
 
     def test_containers_delete(self):
-        containers = self.mgr.delete(CONTAINER1['id'], force_delete1)
+        containers = self.mgr.delete(CONTAINER1['id'], force=force_delete1)
         expect = [
             ('DELETE', '/v1/containers/%s?force=%s' % (CONTAINER1['id'],
                                                        force_delete1),
@@ -421,10 +429,20 @@ class ContainerManagerTest(testtools.TestCase):
         self.assertIsNone(containers)
 
     def test_containers_delete_with_force(self):
-        containers = self.mgr.delete(CONTAINER1['id'], force_delete2)
+        containers = self.mgr.delete(CONTAINER1['id'], force=force_delete2)
         expect = [
             ('DELETE', '/v1/containers/%s?force=%s' % (CONTAINER1['id'],
                                                        force_delete2),
+             {}, None)
+        ]
+        self.assertEqual(expect, self.api.calls)
+        self.assertIsNone(containers)
+
+    def test_containers_delete_with_all_tenants(self):
+        containers = self.mgr.delete(CONTAINER1['id'], all_tenants=all_tenants)
+        expect = [
+            ('DELETE', '/v1/containers/%s?all_tenants=%s' % (CONTAINER1['id'],
+                                                             all_tenants),
              {}, None)
         ]
         self.assertEqual(expect, self.api.calls)
