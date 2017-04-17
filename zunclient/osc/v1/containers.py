@@ -245,22 +245,22 @@ class DeleteContainer(command.Command):
                       {'container': container, 'e': e})
 
 
-class RebootContainer(command.Command):
-    """Reboot specified container"""
-    log = logging.getLogger(__name__ + ".RebootContainer")
+class RestartContainer(command.Command):
+    """Restart specified container"""
+    log = logging.getLogger(__name__ + ".RestartContainer")
 
     def get_parser(self, prog_name):
-        parser = super(RebootContainer, self).get_parser(prog_name)
+        parser = super(RestartContainer, self).get_parser(prog_name)
         parser.add_argument(
             'container',
             metavar='<container>',
             nargs='+',
-            help='ID or name of the (container)s to reboot.')
+            help='ID or name of the (container)s to restart.')
         parser.add_argument(
             '--timeout',
             metavar='<timeout>',
             default=10,
-            help='Seconds to wait for stop before rebooting (container)s')
+            help='Seconds to wait for stop before restarting (container)s')
         return parser
 
     def take_action(self, parsed_args):
@@ -268,11 +268,11 @@ class RebootContainer(command.Command):
         containers = parsed_args.container
         for container in containers:
             try:
-                client.containers.reboot(container, parsed_args.timeout)
-                print(_('Request to reboot container %s has been accepted')
+                client.containers.restart(container, parsed_args.timeout)
+                print(_('Request to restart container %s has been accepted')
                       % container)
             except Exception as e:
-                print("Reboot for container %(container)s failed: %(e)s" %
+                print("Restart for container %(container)s failed: %(e)s" %
                       {'container': container, 'e': e})
 
 

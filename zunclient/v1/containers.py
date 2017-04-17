@@ -127,7 +127,7 @@ class ContainerManager(base.Manager):
         return self._action(id, '/stop',
                             qparams={'timeout': timeout})
 
-    def reboot(self, id, timeout):
+    def restart(self, id, timeout):
         return self._action(id, '/reboot',
                             qparams={'timeout': timeout})
 
