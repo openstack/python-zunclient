@@ -102,7 +102,7 @@ class CreateContainer(command.ShowOne):
                  '"glance": pull the image from Glance. ')
         parser.add_argument(
             '--interactive',
-            dest='stdin_open',
+            dest='interactive',
             action='store_true',
             default=False,
             help='Keep STDIN open even if not attached, allocate a pseudo-TTY')
@@ -130,9 +130,8 @@ class CreateContainer(command.ShowOne):
         if parsed_args.restart:
             opts['restart_policy'] = \
                 zun_utils.check_restart_policy(parsed_args.restart)
-        if parsed_args.stdin_open:
-            opts['stdin_open'] = True
-            opts['tty'] = True
+        if parsed_args.interactive:
+            opts['interactive'] = True
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.create(**opts)
@@ -567,7 +566,7 @@ class RunContainer(command.ShowOne):
                  '"glance": pull the image from Glance. ')
         parser.add_argument(
             '--interactive',
-            dest='stdin_open',
+            dest='interactive',
             action='store_true',
             default=False,
             help='Keep STDIN open even if not attached, allocate a pseudo-TTY')
@@ -595,15 +594,14 @@ class RunContainer(command.ShowOne):
         if parsed_args.restart:
             opts['restart_policy'] = \
                 zun_utils.check_restart_policy(parsed_args.restart)
-        if parsed_args.stdin_open:
-            opts['stdin_open'] = True
-            opts['tty'] = True
+        if parsed_args.interactive:
+            opts['interactive'] = True
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.run(**opts)
         columns = _container_columns(container)
         container_uuid = getattr(container, 'uuid', None)
-        if parsed_args.tty and parsed_args.stdin_open:
+        if parsed_args.interactive:
             ready_for_attach = False
             while True:
                 container = client.containers.get(container_uuid)
