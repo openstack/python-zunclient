@@ -32,7 +32,6 @@ import tty
 import websocket
 
 from zunclient.common.websocketclient import exceptions
-from zunclient.v1 import client
 
 LOG = logging.getLogger(__name__)
 
@@ -43,54 +42,13 @@ DEFAULT_SERVICE_TYPE = 'container'
 
 class WebSocketClient(object):
 
-    def __init__(self, host_url, id, escape='~',
+    def __init__(self, zunclient, host_url, id, escape='~',
                  close_wait=0.5):
         self.id = id
         self.escape = escape
         self.close_wait = close_wait
         self.host_url = host_url
-        self.cs = None
-
-    def init_httpclient(self):
-        """Initialize the httpclient
-
-        Websocket client need to call httpclient to send the resize
-        command to Zun API server
-        """
-        os_username = os.environ.get('OS_USERNAME')
-        os_password = os.environ.get('OS_PASSWORD')
-        os_project_name = os.environ.get('OS_PROJECT_NAME')
-        os_project_id = os.environ.get('OS_PROJECT_ID')
-        os_user_domain_id = os.environ.get('OS_USER_DOMAIN_ID')
-        os_user_domain_name = os.environ.get('OS_USER_DOMAIN_NAME')
-        os_project_domain_id = os.environ.get('OS_PROJECT_DOMAIN_ID')
-        os_project_domain_name = os.environ.get('OS_PROJECT_DOMAIN_NAME')
-        os_auth_url = os.environ.get('OS_AUTH_URL')
-        endpoint_type = os.environ.get('ENDPOINT_TYPE')
-        service_type = os.environ.get('SERVICE_TYPE')
-        os_region_name = os.environ.get('OS_REGION_NAME')
-        bypass_url = os.environ.get('BYPASS_URL')
-        insecure = os.environ.get('INSECURE')
-        if not endpoint_type:
-            endpoint_type = DEFAULT_ENDPOINT_TYPE
-
-        if not service_type:
-            service_type = DEFAULT_SERVICE_TYPE
-
-        self.cs = client.Client(username=os_username,
-                                api_key=os_password,
-                                project_id=os_project_id,
-                                project_name=os_project_name,
-                                user_domain_id=os_user_domain_id,
-                                user_domain_name=os_user_domain_name,
-                                project_domain_id=os_project_domain_id,
-                                project_domain_name=os_project_domain_name,
-                                auth_url=os_auth_url,
-                                service_type=service_type,
-                                region_name=os_region_name,
-                                zun_url=bypass_url,
-                                endpoint_type=endpoint_type,
-                                insecure=insecure)
+        self.cs = zunclient
 
     def connect(self):
         url = self.host_url
@@ -330,12 +288,12 @@ class WINCHHandler(object):
             signal.signal(signal.SIGWINCH, self.original_handler)
 
 
-def do_attach(url, container, escape, close_wait):
+def do_attach(zunclient, url, container, escape, close_wait):
     if url.startswith("ws://"):
         try:
-            wscls = WebSocketClient(host_url=url, id=container,
-                                    escape=escape, close_wait=close_wait)
-            wscls.init_httpclient()
+            wscls = WebSocketClient(zunclient=zunclient, host_url=url,
+                                    id=container, escape=escape,
+                                    close_wait=close_wait)
             wscls.connect()
             wscls.handle_resize()
             wscls.start_loop()
