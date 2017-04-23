@@ -75,7 +75,8 @@ class FunctionalTestBase(base.ClientTestBase):
         keystone_v3_conf_settings = []
         if auth_strategy == 'keystone':
             conf_settings += ['os_auth_url', 'os_username',
-                              'os_password', 'os_project_name']
+                              'os_password', 'os_project_name',
+                              'os_identity_api_version']
             keystone_v3_conf_settings += ['os_user_domain_id',
                                           'os_project_domain_id']
         else:
@@ -147,8 +148,7 @@ class FunctionalTestBase(base.ClientTestBase):
     def _zun_osc(self, action, flags='', params=''):
         """Execute container commands via OpenStack Client."""
         config = self._get_config()
-        identity_api_version = config.get('functional',
-                                          'os_identity_api_version')
+        identity_api_version = config.get('os_identity_api_version')
         flags += ' --os-identity-api-version {0}'.format(identity_api_version)
 
         for keystone_object in 'user', 'project':
