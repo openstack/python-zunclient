@@ -71,7 +71,7 @@ def _show_container(container):
            help='Restart policy to apply when a container exits'
                 '(no, on-failure[:max-retry], always, unless-stopped)')
 @utils.arg('-i', '--interactive',
-           dest='stdin_open',
+           dest='interactive',
            action='store_true',
            default=False,
            help='Keep STDIN open even if not attached, allocate a pseudo-TTY')
@@ -101,9 +101,8 @@ def do_create(cs, args):
         opts['command'] = ' '.join(args.command)
     if args.restart:
         opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
-    if args.stdin_open:
-        opts['stdin_open'] = True
-        opts['tty'] = True
+    if args.interactive:
+        opts['interactive'] = True
     opts = zun_utils.remove_null_parms(**opts)
     _show_container(cs.containers.create(**opts))
 
@@ -387,7 +386,7 @@ def do_kill(cs, args):
            help='Restart policy to apply when a container exits'
                 '(no, on-failure[:max-retry], always, unless-stopped)')
 @utils.arg('-i', '--interactive',
-           dest='stdin_open',
+           dest='interactive',
            action='store_true',
            default=False,
            help='Keep STDIN open even if not attached, allocate a pseudo-TTY')
@@ -417,14 +416,13 @@ def do_run(cs, args):
         opts['command'] = ' '.join(args.command)
     if args.restart:
         opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
-    if args.stdin_open:
-        opts['stdin_open'] = True
-        opts['tty'] = True
+    if args.interactive:
+        opts['interactive'] = True
     opts = zun_utils.remove_null_parms(**opts)
     container = cs.containers.run(**opts)
     _show_container(container)
     container_uuid = getattr(container, 'uuid', None)
-    if args.stdin_open:
+    if args.interactive:
         ready_for_attach = False
         while True:
             container = cs.containers.get(container_uuid)
