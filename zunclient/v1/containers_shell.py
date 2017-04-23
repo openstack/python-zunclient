@@ -430,7 +430,7 @@ def do_run(cs, args):
                 ready_for_attach = True
                 break
             if zun_utils.check_container_status(container, 'Error'):
-                break
+                raise exceptions.ContainerStateError(container_uuid)
             print("Waiting for container start")
             time.sleep(1)
         if ready_for_attach is True:
