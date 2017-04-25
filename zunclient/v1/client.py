@@ -35,7 +35,7 @@ class Client(object):
                  interface='public', service_name=None, insecure=False,
                  user_domain_id=None, user_domain_name=None,
                  project_domain_id=None, project_domain_name=None,
-                 **kwargs):
+                 api_version=None, **kwargs):
 
         # We have to keep the api_key are for backwards compat, but let's
         # remove it from the rest of our code since it's not a keystone
@@ -111,6 +111,7 @@ class Client(object):
             interface=interface,
             region_name=region_name,
             session=session,
+            api_version=api_version,
             **client_kwargs)
         self.containers = containers.ContainerManager(self.http_client)
         self.images = images.ImageManager(self.http_client)
