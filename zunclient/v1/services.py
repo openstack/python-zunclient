@@ -69,3 +69,9 @@ class ServiceManager(base.Manager):
         else:
             return self._list_pagination(self._path(path), "services",
                                          limit=limit)
+
+    def delete(self, host, binary):
+        """Delete a service."""
+        return self._delete(self._path(),
+                            qparams={'host': host,
+                                     'binary': binary})
