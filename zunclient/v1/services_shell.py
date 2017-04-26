@@ -41,3 +41,23 @@ def do_service_delete(cs, args):
     except Exception as e:
         print("Delete for binary %(binary)s on host %(host)s failed: %(e)s" %
               {'binary': args.binary, 'host': args.host, 'e': e})
+
+
+@utils.arg('host', metavar='<hostname>', help='Name of host.')
+@utils.arg('binary', metavar='<binary>', help='Service binary.')
+def do_service_enable(cs, args):
+    """Enable the Zun service."""
+    res = cs.services.enable(args.host, args.binary)
+    utils.print_dict(res[1]['service'])
+
+
+@utils.arg('host', metavar='<hostname>', help='Name of host.')
+@utils.arg('binary', metavar='<binary>', help='Service binary.')
+@utils.arg(
+    '--reason',
+    metavar='<reason>',
+    help='Reason for disabling service.')
+def do_service_disable(cs, args):
+    """Disable the Zun service."""
+    res = cs.services.disable(args.host, args.binary, args.reason)
+    utils.print_dict(res[1]['service'])

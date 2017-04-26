@@ -10,6 +10,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from six.moves.urllib import parse
+
 from zunclient.common import base
 from zunclient.common import utils
 
@@ -75,3 +77,31 @@ class ServiceManager(base.Manager):
         return self._delete(self._path(),
                             qparams={'host': host,
                                      'binary': binary})
+
+    def _action(self, action, method='PUT', qparams=None, **kwargs):
+        if qparams:
+            action = "%s?%s" % (action,
+                                parse.urlencode(qparams))
+        kwargs.setdefault('headers', {})
+        kwargs['headers'].setdefault('Content-Length', '0')
+        resp, body = self.api.json_request(method,
+                                           self._path() + action,
+                                           **kwargs)
+        return resp, body
+
+    def _update_body(self, host, binary, disabled_reason=None):
+        body = {"host": host,
+                "binary": binary}
+        if disabled_reason is not None:
+            body["disabled_reason"] = disabled_reason
+        return body
+
+    def enable(self, host, binary):
+        """Enable the service specified by hostname and binary."""
+        body = self._update_body(host, binary)
+        return self._action("/enable", qparams=body)
+
+    def disable(self, host, binary, reason=None):
+        """Disable the service specified by hostname and binary."""
+        body = self._update_body(host, binary, reason)
+        return self._action("/disable", qparams=body)
