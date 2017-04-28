@@ -31,7 +31,8 @@ class ClientTest(testtools.TestCase):
             region_name=None,
             service_name=None,
             service_type='container',
-            session=session)
+            session=session,
+            api_version=None)
 
     @mock.patch('zunclient.common.httpclient.SessionClient')
     @mock.patch('keystoneauth1.token_endpoint.Token')
@@ -51,7 +52,8 @@ class ClientTest(testtools.TestCase):
             region_name=None,
             service_name=None,
             service_type='container',
-            session=session)
+            session=session,
+            api_version=None)
 
     @mock.patch('zunclient.common.httpclient.SessionClient')
     @mock.patch('keystoneauth1.loading.get_plugin_loader')
@@ -76,7 +78,8 @@ class ClientTest(testtools.TestCase):
             region_name=None,
             service_name=None,
             service_type='container',
-            session=mock.ANY)
+            session=mock.ANY,
+            api_version=None)
 
     @mock.patch('zunclient.common.httpclient.SessionClient')
     @mock.patch('keystoneauth1.loading.get_plugin_loader')
@@ -102,7 +105,8 @@ class ClientTest(testtools.TestCase):
             region_name=None,
             service_name=None,
             service_type='container',
-            session=mock.ANY)
+            session=mock.ANY,
+            api_version=None)
 
     @mock.patch('zunclient.common.httpclient.SessionClient')
     @mock.patch('keystoneauth1.loading.get_plugin_loader')
@@ -142,7 +146,8 @@ class ClientTest(testtools.TestCase):
             service_name=None,
             service_type='container',
             session=session,
-            endpoint_override='zunurl')
+            endpoint_override='zunurl',
+            api_version=None)
 
     @mock.patch('zunclient.common.httpclient.SessionClient')
     @mock.patch('keystoneauth1.session.Session')
@@ -158,4 +163,5 @@ class ClientTest(testtools.TestCase):
             service_name=None,
             service_type='container',
             session=session,
-            endpoint_override='zunurl')
+            endpoint_override='zunurl',
+            api_version=None)

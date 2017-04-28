@@ -55,11 +55,12 @@ except ImportError:
 from zunclient.common.apiclient import auth
 from zunclient.common import cliutils
 from zunclient import exceptions as exc
+from zunclient.i18n import _
 from zunclient.v1 import client as client_v1
 from zunclient.v1 import shell as shell_v1
 from zunclient import version
 
-DEFAULT_API_VERSION = '1'
+LATEST_API_VERSION = ('1', 'latest')
 DEFAULT_ENDPOINT_TYPE = 'publicURL'
 DEFAULT_SERVICE_TYPE = 'container'
 
@@ -331,7 +332,7 @@ class OpenStackZunShell(object):
                             metavar='<zun-api-ver>',
                             default=cliutils.env(
                                 'ZUN_API_VERSION',
-                                default=DEFAULT_API_VERSION),
+                                default='latest'),
                             help='Accepts "api", '
                                  'defaults to env[ZUN_API_VERSION].')
         parser.add_argument('--zun_api_version',
@@ -386,7 +387,7 @@ class OpenStackZunShell(object):
 
         try:
             actions_modules = {
-                '1': shell_v1.COMMAND_MODULES,
+                '1': shell_v1.COMMAND_MODULES
             }[version]
         except KeyError:
             actions_modules = shell_v1.COMMAND_MODULES
@@ -445,6 +446,34 @@ class OpenStackZunShell(object):
             logging.basicConfig(level=logging.CRITICAL,
                                 format=streamformat)
 
+    def _check_version(self, api_version):
+        if api_version == 'latest':
+            return LATEST_API_VERSION
+        else:
+            try:
+                versions = tuple(int(i) for i in api_version.split('.'))
+            except ValueError:
+                versions = ()
+            if len(versions) == 1:
+                # Default value of zun_api_version is '1'.
+                # If user not specify the value of api version, not passing
+                # headers at all.
+                zun_api_version = None
+            elif len(versions) == 2:
+                zun_api_version = api_version
+                # In the case of '1.0'
+                if versions[1] == 0:
+                    zun_api_version = None
+            else:
+                msg = _("The requested API version %(ver)s is an unexpected "
+                        "format. Acceptable formats are 'X', 'X.Y', or the "
+                        "literal string '%(latest)s'."
+                        ) % {'ver': api_version, 'latest': 'latest'}
+                raise exc.CommandError(msg)
+
+            api_major_version = versions[0]
+            return (api_major_version, zun_api_version)
+
     def main(self, argv):
 
         # NOTE(Christoph Jansen): With Python 3.4 argv somehow becomes a Map.
@@ -464,8 +493,12 @@ class OpenStackZunShell(object):
             spot = argv.index('--endpoint_type')
             argv[spot] = '--endpoint-type'
 
+        # build available subcommands based on version
+        (api_major_version, zun_api_version) = (
+            self._check_version(options.zun_api_version))
+
         subcommand_parser = (
-            self.get_subcommand_parser(options.zun_api_version)
+            self.get_subcommand_parser(api_major_version)
         )
         self.parser = subcommand_parser
 
@@ -488,12 +521,13 @@ class OpenStackZunShell(object):
          os_user_domain_id, os_user_domain_name,
          os_project_domain_id, os_project_domain_name,
          os_auth_url, os_auth_system, endpoint_type,
-         service_type, bypass_url, insecure) = (
+         service_type, bypass_url, insecure, zun_api_version) = (
             (args.os_username, args.os_project_name, args.os_project_id,
              args.os_user_domain_id, args.os_user_domain_name,
              args.os_project_domain_id, args.os_project_domain_name,
              args.os_auth_url, args.os_auth_system, args.endpoint_type,
-             args.service_type, args.bypass_url, args.insecure)
+             args.service_type, args.bypass_url, args.insecure,
+             args.zun_api_version)
         )
 
         if os_auth_system and os_auth_system != "keystone":
@@ -571,7 +605,7 @@ class OpenStackZunShell(object):
         try:
             client = {
                 '1': client_v1,
-            }[options.zun_api_version]
+            }[api_major_version]
         except KeyError:
             client = client_v1
 
@@ -593,6 +627,7 @@ class OpenStackZunShell(object):
                                 zun_url=bypass_url,
                                 endpoint_type=endpoint_type,
                                 insecure=insecure,
+                                api_version=zun_api_version,
                                 **kwargs)
 
         args.func(self.cs, args)
