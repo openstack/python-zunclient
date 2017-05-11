@@ -264,6 +264,15 @@ fake_responses = {
             {'data': data},
         ),
     },
+    '/v1/containers/%s/stats?%s'
+    % (CONTAINER1['id'], parse.urlencode({'decode': False,
+                                          'stream': False})):
+    {
+        'GET': (
+            {},
+            None,
+        ),
+    },
 }
 
 

@@ -21,6 +21,7 @@ import time
 from osc_lib.command import command
 from osc_lib import utils
 
+from zunclient.common import cliutils
 from zunclient.common import utils as zun_utils
 from zunclient.common.websocketclient import exceptions
 from zunclient.common.websocketclient import websocketclient
@@ -791,3 +792,52 @@ class CopyContainer(command.Command):
             print("Usage:")
             print("openstack appcontainer cp container:src_path dest_path|-")
             print("openstack appcontainer cp src_path|- container:dest_path")
+
+
+class StatsContainer(command.Command):
+    """Display stats of the container."""
+    log = logging.getLogger(__name__ + ".StatsContainer")
+
+    def get_parser(self, prog_name):
+        parser = super(StatsContainer, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help='ID or name of the (container)s to  display stats.')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        container = parsed_args.container
+        res = client.containers.stats(container)
+        cpu_usage = res['cpu_stats']['cpu_usage']['total_usage']
+        system_cpu_usage = res['cpu_stats']['system_cpu_usage']
+        cpu_percent = float(cpu_usage) / float(system_cpu_usage) * 100
+        mem_usage = res['memory_stats']['usage'] / 1024 / 1024
+        mem_limit = res['memory_stats']['limit'] / 1024 / 1024
+        mem_percent = float(mem_usage) / float(mem_limit) * 100
+
+        blk_stats = res['blkio_stats']['io_service_bytes_recursive']
+        io_read = 0
+        io_write = 0
+        for item in blk_stats:
+            if 'Read' == item['op']:
+                io_read = io_read + item['value']
+            if 'Write' == item['op']:
+                io_write = io_write + item['value']
+
+        net_stats = res['networks']
+        net_rxb = 0
+        net_txb = 0
+        for k, v in net_stats.items():
+            net_rxb = net_rxb + v['rx_bytes']
+            net_txb = net_txb + v['tx_bytes']
+
+        stats = {"CONTAINER": container,
+                 "CPU %": cpu_percent,
+                 "MEM USAGE(MiB)": mem_usage,
+                 "MEM LIMIT(MiB)": mem_limit,
+                 "MEM %": mem_percent,
+                 "BLOCK I/O(B)": str(io_read) + "/" + str(io_write),
+                 "NET I/O(B)": str(net_rxb) + "/" + str(net_txb)}
+        cliutils.print_dict(stats)
