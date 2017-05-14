@@ -236,9 +236,9 @@ class WebSocketClient(BaseClient):
         url = self.url
         LOG.debug('connecting to: %s', url)
         try:
-            self.ws = websocket.create_connection(url,
-                                                  skip_utf8_validation=True
-                                                  )
+            self.ws = websocket.create_connection(
+                url, skip_utf8_validation=True,
+                subprotocols=["binary", "base64"])
             print('connected to %s ,press Enter to continue' % self.id)
             print('type %s. to disconnect' % self.escape)
         except socket.error as e:
