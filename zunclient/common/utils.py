@@ -20,6 +20,16 @@ from zunclient.common import cliutils as utils
 from zunclient import exceptions as exc
 from zunclient.i18n import _
 
+VALID_UNITS = (
+    K,
+    M,
+    G,
+) = (
+    1024,
+    1024 * 1024,
+    1024 * 1024 * 1024,
+)
+
 
 def common_filters(marker=None, limit=None, sort_key=None,
                    sort_dir=None, all_tenants=False):

@@ -568,8 +568,8 @@ def do_stats(cs, args):
     cpu_usage = res['cpu_stats']['cpu_usage']['total_usage']
     system_cpu_usage = res['cpu_stats']['system_cpu_usage']
     cpu_percent = float(cpu_usage) / float(system_cpu_usage) * 100
-    mem_usage = res['memory_stats']['usage'] / 1024 / 1024
-    mem_limit = res['memory_stats']['limit'] / 1024 / 1024
+    mem_usage = res['memory_stats']['usage'] / zun_utils.M
+    mem_limit = res['memory_stats']['limit'] / zun_utils.M
     mem_percent = float(mem_usage) / float(mem_limit) * 100
 
     blk_stats = res['blkio_stats']['io_service_bytes_recursive']
