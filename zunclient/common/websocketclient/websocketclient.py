@@ -235,12 +235,9 @@ class WebSocketClient(BaseClient):
     def connect(self):
         url = self.url
         LOG.debug('connecting to: %s', url)
-        usr_agent = "User-Agent: " + self.id
-        header = [usr_agent, "x-custom: header"]
         try:
             self.ws = websocket.create_connection(url,
-                                                  skip_utf8_validation=True,
-                                                  header=header
+                                                  skip_utf8_validation=True
                                                   )
             print('connected to %s ,press Enter to continue' % self.id)
             print('type %s. to disconnect' % self.escape)
