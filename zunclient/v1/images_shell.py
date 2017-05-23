@@ -18,13 +18,13 @@ def _show_image(image):
     utils.print_dict(image._info)
 
 
-@utils.arg('repo',
-           metavar='<repo>',
-           help='Image repository')
+@utils.arg('image',
+           metavar='<image>',
+           help='Name of the image')
 def do_pull(cs, args):
     """Pull an image."""
     opts = {}
-    opts['repo'] = args.repo
+    opts['repo'] = args.image
     _show_image(cs.images.create(**opts))
 
 
