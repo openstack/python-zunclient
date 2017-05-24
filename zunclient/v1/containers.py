@@ -21,7 +21,8 @@ from zunclient import exceptions
 
 CREATION_ATTRIBUTES = ['name', 'image', 'command', 'cpu', 'memory',
                        'environment', 'workdir', 'labels', 'image_pull_policy',
-                       'restart_policy', 'interactive', 'image_driver']
+                       'restart_policy', 'interactive', 'image_driver',
+                       'hint']
 
 
 class Container(base.Resource):
