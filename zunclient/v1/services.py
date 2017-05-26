@@ -89,11 +89,14 @@ class ServiceManager(base.Manager):
                                            **kwargs)
         return resp, body
 
-    def _update_body(self, host, binary, disabled_reason=None):
+    def _update_body(self, host, binary, disabled_reason=None,
+                     force_down=None):
         body = {"host": host,
                 "binary": binary}
         if disabled_reason is not None:
             body["disabled_reason"] = disabled_reason
+        if force_down is not None:
+            body["forced_down"] = force_down
         return body
 
     def enable(self, host, binary):
@@ -105,3 +108,8 @@ class ServiceManager(base.Manager):
         """Disable the service specified by hostname and binary."""
         body = self._update_body(host, binary, reason)
         return self._action("/disable", qparams=body)
+
+    def force_down(self, host, binary, force_down=None):
+        """Force service state to down specified by hostname and binary."""
+        body = self._update_body(host, binary, force_down=force_down)
+        return self._action("/force_down", qparams=body)
