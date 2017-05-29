@@ -59,6 +59,8 @@ tty_height = "56"
 tty_width = "121"
 path = "/tmp/test.txt"
 data = "/tmp/test.tar"
+repo = "repo-test"
+tag = "tag-test"
 
 fake_responses = {
     '/v1/containers':
@@ -269,6 +271,15 @@ fake_responses = {
                                           'stream': False})):
     {
         'GET': (
+            {},
+            None,
+        ),
+    },
+    '/v1/containers/%s/commit?%s'
+    % (CONTAINER1['id'], parse.urlencode({'repository': repo,
+                                          'tag': tag})):
+    {
+        'POST': (
             {},
             None,
         ),
@@ -569,3 +580,13 @@ class ContainerManagerTest(testtools.TestCase):
         ]
         self.assertEqual(expect, self.api.calls)
         self.assertTrue(containers)
+
+    def test_containers_commit(self):
+        containers = self.mgr.commit(CONTAINER1['id'], repo, tag)
+        expect = [
+            ('POST', '/v1/containers/%s/commit?%s' % (CONTAINER1['id'],
+             parse.urlencode({'repository': repo, 'tag': tag})),
+             {'Content-Length': '0'}, None)
+        ]
+        self.assertEqual(expect, self.api.calls)
+        self.assertIsNone(containers)

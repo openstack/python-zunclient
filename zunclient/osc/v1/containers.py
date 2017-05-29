@@ -831,3 +831,40 @@ class StatsContainer(command.Command):
         container = parsed_args.container
         stats_info = client.containers.stats(container)
         cliutils.print_dict(stats_info)
+
+
+class CommitContainer(command.Command):
+    """Create a new image from a container's changes"""
+    log = logging.getLogger(__name__ + ".CommitContainer")
+
+    def get_parser(self, prog_name):
+        parser = super(CommitContainer, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help='ID or name of the (container)s to commit.')
+        parser.add_argument(
+            '--repository',
+            required=True,
+            metavar='<repository>',
+            help='Repository of the new image.')
+        parser.add_argument(
+            '--tag',
+            metavar='<tag>',
+            help='Tag of the new iamge')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        container = parsed_args.container
+        opts = {}
+        opts['repository'] = parsed_args.repository
+        opts['tag'] = parsed_args.tag
+        opts = zun_utils.remove_null_parms(**opts)
+        try:
+            client.containers.commit(container, **opts)
+            print(_('Request to commit container %s has been accepted')
+                  % container)
+        except Exception as e:
+            print("commit container %(container)s failed: %(e)s" %
+                  {'container': container, 'e': e})
