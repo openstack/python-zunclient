@@ -112,6 +112,13 @@ class CreateContainer(command.ShowOne):
             metavar='<command>',
             nargs=argparse.REMAINDER,
             help='Send command to the container')
+        parser.add_argument(
+            '--hint',
+            metavar='key=value',
+            action='append',
+            default=[],
+            help='Container hint key/value pairs for scheduler to select'
+                 ' host. May be used multiple times.')
         return parser
 
     def take_action(self, parsed_args):
@@ -133,6 +140,9 @@ class CreateContainer(command.ShowOne):
                 zun_utils.check_restart_policy(parsed_args.restart)
         if parsed_args.interactive:
             opts['interactive'] = True
+
+        hints = zun_utils.format_args(parsed_args.hint)
+        opts['hint'] = hints
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.create(**opts)
@@ -576,6 +586,13 @@ class RunContainer(command.ShowOne):
             metavar='<command>',
             nargs=argparse.REMAINDER,
             help='Send command to the container')
+        parser.add_argument(
+            '--hint',
+            metavar='key=value',
+            action='append',
+            default=[],
+            help='Container hint key/value pairs for scheduler to select'
+                 ' host. May be used multiple times.')
         return parser
 
     def take_action(self, parsed_args):
@@ -597,6 +614,9 @@ class RunContainer(command.ShowOne):
                 zun_utils.check_restart_policy(parsed_args.restart)
         if parsed_args.interactive:
             opts['interactive'] = True
+
+        hints = zun_utils.format_args(parsed_args.hint)
+        opts['hint'] = hints
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.run(**opts)
