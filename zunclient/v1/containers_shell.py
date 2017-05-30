@@ -85,12 +85,6 @@ def _show_container(container):
            metavar='<command>',
            nargs=argparse.REMAINDER,
            help='Send command to the container')
-@utils.arg('--hint',
-           action='append',
-           default=[],
-           metavar='<key=value>',
-           help='Container hint key/value pairs for scheduler to select'
-                ' host. May be used multiple times.')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -103,10 +97,6 @@ def do_create(cs, args):
     opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
     opts['image_driver'] = args.image_driver
-
-    hints = zun_utils.format_args(args.hint)
-    opts['hint'] = hints
-
     if args.command:
         opts['command'] = ' '.join(args.command)
     if args.restart:
@@ -425,12 +415,6 @@ def do_kill(cs, args):
            metavar='<command>',
            nargs=argparse.REMAINDER,
            help='Send command to the container')
-@utils.arg('--hint',
-           action='append',
-           default=[],
-           metavar='<key=value>',
-           help='Container hint key/value pairs for scheduler to select'
-                ' host. May be used multiple times.')
 def do_run(cs, args):
     """Run a command in a new container."""
     opts = {}
@@ -443,10 +427,6 @@ def do_run(cs, args):
     opts['labels'] = zun_utils.format_args(args.label)
     opts['image_pull_policy'] = args.image_pull_policy
     opts['image_driver'] = args.image_driver
-
-    hints = zun_utils.format_args(args.hint)
-    opts['hint'] = hints
-
     if args.command:
         opts['command'] = ' '.join(args.command)
     if args.restart:
