@@ -63,7 +63,7 @@ def _show_container(container):
                 'It can have following values: '
                 '"ifnotpresent": only pull the image if it does not '
                 'already exist on the node. '
-                '"always": Always pull the image from repositery.'
+                '"always": Always pull the image from repository.'
                 '"never": never pull the image')
 @utils.arg('image', metavar='<image>', help='name or ID of the image')
 @utils.arg('--restart',
@@ -393,7 +393,7 @@ def do_kill(cs, args):
                 'It can have following values: '
                 '"ifnotpresent": only pull the image if it does not '
                 'already exist on the node. '
-                '"always": Always pull the image from repositery.'
+                '"always": Always pull the image from repository.'
                 '"never": never pull the image')
 @utils.arg('image', metavar='<image>', help='name or ID of the image')
 @utils.arg('--restart',
@@ -468,7 +468,7 @@ def do_rename(cs, args):
 
 @utils.arg('container',
            metavar='<container>',
-           help="ID or name of the container to udate.")
+           help="ID or name of the container to update.")
 @utils.arg('--cpu',
            metavar='<cpu>',
            help='The number of virtual cpus.')
@@ -489,7 +489,7 @@ def do_update(cs, args):
 
 @utils.arg('container',
            metavar='<container>',
-           help='ID or name of the container to be attahed to.')
+           help='ID or name of the container to be attached to.')
 def do_attach(cs, args):
     """Attach to a running container."""
     response = cs.containers.attach(args.container)
