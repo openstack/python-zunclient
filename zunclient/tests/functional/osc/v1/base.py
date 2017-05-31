@@ -56,6 +56,27 @@ class TestCase(base.FunctionalTestBase):
             self.fail('Container has not been created!')
         return container
 
+    def container_run(self, image='cirros', name=None, params='sleep 100000'):
+        """Run container and add cleanup.
+
+        :param String image: Image for a new container
+        :param String name: Name for a new container
+        :param String params: Additional args and kwargs
+        :return: JSON object of created container
+        """
+        if not name:
+            name = data_utils.rand_name('container')
+
+        opts = self.get_opts()
+        output = self.openstack('appcontainer run {0}'
+                                ' --name {1} {2} {3}'
+                                .format(opts, name, image, params))
+        container = json.loads(output)
+
+        if not output:
+            self.fail('Container has not run!')
+        return container
+
     def container_delete(self, identifier, ignore_exceptions=False):
         """Try to delete container by name or UUID.
 
@@ -105,3 +126,12 @@ class TestCase(base.FunctionalTestBase):
         """
         self.openstack('appcontainer rename {0} {1}'
                        .format(identifier, name))
+
+    def container_execute(self, identifier, command):
+        """Execute in specified container.
+
+        :param String identifier: Name or UUID of the container
+        :param String command: command execute in the container
+        """
+        return self.openstack('appcontainer exec {0} {1}'
+                              .format(identifier, command))

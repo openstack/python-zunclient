@@ -68,7 +68,7 @@ class ContainerTests(base.TestCase):
                       [x['uuid'] for x in container_list])
         count = 0
         while count < 5:
-            self.container_show(container['name'])
+            container = self.container_show(container['name'])
             if container['status'] == 'Created':
                 break
             if container['status'] == 'Error':
@@ -109,3 +109,25 @@ class ContainerTests(base.TestCase):
         self.container_rename(container['name'], new_name)
         container_list = self.container_list()
         self.assertIn(new_name, [x['name'] for x in container_list])
+
+    def test_execute(self):
+        """Check container execute command with name and UUID arguments.
+
+        Test steps:
+        1) Create container in setUp.
+        2) Execute command calling it with name and UUID arguments.
+        3) Check the container logs.
+        """
+        container = self.container_run(name='test_execute')
+        count = 0
+        while count < 50:
+            container = self.container_show(container['name'])
+            if container['status'] == 'Running':
+                break
+            if container['status'] == 'Error':
+                break
+            time.sleep(2)
+            count = count + 1
+        command = "sh -c 'echo hello'"
+        result = self.container_execute(container['name'], command)
+        self.assertIn('hello', result)

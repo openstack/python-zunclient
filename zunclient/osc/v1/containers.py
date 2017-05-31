@@ -127,7 +127,7 @@ class CreateContainer(command.ShowOne):
         opts['image_pull_policy'] = parsed_args.image_pull_policy
         opts['image_driver'] = parsed_args.image_driver
         if parsed_args.command:
-            opts['command'] = ' '.join(parsed_args.command)
+            opts['command'] = zun_utils.parse_command(parsed_args.command)
         if parsed_args.restart:
             opts['restart_policy'] = \
                 zun_utils.check_restart_policy(parsed_args.restart)
@@ -374,8 +374,8 @@ class ExecContainer(command.Command):
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         container = parsed_args.container
-        command = ' '.join(parsed_args.command)
-        response = client.containers.execute(container, command)
+        command = zun_utils.parse_command(parsed_args.command)
+        response = client.containers.execute(container, command=command)
         output = response['output']
         exit_code = response['exit_code']
         print(output)
@@ -591,7 +591,7 @@ class RunContainer(command.ShowOne):
         opts['image_pull_policy'] = parsed_args.image_pull_policy
         opts['image_driver'] = parsed_args.image_driver
         if parsed_args.command:
-            opts['command'] = ' '.join(parsed_args.command)
+            opts['command'] = zun_utils.parse_command(parsed_args.command)
         if parsed_args.restart:
             opts['restart_policy'] = \
                 zun_utils.check_restart_policy(parsed_args.restart)

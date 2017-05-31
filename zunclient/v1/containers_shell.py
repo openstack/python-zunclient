@@ -98,7 +98,7 @@ def do_create(cs, args):
     opts['image_pull_policy'] = args.image_pull_policy
     opts['image_driver'] = args.image_driver
     if args.command:
-        opts['command'] = ' '.join(args.command)
+        opts['command'] = zun_utils.parse_command(args.command)
     if args.restart:
         opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
     if args.interactive:
@@ -321,7 +321,7 @@ def do_logs(cs, args):
 def do_exec(cs, args):
     """Execute command in a running container."""
     opts = {}
-    opts['command'] = ' '.join(args.command)
+    opts['command'] = zun_utils.parse_command(args.command)
     if args.interactive:
         opts['interactive'] = True
         opts['run'] = False
@@ -428,7 +428,7 @@ def do_run(cs, args):
     opts['image_pull_policy'] = args.image_pull_policy
     opts['image_driver'] = args.image_driver
     if args.command:
-        opts['command'] = ' '.join(args.command)
+        opts['command'] = zun_utils.parse_command(args.command)
     if args.restart:
         opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
     if args.interactive:
