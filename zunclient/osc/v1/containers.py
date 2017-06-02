@@ -87,7 +87,7 @@ class CreateContainer(command.ShowOne):
                  'It can have following values: '
                  '"ifnotpresent": only pull the image if it does not '
                  'already exist on the node. '
-                 '"always": Always pull the image from repositery.'
+                 '"always": Always pull the image from repository.'
                  '"never": never pull the image')
         parser.add_argument(
             '--restart',
@@ -551,7 +551,7 @@ class RunContainer(command.ShowOne):
                  'It can have following values: '
                  '"ifnotpresent": only pull the image if it does not '
                  'already exist on the node. '
-                 '"always": Always pull the image from repositery.'
+                 '"always": Always pull the image from repository.'
                  '"never": never pull the image')
         parser.add_argument(
             '--restart',
@@ -730,7 +730,7 @@ class AttachContainer(command.Command):
         parser.add_argument(
             'container',
             metavar='<container>',
-            help='ID or name of the container to be attahed to.')
+            help='ID or name of the container to be attached to.')
         return parser
 
     def take_action(self, parsed_args):
