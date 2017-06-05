@@ -586,9 +586,9 @@ def do_commit(cs, args):
     if args.tag is not None:
         opts['tag'] = args.tag
     try:
-        cs.containers.commit(args.container, **opts)
-        print("Request to commit container %s has been accepted." %
-              args.container)
+        image = cs.containers.commit(args.container, **opts)
+        print("Request to commit container %s has been accepted. "
+              "The image is %s." % (args.container, image))
     except Exception as e:
         print("Commit for container %(container)s failed: %(e)s" %
               {'container': args.container, 'e': e})
