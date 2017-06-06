@@ -30,7 +30,6 @@ from zunclient.i18n import _
 
 
 def _container_columns(container):
-    del container._info['links']
     return container._info.keys()
 
 
