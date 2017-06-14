@@ -26,6 +26,7 @@ from oslo_utils import importutils
 import six
 import six.moves.urllib.parse as urlparse
 
+from zunclient import api_versions
 from zunclient import exceptions
 
 osprofiler_web = importutils.try_import("osprofiler.web")
@@ -35,7 +36,7 @@ USER_AGENT = 'python-zunclient'
 CHUNKSIZE = 1024 * 64  # 64kB
 
 API_VERSION = '/v1'
-DEFAULT_API_VERSION = 'latest'
+DEFAULT_API_VERSION = '1.latest'
 
 
 def _extract_error_json(body):
@@ -70,7 +71,7 @@ class HTTPClient(object):
         self.endpoint = endpoint
         self.auth_token = kwargs.get('token')
         self.auth_ref = kwargs.get('auth_ref')
-        self.api_version = api_version
+        self.api_version = api_version or api_versions.APIVersion()
         self.connection_params = self.get_connection_params(endpoint, **kwargs)
 
     @staticmethod
@@ -157,10 +158,8 @@ class HTTPClient(object):
         # Copy the kwargs so we can reuse the original in case of redirects
         kwargs['headers'] = copy.deepcopy(kwargs.get('headers', {}))
         kwargs['headers'].setdefault('User-Agent', USER_AGENT)
-        if self.api_version:
-            version_string = 'container %s' % self.api_version
-            kwargs['headers'].setdefault(
-                'OpenStack-API-Version', version_string)
+        api_versions.update_headers(kwargs["headers"], self.api_version)
+
         if self.auth_token:
             kwargs['headers'].setdefault('X-Auth-Token', self.auth_token)
 
@@ -316,7 +315,7 @@ class SessionClient(adapter.LegacyJsonAdapter):
     def __init__(self, user_agent=USER_AGENT, logger=LOG,
                  api_version=DEFAULT_API_VERSION, *args, **kwargs):
         self.user_agent = USER_AGENT
-        self.api_version = api_version
+        self.api_version = api_version or api_versions.APIVersion()
         super(SessionClient, self).__init__(*args, **kwargs)
 
     def _http_request(self, url, method, **kwargs):
@@ -330,10 +329,7 @@ class SessionClient(adapter.LegacyJsonAdapter):
         # Copy the kwargs so we can reuse the original in case of redirects
         kwargs['headers'] = copy.deepcopy(kwargs.get('headers', {}))
         kwargs['headers'].setdefault('User-Agent', self.user_agent)
-        if self.api_version:
-            version_string = 'container %s' % self.api_version
-            kwargs['headers'].setdefault(
-                'OpenStack-API-Version', version_string)
+        api_versions.update_headers(kwargs["headers"], self.api_version)
 
         # NOTE(kevinz): osprofiler_web.get_trace_id_headers does not add any
         # headers in case if osprofiler is not initialized.

@@ -21,6 +21,7 @@ import mock
 import six
 from testtools import matchers
 
+from zunclient import api_versions
 from zunclient import exceptions
 import zunclient.shell
 from zunclient.tests.unit import utils
@@ -202,13 +203,12 @@ class ShellTest(utils.TestCase):
         _, create_args = mock_client.return_value.containers.create.call_args
         self.assertEqual({'key': 'value'}, create_args['environment'])
 
-    @mock.patch('zunclient.v1.services_shell.do_service_list')
-    @mock.patch('zunclient.v1.client.ksa_session')
-    def test_insecure(self, mock_session, mock_services_list):
+    @mock.patch('zunclient.v1.client.Client')
+    def test_insecure(self, mock_client):
         self.make_env()
         self.shell('--insecure service-list')
-        _, session_kwargs = mock_session.Session.call_args_list[0]
-        self.assertEqual(False, session_kwargs['verify'])
+        _, session_kwargs = mock_client.call_args_list[0]
+        self.assertEqual(True, session_kwargs['insecure'])
 
     @mock.patch('sys.stdin', side_effect=mock.MagicMock)
     @mock.patch('getpass.getpass', side_effect=EOFError)
@@ -248,7 +248,8 @@ class ShellTest(utils.TestCase):
             service_type='container', region_name=expected_region_name,
             project_domain_id='', project_domain_name='',
             user_domain_id='', user_domain_name='', profile=None,
-            zun_url=None, insecure=False, api_version='latest')
+            zun_url=None, insecure=False,
+            api_version=api_versions.APIVersion('1.2'))
 
     def test_main_option_region(self):
         self.make_env()
@@ -275,7 +276,8 @@ class ShellTest(utils.TestCase):
             service_type='container', region_name=None,
             project_domain_id='', project_domain_name='',
             user_domain_id='', user_domain_name='', profile=None,
-            zun_url=None, insecure=False, api_version='latest')
+            zun_url=None, insecure=False,
+            api_version=api_versions.APIVersion('1.2'))
 
     @mock.patch('zunclient.v1.client.Client')
     def test_main_endpoint_internal(self, mock_client):
@@ -288,7 +290,8 @@ class ShellTest(utils.TestCase):
             service_type='container', region_name=None,
             project_domain_id='', project_domain_name='',
             user_domain_id='', user_domain_name='', profile=None,
-            zun_url=None, insecure=False, api_version='latest')
+            zun_url=None, insecure=False,
+            api_version=api_versions.APIVersion('1.2'))
 
 
 class ShellTestKeystoneV3(ShellTest):
@@ -319,4 +322,4 @@ class ShellTestKeystoneV3(ShellTest):
             project_domain_id='', project_domain_name='Default',
             user_domain_id='', user_domain_name='Default',
             zun_url=None, insecure=False, profile=None,
-            api_version='latest')
+            api_version=api_versions.APIVersion('1.2'))

@@ -44,6 +44,10 @@ class Manager(object):
     def __init__(self, api):
         self.api = api
 
+    @property
+    def api_version(self):
+        return self.api.api_version
+
     def _create(self, url, body):
         resp, body = self.api.json_request('POST', url, body=body)
         if body:

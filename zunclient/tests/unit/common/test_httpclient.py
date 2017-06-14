@@ -18,6 +18,8 @@ import json
 import mock
 import six
 
+
+from zunclient import api_versions
 from zunclient.common.apiclient import exceptions
 from zunclient.common import httpclient as http
 from zunclient import exceptions as exc
@@ -68,7 +70,9 @@ class HttpClientTest(utils.BaseTestCase):
                                        six.StringIO(error_body),
                                        version=1,
                                        status=500)
-        client = http.HTTPClient('http://localhost/')
+        client = http.HTTPClient(
+            'http://localhost/',
+            api_version=api_versions.APIVersion('1.latest'))
         client.get_connection = (
             lambda *a, **kw: utils.FakeConnection(fake_resp))
 
@@ -84,7 +88,9 @@ class HttpClientTest(utils.BaseTestCase):
                                        six.StringIO(error_body),
                                        version=1,
                                        status=500)
-        client = http.HTTPClient('http://localhost/')
+        client = http.HTTPClient(
+            'http://localhost/',
+            api_version=api_versions.APIVersion('1.latest'))
         client.get_connection = (
             lambda *a, **kw: utils.FakeConnection(fake_resp))
 
@@ -102,7 +108,9 @@ class HttpClientTest(utils.BaseTestCase):
                                        six.StringIO(error_body),
                                        version=1,
                                        status=500)
-        client = http.HTTPClient('http://localhost/')
+        client = http.HTTPClient(
+            'http://localhost/',
+            api_version=api_versions.APIVersion('1.latest'))
         client.get_connection = (
             lambda *a, **kw: utils.FakeConnection(fake_resp))
 
@@ -225,7 +233,10 @@ class HttpClientTest(utils.BaseTestCase):
                                        six.StringIO(error_body),
                                        version=1,
                                        status=401)
-        client = http.HTTPClient('http://localhost/')
+        client = http.HTTPClient(
+            'http://localhost/',
+            api_version=api_versions.APIVersion('1.latest'))
+
         client.get_connection = (lambda *a,
                                  **kw: utils.FakeConnection(fake_resp))
 
@@ -245,7 +256,9 @@ class SessionClientTest(utils.BaseTestCase):
                                          error_body,
                                          500)
 
-        client = http.SessionClient(session=fake_session)
+        client = http.SessionClient(
+            api_version=api_versions.APIVersion('1.latest'),
+            session=fake_session)
 
         error = self.assertRaises(exc.InternalServerError,
                                   client.json_request,
@@ -264,7 +277,9 @@ class SessionClientTest(utils.BaseTestCase):
                                          error_body,
                                          500)
 
-        client = http.SessionClient(session=fake_session)
+        client = http.SessionClient(
+            api_version=api_versions.APIVersion('1.latest'),
+            session=fake_session)
 
         error = self.assertRaises(exc.InternalServerError,
                                   client.json_request,
@@ -279,6 +294,7 @@ class SessionClientTest(utils.BaseTestCase):
         fake_session.request.side_effect = [fake_response]
 
         client = http.SessionClient(
+            api_version=api_versions.APIVersion('1.latest'),
             session=fake_session, endpoint_override='http://zun')
 
         client.json_request('GET', '/v1/services')
@@ -293,6 +309,7 @@ class SessionClientTest(utils.BaseTestCase):
         fake_session = mock.MagicMock()
         fake_session.request.side_effect = [fake_response]
         client = http.SessionClient(
+            api_version=api_versions.APIVersion('1.latest'),
             session=fake_session, endpoint_override='http://zun')
         self.assertRaises(exceptions.GatewayTimeout,
                           client.json_request,
