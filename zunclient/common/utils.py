@@ -166,3 +166,12 @@ def list_containers(containers):
     utils.print_list(containers, columns,
                      {'versions': print_list_field('versions')},
                      sortby_index=None)
+
+
+def parse_command(command):
+    output = []
+    if command:
+        for c in command:
+            c = '"' + c + '"'
+            output.append(c)
+    return " ".join(output)
