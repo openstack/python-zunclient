@@ -21,7 +21,6 @@ import time
 from osc_lib.command import command
 from osc_lib import utils
 
-from zunclient.common import cliutils
 from zunclient.common import utils as zun_utils
 from zunclient.common.websocketclient import exceptions
 from zunclient.common.websocketclient import websocketclient
@@ -794,7 +793,7 @@ class CopyContainer(command.Command):
             print("openstack appcontainer cp src_path|- container:dest_path")
 
 
-class StatsContainer(command.Command):
+class StatsContainer(command.ShowOne):
     """Display stats of the container."""
     log = logging.getLogger(__name__ + ".StatsContainer")
 
@@ -810,7 +809,7 @@ class StatsContainer(command.Command):
         client = _get_client(self, parsed_args)
         container = parsed_args.container
         stats_info = client.containers.stats(container)
-        cliutils.print_dict(stats_info)
+        return stats_info.keys(), stats_info.values()
 
 
 class CommitContainer(command.Command):
