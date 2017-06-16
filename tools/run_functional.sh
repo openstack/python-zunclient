@@ -26,4 +26,4 @@ os_service_type=container
 os_endpoint_type=public
 END
 fi
-tox -e functional
+tox -e functional -- --concurrency=1
