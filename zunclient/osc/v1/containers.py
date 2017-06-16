@@ -107,6 +107,12 @@ class CreateContainer(command.ShowOne):
             default=False,
             help='Keep STDIN open even if not attached, allocate a pseudo-TTY')
         parser.add_argument(
+            '--security-group',
+            metavar='<security_group>',
+            action='append', default=[],
+            help='The name of security group for the container. '
+                 'May be used multiple times.')
+        parser.add_argument(
             'command',
             metavar='<command>',
             nargs=argparse.REMAINDER,
@@ -133,6 +139,8 @@ class CreateContainer(command.ShowOne):
         opts['labels'] = zun_utils.format_args(parsed_args.label)
         opts['image_pull_policy'] = parsed_args.image_pull_policy
         opts['image_driver'] = parsed_args.image_driver
+        if parsed_args.security_group:
+            opts['security_groups'] = parsed_args.security_group
         if parsed_args.command:
             opts['command'] = zun_utils.parse_command(parsed_args.command)
         if parsed_args.restart:
@@ -580,6 +588,12 @@ class RunContainer(command.ShowOne):
             default=False,
             help='Keep STDIN open even if not attached, allocate a pseudo-TTY')
         parser.add_argument(
+            '--security-group',
+            metavar='<security_group>',
+            action='append', default=[],
+            help='The name of security group for the container. '
+                 'May be used multiple times.')
+        parser.add_argument(
             'command',
             metavar='<command>',
             nargs=argparse.REMAINDER,
@@ -606,6 +620,8 @@ class RunContainer(command.ShowOne):
         opts['labels'] = zun_utils.format_args(parsed_args.label)
         opts['image_pull_policy'] = parsed_args.image_pull_policy
         opts['image_driver'] = parsed_args.image_driver
+        if parsed_args.security_group:
+            opts['security_groups'] = parsed_args.security_group
         if parsed_args.command:
             opts['command'] = zun_utils.parse_command(parsed_args.command)
         if parsed_args.restart:
