@@ -842,9 +842,9 @@ class CommitContainer(command.Command):
         opts['tag'] = parsed_args.tag
         opts = zun_utils.remove_null_parms(**opts)
         try:
-            client.containers.commit(container, **opts)
-            print(_('Request to commit container %s has been accepted')
-                  % container)
+            image = client.containers.commit(container, **opts)
+            print("Request to commit container %s has been accepted. "
+                  "The image is %s." % (container, image))
         except Exception as e:
             print("commit container %(container)s failed: %(e)s" %
                   {'container': container, 'e': e})
