@@ -363,11 +363,13 @@ class OpenStackZunShell(object):
         if profiler:
             parser.add_argument('--profile',
                                 metavar='HMAC_KEY',
+                                default=cliutils.env('OS_PROFILE',
+                                                     default=None),
                                 help='HMAC key to use for encrypting context '
                                      'data for performance profiling of '
                                      'operation. This key should be the '
                                      'value of the HMAC key configured for '
-                                     'the OSprofiler middleware in nova; it '
+                                     'the OSprofiler middleware in zun; it '
                                      'is specified in the Zun configuration '
                                      'file at "/etc/zun/zun.conf". Without '
                                      'the key, profiling functions will not '
