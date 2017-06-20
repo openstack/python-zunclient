@@ -57,7 +57,7 @@ sudo chown -R jenkins:stack $BASE/new/tempest
 # show tempest config
 cat etc/tempest.conf
 
-sudo -E tox -eall-plugin -- zun.tests.tempest.api --concurrency=1
+# sudo -E tox -eall-plugin -- zun.tests.tempest.api --concurrency=1
 
 echo "Running OSC commands test for Zun"
 
@@ -71,7 +71,7 @@ cd $ZUNCLIENT_DIR
 # Run tests
 set +e
 source $BASE/new/devstack/openrc admin admin
-sudo -E -H -u jenkins ./tools/run_functional.sh
+# sudo -E -H -u jenkins ./tools/run_functional.sh
 
 EXIT_CODE=$?
 

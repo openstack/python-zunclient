@@ -280,7 +280,7 @@ class HTTPClient(BaseClient):
 
     def connect(self):
         try:
-            client = docker.Client(base_url=self.url)
+            client = docker.APIClient(base_url=self.url)
             self.socket = client.exec_start(self.exec_id, socket=True,
                                             tty=True)
             print('connected to container "%s"' % self.id)
