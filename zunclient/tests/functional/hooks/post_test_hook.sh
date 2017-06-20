@@ -42,23 +42,6 @@ source $BASE/new/devstack/accrc/admin/admin
 constraints="-c $REQUIREMENTS_DIR/upper-constraints.txt"
 sudo -H pip install $constraints -U -r requirements.txt -r test-requirements.txt
 
-export ZUN_DIR="$BASE/new/zun"
-sudo chown -R jenkins:stack $ZUN_DIR
-
-# Use tempest to test zun api service
-
-# Import devstack functions 'iniset', 'iniget' and 'trueorfalse'
-source $BASE/new/devstack/functions
-echo "TEMPEST_SERVICES+=,zun" >> $localrc_path
-pushd $BASE/new/tempest
-sudo chown -R jenkins:stack $BASE/new/tempest
-
-# Missing tempest.conf ??
-# show tempest config
-cat etc/tempest.conf
-
-# sudo -E tox -eall-plugin -- zun.tests.tempest.api --concurrency=1
-
 echo "Running OSC commands test for Zun"
 
 export ZUNCLIENT_DIR="$BASE/new/python-zunclient"
@@ -76,8 +59,6 @@ source $BASE/new/devstack/openrc admin admin
 EXIT_CODE=$?
 
 set -e
-
-popd
 
 $XTRACE
 exit $EXIT_CODE
