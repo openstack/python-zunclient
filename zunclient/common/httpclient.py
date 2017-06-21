@@ -340,7 +340,6 @@ class SessionClient(adapter.LegacyJsonAdapter):
         endpoint_filter.setdefault('interface', self.interface)
         endpoint_filter.setdefault('service_type', self.service_type)
         endpoint_filter.setdefault('region_name', self.region_name)
-
         resp = self.session.request(url, method,
                                     raise_exc=False, **kwargs)
 

@@ -23,6 +23,7 @@ HTTPBadRequest = BadRequest
 HTTPInternalServerError = InternalServerError
 HTTPNotFound = NotFound
 HTTPServiceUnavailable = ServiceUnavailable
+CommandErrorException = CommandError
 
 
 class AmbiguousAuthSystem(ClientException):
