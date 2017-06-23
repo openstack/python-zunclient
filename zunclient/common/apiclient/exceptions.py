@@ -20,19 +20,6 @@
 Exception definitions.
 """
 
-########################################################################
-#
-# THIS MODULE IS DEPRECATED
-#
-# Please refer to
-# https://etherpad.openstack.org/p/kilo-zunclient-library-proposals for
-# the discussion leading to this deprecation.
-#
-# We recommend checking out the python-openstacksdk project
-# (https://launchpad.net/python-openstacksdk) instead.
-#
-########################################################################
-
 import inspect
 import sys
 
@@ -43,11 +30,6 @@ from zunclient.i18n import _
 
 class ClientException(Exception):
     """The base exception class for all exceptions this library raises."""
-    pass
-
-
-class ValidationError(ClientException):
-    """Error in validation on API client side."""
     pass
 
 

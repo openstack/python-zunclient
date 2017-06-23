@@ -17,46 +17,15 @@
 # E0202: An attribute inherited from %s hide this method
 # pylint: disable=E0202
 
-########################################################################
-#
-# THIS MODULE IS DEPRECATED
-#
-# Please refer to
-# https://etherpad.openstack.org/p/kilo-zunclient-library-proposals for
-# the discussion leading to this deprecation.
-#
-# We recommend checking out the python-openstacksdk project
-# (https://launchpad.net/python-openstacksdk) instead.
-#
-########################################################################
-
 import abc
 import argparse
 import os
-
 import six
-from stevedore import extension
 
 from zunclient.common.apiclient import exceptions
 
 
 _discovered_plugins = {}
-
-
-def discover_auth_systems():
-    """Discover the available auth-systems.
-
-    This won't take into account the old style auth-systems.
-    """
-    global _discovered_plugins
-    _discovered_plugins = {}
-
-    def add_plugin(ext):
-        _discovered_plugins[ext.name] = ext.plugin
-
-    ep_namespace = "zunclient.common.apiclient.auth"
-    mgr = extension.ExtensionManager(ep_namespace)
-    mgr.map(add_plugin)
 
 
 def load_auth_system_opts(parser):
@@ -80,34 +49,6 @@ def load_plugin(auth_system):
     except KeyError:
         raise exceptions.AuthSystemNotFound(auth_system)
     return plugin_class(auth_system=auth_system)
-
-
-def load_plugin_from_args(args):
-    """Load required plugin and populate it with options.
-
-    Try to guess auth system if it is not specified. Systems are tried in
-    alphabetical order.
-
-    :type args: argparse.Namespace
-    :raises: AuthPluginOptionsMissing
-    """
-    auth_system = args.os_auth_system
-    if auth_system:
-        plugin = load_plugin(auth_system)
-        plugin.parse_opts(args)
-        plugin.sufficient_options()
-        return plugin
-
-    for plugin_auth_system in sorted(six.iterkeys(_discovered_plugins)):
-        plugin_class = _discovered_plugins[plugin_auth_system]
-        plugin = plugin_class()
-        plugin.parse_opts(args)
-        try:
-            plugin.sufficient_options()
-        except exceptions.AuthPluginOptionsMissing:
-            continue
-        return plugin
-    raise exceptions.AuthPluginOptionsMissing(["auth_system"])
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -214,18 +155,3 @@ class BaseAuthPlugin(object):
                    if not self.opts.get(opt)]
         if missing:
             raise exceptions.AuthPluginOptionsMissing(missing)
-
-    @abc.abstractmethod
-    def token_and_endpoint(self, endpoint_type, service_type):
-        """Return token and endpoint.
-
-        :param service_type: Service type of the endpoint
-        :type service_type: string
-        :param endpoint_type: Type of endpoint.
-                              Possible values: public or publicURL,
-                              internal or internalURL,
-                              admin or adminURL
-        :type endpoint_type: string
-        :returns: tuple of token and endpoint strings
-        :raises: EndpointException
-        """
