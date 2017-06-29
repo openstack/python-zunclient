@@ -125,6 +125,19 @@ class CreateContainer(command.ShowOne):
             help='The key-value pair(s) for scheduler to select host. '
                  'The format of this parameter is "key=value[,key=value]". '
                  'May be used multiple times.')
+        parser.add_argument(
+            '--nets',
+            metavar='<auto, networks=networks, port=port-uuid,'
+                    'v4-fixed-ip=ip-addr,v6-fixed-ip=ip-addr>',
+            action='append',
+            default=[],
+            help='Create network enpoints for the container. '
+                 'auto: do not specify the network, zun will automatically'
+                 'create one. '
+                 'network: attach container to the specified neutron networks.'
+                 ' port: attach container to the neutron port with this UUID. '
+                 'v4-fixed-ip: IPv4 fixed address for container. '
+                 'v6-fixed-ip: IPv6 fixed address for container.')
         return parser
 
     def take_action(self, parsed_args):
@@ -149,6 +162,7 @@ class CreateContainer(command.ShowOne):
         if parsed_args.interactive:
             opts['interactive'] = True
         opts['hints'] = zun_utils.format_args(parsed_args.hint)
+        opts['nets'] = zun_utils.parse_nets(parsed_args.nets)
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.create(**opts)
@@ -606,6 +620,25 @@ class RunContainer(command.ShowOne):
             help='The key-value pair(s) for scheduler to select host. '
                  'The format of this parameter is "key=value[,key=value]". '
                  'May be used multiple times.')
+        parser.add_argument(
+            '--nets',
+            metavar='[net]',
+            action='append',
+            default=[],
+            help='Networks that container will connect to.')
+        parser.add_argument(
+            '--nets',
+            metavar='<auto, networks=networks, port=port-uuid,'
+                    'v4-fixed-ip=ip-addr,v6-fixed-ip=ip-addr>',
+            action='append',
+            default=[],
+            help='Create network enpoints for the container. '
+                 'auto: do not specify the network, zun will automatically'
+                 'create one. '
+                 'network: attach container to the specified neutron networks.'
+                 ' port: attach container to the neutron port with this UUID. '
+                 'v4-fixed-ip: IPv4 fixed address for container. '
+                 'v6-fixed-ip: IPv6 fixed address for container.')
         return parser
 
     def take_action(self, parsed_args):
@@ -630,6 +663,7 @@ class RunContainer(command.ShowOne):
         if parsed_args.interactive:
             opts['interactive'] = True
         opts['hints'] = zun_utils.format_args(parsed_args.hint)
+        opts['nets'] = zun_utils.parse_nets(parsed_args.nets)
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.run(**opts)
