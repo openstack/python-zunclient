@@ -37,7 +37,7 @@ class FunctionalTestBase(base.ClientTestBase):
             client = base.CLIClient(cli_dir=cli_dir,
                                     username=config['os_username'],
                                     password=config['os_password'],
-                                    tenant_name=config['os_project_name'],
+                                    project_name=config['os_project_name'],
                                     uri=config['os_auth_url'])
             for keystone_object in 'user', 'project':
                 domain_attr = 'os_%s_domain_id' % keystone_object

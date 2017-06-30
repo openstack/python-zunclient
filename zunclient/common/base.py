@@ -157,7 +157,7 @@ class Manager(object):
 
 
 class Resource(base.Resource):
-    """Represents a particular instance of an object (tenant, user, etc).
+    """Represents a particular instance of an object (project, user, etc).
 
     This is pretty much just a bag for attributes.
     """

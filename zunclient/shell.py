@@ -130,18 +130,18 @@ class SecretsHelper(object):
                 pass
         return pw
 
-    def save(self, auth_token, management_url, tenant_id):
+    def save(self, auth_token, management_url, project_id):
         if not HAS_KEYRING or not self.args.os_cache:
             return
         if (auth_token == self.auth_token and
                 management_url == self.management_url):
             # Nothing changed....
             return
-        if not all([management_url, auth_token, tenant_id]):
+        if not all([management_url, auth_token, project_id]):
             raise ValueError("Unable to save empty management url/auth token")
         value = "|".join([str(auth_token),
                           str(management_url),
-                          str(tenant_id)])
+                          str(project_id)])
         keyring.set_password("zunclient_auth", self._make_key(), value)
 
     @property
@@ -162,7 +162,7 @@ class SecretsHelper(object):
             block = keyring.get_password('zunclient_auth',
                                          self._make_key())
             if block:
-                _token, management_url, _tenant_id = block.split('|', 2)
+                _token, management_url, _project_id = block.split('|', 2)
         except all_errors:
             pass
         return management_url
@@ -180,24 +180,24 @@ class SecretsHelper(object):
             block = keyring.get_password('zunclient_auth',
                                          self._make_key())
             if block:
-                token, _management_url, _tenant_id = block.split('|', 2)
+                token, _management_url, _project_id = block.split('|', 2)
         except all_errors:
             pass
         return token
 
     @property
-    def tenant_id(self):
+    def project_id(self):
         if not HAS_KEYRING or not self.args.os_cache:
             return None
-        tenant_id = None
+        project_id = None
         try:
             block = keyring.get_password('zunclient_auth',
                                          self._make_key())
             if block:
-                _token, _management_url, tenant_id = block.split('|', 2)
+                _token, _management_url, project_id = block.split('|', 2)
         except all_errors:
             pass
-        return tenant_id
+        return project_id
 
 
 class ZunClientArgumentParser(argparse.ArgumentParser):
