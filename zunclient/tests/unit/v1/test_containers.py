@@ -31,6 +31,7 @@ CONTAINER1 = {'id': '1234',
               'labels': {'label1': 'foo'},
               'hints': {'hint1': 'bar'},
               'restart_policy': 'no',
+              'security_groups': ['test'],
               }
 
 CONTAINER2 = {'id': '1235',
@@ -46,6 +47,7 @@ CONTAINER2 = {'id': '1235',
               'labels': {'label2': 'foo'},
               'hints': {'hint2': 'bar'},
               'restart_policy': 'on-failure:5',
+              'security_groups': ['test'],
               }
 
 CREATE_CONTAINER1 = copy.deepcopy(CONTAINER1)

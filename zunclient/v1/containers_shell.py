@@ -81,6 +81,11 @@ def _show_container(container):
                 'It can have following values: '
                 '"docker": pull the image from Docker Hub. '
                 '"glance": pull the image from Glance. ')
+@utils.arg('--security-group',
+           metavar='security-group',
+           action='append', default=[],
+           help='The name of security group for the container. '
+                'May be used multiple times.')
 @utils.arg('command',
            metavar='<command>',
            nargs=argparse.REMAINDER,
@@ -106,6 +111,8 @@ def do_create(cs, args):
     opts['image_driver'] = args.image_driver
     opts['hints'] = zun_utils.format_args(args.hint)
 
+    if args.security_group:
+        opts['security_groups'] = args.security_group
     if args.command:
         opts['command'] = zun_utils.parse_command(args.command)
     if args.restart:
@@ -420,6 +427,11 @@ def do_kill(cs, args):
                 'It can have following values: '
                 '"docker": pull the image from Docker Hub. '
                 '"glance": pull the image from Glance. ')
+@utils.arg('--security-group',
+           metavar='security-group',
+           action='append', default=[],
+           help='The name of security group for the container. '
+                'May be used multiple times.')
 @utils.arg('command',
            metavar='<command>',
            nargs=argparse.REMAINDER,
@@ -445,6 +457,8 @@ def do_run(cs, args):
     opts['image_driver'] = args.image_driver
     opts['hints'] = zun_utils.format_args(args.hint)
 
+    if args.security_group:
+        opts['security_groups'] = args.security_group
     if args.command:
         opts['command'] = zun_utils.parse_command(args.command)
     if args.restart:
