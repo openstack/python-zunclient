@@ -27,6 +27,7 @@ class TestContainerPlugin(base.TestCase):
         instance.session = 'zun_session'
 
         plugin.make_client(instance)
-        p_client.assert_called_with(region_name='zun_region',
+        p_client.assert_called_with(os_container_api_version='1',
+                                    region_name='zun_region',
                                     session='zun_session',
                                     service_type='container')
