@@ -97,6 +97,18 @@ def _show_container(container):
            help='The key-value pair(s) for scheduler to select host. '
                 'The format of this parameter is "key=value[,key=value]". '
                 'May be used multiple times.')
+@utils.arg('--nets',
+           action='append',
+           default=[],
+           metavar='<auto, network=network, port=port-uuid,'
+                   'v4-fixed-ip=ip-addr,v6-fixed-ip=ip-addr>',
+           help='Create network enpoints for the container. '
+                'auto: do not specify the network, zun will automatically'
+                'create one. '
+                'network: attach container to the specified neturon networks. '
+                'port: attach container to the neutron port with this UUID. '
+                'v4-fixed-ip: IPv4 fixed address for container. '
+                'v6-fixed-ip: IPv6 fixed address for container.')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -110,6 +122,8 @@ def do_create(cs, args):
     opts['image_pull_policy'] = args.image_pull_policy
     opts['image_driver'] = args.image_driver
     opts['hints'] = zun_utils.format_args(args.hint)
+    nets = zun_utils.parse_nets(args.nets)
+    opts['nets'] = nets
 
     if args.security_group:
         opts['security_groups'] = args.security_group
@@ -443,6 +457,18 @@ def do_kill(cs, args):
            help='The key-value pair(s) for scheduler to select host. '
                 'The format of this parameter is "key=value[,key=value]". '
                 'May be used multiple times.')
+@utils.arg('--nets',
+           action='append',
+           default=[],
+           metavar='<auto, network=network, port=port-uuid,'
+                   'v4-fixed-ip=ip-addr,v6-fixed-ip=ip-addr>',
+           help='Create network enpoints for the container. '
+                'auto: do not specify the network, zun will automatically'
+                'create one. '
+                'network: attach container to the specified neutron networks. '
+                'port: attach container to the neutron port with this UUID. '
+                'v4-fixed-ip: IPv4 fixed address for container. '
+                'v6-fixed-ip: IPv6 fixed address for container.')
 def do_run(cs, args):
     """Run a command in a new container."""
     opts = {}
@@ -456,6 +482,8 @@ def do_run(cs, args):
     opts['image_pull_policy'] = args.image_pull_policy
     opts['image_driver'] = args.image_driver
     opts['hints'] = zun_utils.format_args(args.hint)
+    nets = zun_utils.parse_nets(args.nets)
+    opts['nets'] = nets
 
     if args.security_group:
         opts['security_groups'] = args.security_group
