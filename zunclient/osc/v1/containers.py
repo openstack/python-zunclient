@@ -132,7 +132,7 @@ class CreateContainer(command.ShowOne):
             action='append',
             default=[],
             help='Create network enpoints for the container. '
-                 'auto: do not specify the network, zun will automatically'
+                 'auto: do not specify the network, zun will automatically '
                  'create one. '
                  'network: attach container to the specified neutron networks.'
                  ' port: attach container to the neutron port with this UUID. '
@@ -633,7 +633,7 @@ class RunContainer(command.ShowOne):
             action='append',
             default=[],
             help='Create network enpoints for the container. '
-                 'auto: do not specify the network, zun will automatically'
+                 'auto: do not specify the network, zun will automatically '
                  'create one. '
                  'network: attach container to the specified neutron networks.'
                  ' port: attach container to the neutron port with this UUID. '
