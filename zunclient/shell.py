@@ -52,6 +52,7 @@ try:
 except ImportError:
     pass
 
+from zunclient import api_versions
 from zunclient.common.apiclient import auth
 from zunclient.common import cliutils
 from zunclient import exceptions as exc
@@ -60,7 +61,7 @@ from zunclient.v1 import client as client_v1
 from zunclient.v1 import shell as shell_v1
 from zunclient import version
 
-LATEST_API_VERSION = ('1', 'latest')
+DEFAULT_API_VERSION = '1.2'
 DEFAULT_ENDPOINT_TYPE = 'publicURL'
 DEFAULT_SERVICE_TYPE = 'container'
 
@@ -332,9 +333,9 @@ class OpenStackZunShell(object):
                             metavar='<zun-api-ver>',
                             default=cliutils.env(
                                 'ZUN_API_VERSION',
-                                default='latest'),
-                            help='Accepts "api", '
-                                 'defaults to env[ZUN_API_VERSION].')
+                                default=DEFAULT_API_VERSION),
+                            help='Accepts X, X.Y (where X is major, Y is minor'
+                                 ' part), defaults to env[ZUN_API_VERSION].')
         parser.add_argument('--zun_api_version',
                             help=argparse.SUPPRESS)
 
@@ -381,7 +382,7 @@ class OpenStackZunShell(object):
 
         return parser
 
-    def get_subcommand_parser(self, version):
+    def get_subcommand_parser(self, version, do_help=False):
         parser = self.get_base_parser()
 
         self.subcommands = {}
@@ -390,13 +391,13 @@ class OpenStackZunShell(object):
         try:
             actions_modules = {
                 '1': shell_v1.COMMAND_MODULES
-            }[version]
+            }[version.ver_major]
         except KeyError:
             actions_modules = shell_v1.COMMAND_MODULES
 
         for actions_module in actions_modules:
-            self._find_actions(subparsers, actions_module)
-        self._find_actions(subparsers, self)
+            self._find_actions(subparsers, actions_module, version, do_help)
+        self._find_actions(subparsers, self, version, do_help)
 
         self._add_bash_completion_subparser(subparsers)
 
@@ -411,12 +412,27 @@ class OpenStackZunShell(object):
         self.subcommands['bash_completion'] = subparser
         subparser.set_defaults(func=self.do_bash_completion)
 
-    def _find_actions(self, subparsers, actions_module):
+    def _find_actions(self, subparsers, actions_module, version, do_help):
+        msg = _(" (Supported by API versions '%(start)s' - '%(end)s')")
         for attr in (a for a in dir(actions_module) if a.startswith('do_')):
             # I prefer to be hyphen-separated instead of underscores.
             command = attr[3:].replace('_', '-')
             callback = getattr(actions_module, attr)
             desc = callback.__doc__ or ''
+            if hasattr(callback, "versioned"):
+                subs = api_versions.get_substitutions(callback)
+                if do_help:
+                    desc += msg % {'start': subs[0].start_version.get_string(),
+                                   'end': subs[-1].end_version.get_string()}
+                else:
+                    for versioned_method in subs:
+                        if version.matches(versioned_method.start_version,
+                                           versioned_method.end_version):
+                            callback = versioned_method.func
+                            break
+                    else:
+                        continue
+
             action_help = desc.strip()
             arguments = getattr(callback, 'arguments', [])
 
@@ -433,6 +449,25 @@ class OpenStackZunShell(object):
             self.subcommands[command] = subparser
 
             for (args, kwargs) in arguments:
+                start_version = kwargs.get("start_version", None)
+                if start_version:
+                    start_version = api_versions.APIVersion(start_version)
+                    end_version = kwargs.get("end_version", None)
+                    if end_version:
+                        end_version = api_versions.APIVersion(end_version)
+                    else:
+                        end_version = api_versions.APIVersion(
+                            "%s.latest" % start_version.ver_major)
+                    if do_help:
+                        kwargs["help"] = kwargs.get("help", "") + (msg % {
+                            "start": start_version.get_string(),
+                            "end": end_version.get_string()})
+                    else:
+                        if not version.matches(start_version, end_version):
+                            continue
+                kw = kwargs.copy()
+                kw.pop("start_version", None)
+                kw.pop("end_version", None)
                 subparser.add_argument(*args, **kwargs)
             subparser.set_defaults(func=callback)
 
@@ -448,34 +483,6 @@ class OpenStackZunShell(object):
             logging.basicConfig(level=logging.CRITICAL,
                                 format=streamformat)
 
-    def _check_version(self, api_version):
-        if api_version == 'latest':
-            return LATEST_API_VERSION
-        else:
-            try:
-                versions = tuple(int(i) for i in api_version.split('.'))
-            except ValueError:
-                versions = ()
-            if len(versions) == 1:
-                # Default value of zun_api_version is '1'.
-                # If user not specify the value of api version, not passing
-                # headers at all.
-                zun_api_version = None
-            elif len(versions) == 2:
-                zun_api_version = api_version
-                # In the case of '1.0'
-                if versions[1] == 0:
-                    zun_api_version = None
-            else:
-                msg = _("The requested API version %(ver)s is an unexpected "
-                        "format. Acceptable formats are 'X', 'X.Y', or the "
-                        "literal string '%(latest)s'."
-                        ) % {'ver': api_version, 'latest': 'latest'}
-                raise exc.CommandError(msg)
-
-            api_major_version = versions[0]
-            return (api_major_version, zun_api_version)
-
     def main(self, argv):
 
         # NOTE(Christoph Jansen): With Python 3.4 argv somehow becomes a Map.
@@ -487,6 +494,8 @@ class OpenStackZunShell(object):
         (options, args) = parser.parse_known_args(argv)
         self.setup_debugging(options.debug)
 
+        api_version = api_versions.get_api_version(options.zun_api_version)
+
         # NOTE(dtroyer): Hackery to handle --endpoint_type due to argparse
         #                thinking usage-list --end is ambiguous; but it
         #                works fine with only --endpoint-type present
@@ -495,13 +504,9 @@ class OpenStackZunShell(object):
             spot = argv.index('--endpoint_type')
             argv[spot] = '--endpoint-type'
 
-        # build available subcommands based on version
-        (api_major_version, zun_api_version) = (
-            self._check_version(options.zun_api_version))
+        subcommand_parser = self.get_subcommand_parser(
+            api_version, do_help=("help" in args))
 
-        subcommand_parser = (
-            self.get_subcommand_parser(api_major_version)
-        )
         self.parser = subcommand_parser
 
         if options.help or not argv:
@@ -523,13 +528,12 @@ class OpenStackZunShell(object):
          os_user_domain_id, os_user_domain_name,
          os_project_domain_id, os_project_domain_name,
          os_auth_url, os_auth_system, endpoint_type,
-         service_type, bypass_url, insecure, zun_api_version) = (
+         service_type, bypass_url, insecure) = (
             (args.os_username, args.os_project_name, args.os_project_id,
              args.os_user_domain_id, args.os_user_domain_name,
              args.os_project_domain_id, args.os_project_domain_name,
              args.os_auth_url, args.os_auth_system, args.endpoint_type,
-             args.service_type, args.bypass_url, args.insecure,
-             args.zun_api_version)
+             args.service_type, args.bypass_url, args.insecure)
         )
 
         if os_auth_system and os_auth_system != "keystone":
@@ -607,7 +611,7 @@ class OpenStackZunShell(object):
         try:
             client = {
                 '1': client_v1,
-            }[api_major_version]
+            }[api_version.ver_major]
         except KeyError:
             client = client_v1
 
@@ -629,7 +633,7 @@ class OpenStackZunShell(object):
                                 zun_url=bypass_url,
                                 endpoint_type=endpoint_type,
                                 insecure=insecure,
-                                api_version=zun_api_version,
+                                api_version=api_version,
                                 **kwargs)
 
         args.func(self.cs, args)
