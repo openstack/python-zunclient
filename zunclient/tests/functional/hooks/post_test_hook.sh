@@ -54,7 +54,7 @@ cd $ZUNCLIENT_DIR
 # Run tests
 set +e
 source $BASE/new/devstack/openrc admin admin
-# sudo -E -H -u jenkins ./tools/run_functional.sh
+sudo -E -H -u jenkins ./tools/run_functional.sh
 
 EXIT_CODE=$?
 
