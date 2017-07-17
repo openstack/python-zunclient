@@ -97,7 +97,7 @@ def _show_container(container):
            help='The key-value pair(s) for scheduler to select host. '
                 'The format of this parameter is "key=value[,key=value]". '
                 'May be used multiple times.')
-@utils.arg('--nets',
+@utils.arg('--net',
            action='append',
            default=[],
            metavar='<auto, network=network, port=port-uuid,'
@@ -122,8 +122,7 @@ def do_create(cs, args):
     opts['image_pull_policy'] = args.image_pull_policy
     opts['image_driver'] = args.image_driver
     opts['hints'] = zun_utils.format_args(args.hint)
-    nets = zun_utils.parse_nets(args.nets)
-    opts['nets'] = nets
+    opts['nets'] = zun_utils.parse_nets(args.net)
 
     if args.security_group:
         opts['security_groups'] = args.security_group
@@ -457,7 +456,7 @@ def do_kill(cs, args):
            help='The key-value pair(s) for scheduler to select host. '
                 'The format of this parameter is "key=value[,key=value]". '
                 'May be used multiple times.')
-@utils.arg('--nets',
+@utils.arg('--net',
            action='append',
            default=[],
            metavar='<auto, network=network, port=port-uuid,'
@@ -482,8 +481,7 @@ def do_run(cs, args):
     opts['image_pull_policy'] = args.image_pull_policy
     opts['image_driver'] = args.image_driver
     opts['hints'] = zun_utils.format_args(args.hint)
-    nets = zun_utils.parse_nets(args.nets)
-    opts['nets'] = nets
+    opts['nets'] = zun_utils.parse_nets(args.net)
 
     if args.security_group:
         opts['security_groups'] = args.security_group

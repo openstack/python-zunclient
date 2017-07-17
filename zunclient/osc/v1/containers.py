@@ -126,7 +126,7 @@ class CreateContainer(command.ShowOne):
                  'The format of this parameter is "key=value[,key=value]". '
                  'May be used multiple times.')
         parser.add_argument(
-            '--nets',
+            '--net',
             metavar='<auto, networks=networks, port=port-uuid,'
                     'v4-fixed-ip=ip-addr,v6-fixed-ip=ip-addr>',
             action='append',
@@ -162,7 +162,7 @@ class CreateContainer(command.ShowOne):
         if parsed_args.interactive:
             opts['interactive'] = True
         opts['hints'] = zun_utils.format_args(parsed_args.hint)
-        opts['nets'] = zun_utils.parse_nets(parsed_args.nets)
+        opts['nets'] = zun_utils.parse_nets(parsed_args.net)
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.create(**opts)
@@ -621,13 +621,7 @@ class RunContainer(command.ShowOne):
                  'The format of this parameter is "key=value[,key=value]". '
                  'May be used multiple times.')
         parser.add_argument(
-            '--nets',
-            metavar='[net]',
-            action='append',
-            default=[],
-            help='Networks that container will connect to.')
-        parser.add_argument(
-            '--nets',
+            '--net',
             metavar='<auto, networks=networks, port=port-uuid,'
                     'v4-fixed-ip=ip-addr,v6-fixed-ip=ip-addr>',
             action='append',
@@ -663,7 +657,7 @@ class RunContainer(command.ShowOne):
         if parsed_args.interactive:
             opts['interactive'] = True
         opts['hints'] = zun_utils.format_args(parsed_args.hint)
-        opts['nets'] = zun_utils.parse_nets(parsed_args.nets)
+        opts['nets'] = zun_utils.parse_nets(parsed_args.net)
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.run(**opts)
