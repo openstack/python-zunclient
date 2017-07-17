@@ -545,10 +545,6 @@ class RunContainer(command.ShowOne):
             metavar='<image>',
             help='name or ID of the image')
         parser.add_argument(
-            '--command',
-            metavar='<command>',
-            help='Send command to the container')
-        parser.add_argument(
             '--cpu',
             metavar='<cpu>',
             help='The number of virtual cpus.')
