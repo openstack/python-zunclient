@@ -244,3 +244,21 @@ class ParseNetsTest(test_utils.BaseTestCase):
         nets = ['network=1234567, v4-fixed-ip=23.555.567,789']
         self.assertRaises(exc.CommandError,
                           utils.parse_nets, nets)
+
+
+class ParseCommandTest(test_utils.BaseTestCase):
+
+    def test_no_command(self):
+        command = []
+        result = utils.parse_command(command)
+        self.assertEqual('', result)
+
+    def test_command_ls(self):
+        command = ['ls', '-al']
+        result = utils.parse_command(command)
+        self.assertEqual('"ls" "-al"', result)
+
+    def test_command_echo_hello(self):
+        command = ['sh', '-c', 'echo hello']
+        result = utils.parse_command(command)
+        self.assertEqual('"sh" "-c" "echo hello"', result)
