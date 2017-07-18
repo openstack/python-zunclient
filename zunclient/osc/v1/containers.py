@@ -399,17 +399,32 @@ class ExecContainer(command.Command):
             metavar='<command>',
             nargs=argparse.REMAINDER,
             help='The command to execute.')
+        parser.add_argument(
+            '--interactive',
+            dest='interactive',
+            action='store_true',
+            default=False,
+            help='Keep STDIN open and allocate a pseudo-TTY for interactive')
         return parser
 
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         container = parsed_args.container
-        command = zun_utils.parse_command(parsed_args.command)
-        response = client.containers.execute(container, command=command)
-        output = response['output']
-        exit_code = response['exit_code']
-        print(output)
-        return exit_code
+        opts = {}
+        opts['command'] = zun_utils.parse_command(parsed_args.command)
+        if parsed_args.interactive:
+            opts['interactive'] = True
+            opts['run'] = False
+        response = client.containers.execute(container, **opts)
+        if parsed_args.interactive:
+            exec_id = response['exec_id']
+            url = response['url']
+            websocketclient.do_exec(client, url, container, exec_id, "~", 0.5)
+        else:
+            output = response['output']
+            exit_code = response['exit_code']
+            print(output)
+            return exit_code
 
 
 class LogsContainer(command.Command):
