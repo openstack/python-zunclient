@@ -1,6 +1,5 @@
-============
-Installation
-============
+Installation Guide
+==================
 
 At the command line::
 
