@@ -10,6 +10,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import json
+import yaml
+
 from zunclient.common import cliutils as utils
 from zunclient.common import utils as zun_utils
 
@@ -42,3 +45,25 @@ def do_host_list(cs, args):
     utils.print_list(hosts, columns,
                      {'versions': zun_utils.print_list_field('versions')},
                      sortby_index=None)
+
+
+@utils.arg('host',
+           metavar='<host>',
+           help='ID or name of the host to show.')
+@utils.arg('-f', '--format',
+           metavar='<format>',
+           action='store',
+           choices=['json', 'yaml', 'table'],
+           default='table',
+           help='Print representation of the host.'
+                'The choices of the output format is json,table,yaml.'
+                'Defaults to table.')
+def do_host_show(cs, args):
+    """Show details of a host."""
+    host = cs.hosts.get(args.host)
+    if args.format == 'json':
+        print(json.dumps(host._info, indent=4, sort_keys=True))
+    elif args.format == 'yaml':
+        print(yaml.safe_dump(host._info, default_flow_style=False))
+    elif args.format == 'table':
+        utils.print_dict(host._info)

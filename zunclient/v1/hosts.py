@@ -74,3 +74,9 @@ class HostManager(base.Manager):
             return self._list_pagination(self._path(path),
                                          "hosts",
                                          limit=limit)
+
+    def get(self, id):
+        try:
+            return self._list(self._path(id))[0]
+        except IndexError:
+            return None
