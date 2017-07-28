@@ -181,12 +181,20 @@ class ShowContainer(command.ShowOne):
             'container',
             metavar='<container>',
             help='ID or name of the container to show.')
+        parser.add_argument(
+            '--all-tenants',
+            action="store_true",
+            default=False,
+            help='Show container(s) in all tenant by name.')
         return parser
 
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
-        container = parsed_args.container
-        container = client.containers.get(container)
+        opts = {}
+        opts['id'] = parsed_args.container
+        opts['all_tenants'] = parsed_args.all_tenants
+        opts = zun_utils.remove_null_parms(**opts)
+        container = client.containers.get(**opts)
         columns = _container_columns(container)
 
         return columns, utils.get_item_properties(container, columns)
@@ -259,15 +267,24 @@ class DeleteContainer(command.Command):
             '--force',
             action='store_true',
             help='Force delete the container.')
+        parser.add_argument(
+            '--all-tenants',
+            action="store_true",
+            default=False,
+            help='Delete container(s) in all tenant by name.')
         return parser
 
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         containers = parsed_args.container
-        force = getattr(parsed_args, 'force')
         for container in containers:
+            opts = {}
+            opts['id'] = container
+            opts['force'] = parsed_args.force
+            opts['all_tenants'] = parsed_args.all_tenants
+            opts = zun_utils.remove_null_parms(**opts)
             try:
-                client.containers.delete(container, force)
+                client.containers.delete(**opts)
                 print(_('Request to delete container %s has been accepted.')
                       % container)
             except Exception as e:

@@ -176,11 +176,20 @@ def do_list(cs, args):
 @utils.arg('-f', '--force',
            action='store_true',
            help='Force delete the container.')
+@utils.arg('--all-tenants',
+           action="store_true",
+           default=False,
+           help='Delete container(s) in all tenant by name.')
 def do_delete(cs, args):
     """Delete specified containers."""
     for container in args.containers:
+        opts = {}
+        opts['id'] = container
+        opts['force'] = args.force
+        opts['all_tenants'] = args.all_tenants
+        opts = zun_utils.remove_null_parms(**opts)
         try:
-            cs.containers.delete(container, args.force)
+            cs.containers.delete(**opts)
             print("Request to delete container %s has been accepted." %
                   container)
         except Exception as e:
@@ -199,9 +208,17 @@ def do_delete(cs, args):
            help='Print representation of the container.'
                 'The choices of the output format is json,table,yaml.'
                 'Defaults to table.')
+@utils.arg('--all-tenants',
+           action="store_true",
+           default=False,
+           help='Show container(s) in all tenant by name.')
 def do_show(cs, args):
     """Show details of a container."""
-    container = cs.containers.get(args.container)
+    opts = {}
+    opts['id'] = args.container
+    opts['all_tenants'] = args.all_tenants
+    opts = zun_utils.remove_null_parms(**opts)
+    container = cs.containers.get(**opts)
     if args.format == 'json':
         print(json.dumps(container._info, indent=4, sort_keys=True))
     elif args.format == 'yaml':

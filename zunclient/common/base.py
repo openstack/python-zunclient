@@ -120,7 +120,11 @@ class Manager(object):
 
         return object_list
 
-    def _list(self, url, response_key=None, obj_class=None, body=None):
+    def _list(self, url, response_key=None, obj_class=None, body=None,
+              qparams=None):
+        if qparams:
+            url = "%s?%s" % (url, urlparse.urlencode(qparams))
+
         resp, body = self.api.json_request('GET', url)
 
         if obj_class is None:
