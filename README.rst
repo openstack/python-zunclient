@@ -4,9 +4,9 @@ python-zunclient
 
 Client Library for Zun
 
-Please fill here a long description which must be at least 3 lines wrapped on
-80 cols, so that distribution package maintainers can use it in their packages.
-Note that this is a hard requirement.
+This is a client library for Zun built on the Zun API.
+It provides a Python API (the zunclient module)
+and a command-line tool(zun).
 
 * Free software: Apache license
 * Documentation: https://docs.openstack.org/python-zunclient/latest/
