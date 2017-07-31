@@ -771,7 +771,7 @@ class TopContainer(command.Command):
                 print("%-20s") % info,
 
 
-class UpdateContainer(command.Command):
+class UpdateContainer(command.ShowOne):
     """Update one or more attributes of the container"""
     log = logging.getLogger(__name__ + ".UpdateContainer")
 
@@ -800,13 +800,9 @@ class UpdateContainer(command.Command):
         opts = zun_utils.remove_null_parms(**opts)
         if not opts:
             raise exc.CommandError("You must update at least one property")
-        try:
-            client.containers.update(container, **opts)
-            print(_('Request to update container %s has been accepted')
-                  % container)
-        except Exception as e:
-            print("update for container %(container)s failed: %(e)s" %
-                  {'container': container, 'e': e})
+        container = client.containers.update(container, **opts)
+        columns = _container_columns(container)
+        return columns, utils.get_item_properties(container, columns)
 
 
 class AttachContainer(command.Command):
