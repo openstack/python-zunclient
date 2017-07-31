@@ -249,7 +249,7 @@ class ShellTest(utils.TestCase):
             project_domain_id='', project_domain_name='',
             user_domain_id='', user_domain_name='', profile=None,
             zun_url=None, insecure=False,
-            api_version=api_versions.APIVersion('1.2'))
+            api_version=api_versions.APIVersion('1.3'))
 
     def test_main_option_region(self):
         self.make_env()
@@ -277,7 +277,7 @@ class ShellTest(utils.TestCase):
             project_domain_id='', project_domain_name='',
             user_domain_id='', user_domain_name='', profile=None,
             zun_url=None, insecure=False,
-            api_version=api_versions.APIVersion('1.2'))
+            api_version=api_versions.APIVersion('1.3'))
 
     @mock.patch('zunclient.v1.client.Client')
     def test_main_endpoint_internal(self, mock_client):
@@ -291,7 +291,7 @@ class ShellTest(utils.TestCase):
             project_domain_id='', project_domain_name='',
             user_domain_id='', user_domain_name='', profile=None,
             zun_url=None, insecure=False,
-            api_version=api_versions.APIVersion('1.2'))
+            api_version=api_versions.APIVersion('1.3'))
 
 
 class ShellTestKeystoneV3(ShellTest):
@@ -322,4 +322,4 @@ class ShellTestKeystoneV3(ShellTest):
             project_domain_id='', project_domain_name='Default',
             user_domain_id='', user_domain_name='Default',
             zun_url=None, insecure=False, profile=None,
-            api_version=api_versions.APIVersion('1.2'))
+            api_version=api_versions.APIVersion('1.3'))

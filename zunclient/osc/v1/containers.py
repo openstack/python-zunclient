@@ -138,6 +138,12 @@ class CreateContainer(command.ShowOne):
                  ' port: attach container to the neutron port with this UUID. '
                  'v4-fixed-ip: IPv4 fixed address for container. '
                  'v6-fixed-ip: IPv6 fixed address for container.')
+        parser.add_argument(
+            '--rm',
+            dest='auto_remove',
+            action='store_true',
+            default=False,
+            help='Automatically remove the container when it exits')
         return parser
 
     def take_action(self, parsed_args):
@@ -152,6 +158,7 @@ class CreateContainer(command.ShowOne):
         opts['labels'] = zun_utils.format_args(parsed_args.label)
         opts['image_pull_policy'] = parsed_args.image_pull_policy
         opts['image_driver'] = parsed_args.image_driver
+        opts['auto_remove'] = parsed_args.auto_remove
         if parsed_args.security_group:
             opts['security_groups'] = parsed_args.security_group
         if parsed_args.command:
@@ -661,6 +668,12 @@ class RunContainer(command.ShowOne):
                  ' port: attach container to the neutron port with this UUID. '
                  'v4-fixed-ip: IPv4 fixed address for container. '
                  'v6-fixed-ip: IPv6 fixed address for container.')
+        parser.add_argument(
+            '--rm',
+            dest='auto_remove',
+            action='store_true',
+            default=False,
+            help='Automatically remove the container when it exits')
         return parser
 
     def take_action(self, parsed_args):
@@ -675,6 +688,7 @@ class RunContainer(command.ShowOne):
         opts['labels'] = zun_utils.format_args(parsed_args.label)
         opts['image_pull_policy'] = parsed_args.image_pull_policy
         opts['image_driver'] = parsed_args.image_driver
+        opts['auto_remove'] = parsed_args.auto_remove
         if parsed_args.security_group:
             opts['security_groups'] = parsed_args.security_group
         if parsed_args.command:

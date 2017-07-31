@@ -61,7 +61,7 @@ from zunclient.v1 import client as client_v1
 from zunclient.v1 import shell as shell_v1
 from zunclient import version
 
-DEFAULT_API_VERSION = '1.2'
+DEFAULT_API_VERSION = api_versions.DEFAULT_API_VERSION
 DEFAULT_ENDPOINT_TYPE = 'publicURL'
 DEFAULT_SERVICE_TYPE = 'container'
 
