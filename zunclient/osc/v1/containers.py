@@ -119,7 +119,7 @@ class CreateContainer(command.ShowOne):
             help='Send command to the container')
         parser.add_argument(
             '--hint',
-            metavar='key=value',
+            metavar='<key=value>',
             action='append',
             default=[],
             help='The key-value pair(s) for scheduler to select host. '
@@ -642,7 +642,7 @@ class RunContainer(command.ShowOne):
             help='Send command to the container')
         parser.add_argument(
             '--hint',
-            metavar='key=value',
+            metavar='<key=value>',
             action='append',
             default=[],
             help='The key-value pair(s) for scheduler to select host. '
