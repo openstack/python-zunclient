@@ -675,3 +675,24 @@ def do_commit(cs, args):
     except Exception as e:
         print("Commit for container %(container)s failed: %(e)s" %
               {'container': args.container, 'e': e})
+
+
+@utils.arg('container',
+           metavar='<container>',
+           help='ID or name of the container to add security group.')
+@utils.arg('security_group',
+           metavar='<security_group>',
+           help='The security group for specified container.')
+def do_add_security_group(cs, args):
+    """Add security group for specified container."""
+    opts = {}
+    opts['id'] = args.container
+    opts['security_group'] = args.security_group
+    opts = zun_utils.remove_null_parms(**opts)
+    try:
+        cs.containers.add_security_group(**opts)
+        print("Request to add security group for container %s "
+              "has been accepted." % args.container)
+    except Exception as e:
+        print("Add security group for container %(container)s "
+              "failed: %(e)s" % {'container': args.container, 'e': e})
