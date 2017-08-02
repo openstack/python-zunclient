@@ -85,7 +85,7 @@ def _show_container(container):
                 '"docker": pull the image from Docker Hub. '
                 '"glance": pull the image from Glance. ')
 @utils.arg('--security-group',
-           metavar='security-group',
+           metavar='<security-group>',
            action='append', default=[],
            help='The name of security group for the container. '
                 'May be used multiple times.')
@@ -465,7 +465,7 @@ def do_kill(cs, args):
                 '"docker": pull the image from Docker Hub. '
                 '"glance": pull the image from Glance. ')
 @utils.arg('--security-group',
-           metavar='security-group',
+           metavar='<security-group>',
            action='append', default=[],
            help='The name of security group for the container. '
                 'May be used multiple times.')
