@@ -17,7 +17,6 @@ from osc_lib import utils
 
 
 def _image_columns(image):
-    del image._info['links']
     return image._info.keys()
 
 
