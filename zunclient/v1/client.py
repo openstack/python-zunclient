@@ -19,6 +19,7 @@ from oslo_utils import importutils
 
 from zunclient.common import httpclient
 from zunclient.v1 import containers
+from zunclient.v1 import hosts
 from zunclient.v1 import images
 from zunclient.v1 import services
 
@@ -116,6 +117,7 @@ class Client(object):
         self.containers = containers.ContainerManager(self.http_client)
         self.images = images.ImageManager(self.http_client)
         self.services = services.ServiceManager(self.http_client)
+        self.hosts = hosts.HostManager(self.http_client)
 
         profile = kwargs.pop("profile", None)
         if profiler and profile:
