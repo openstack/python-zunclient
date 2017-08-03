@@ -68,6 +68,7 @@ path = "/tmp/test.txt"
 data = "/tmp/test.tar"
 repo = "repo-test"
 tag = "tag-test"
+security_group = "testsg"
 
 fake_responses = {
     '/v1/containers':
@@ -292,6 +293,14 @@ fake_responses = {
     '/v1/containers/%s/commit?%s'
     % (CONTAINER1['id'], parse.urlencode({'repository': repo,
                                           'tag': tag})):
+    {
+        'POST': (
+            {},
+            None,
+        ),
+    },
+    '/v1/containers/%s/add_security_group?%s'
+    % (CONTAINER1['id'], parse.urlencode({'name': security_group})):
     {
         'POST': (
             {},
@@ -614,3 +623,15 @@ class ContainerManagerTest(testtools.TestCase):
         ]
         self.assertEqual(expect, self.api.calls)
         self.assertIsNone(containers)
+
+    def test_containers_add_security_group(self):
+        containers = self.mgr.add_security_group(
+            CONTAINER1['id'], security_group)
+        expect = [
+            ('POST', '/v1/containers/%s/add_security_group?%s'
+             % (CONTAINER1['id'],
+                parse.urlencode({'name': security_group})),
+                {'Content-Length': '0'}, None)
+        ]
+        self.assertEqual(expect, self.api.calls)
+        self.assertTrue(containers)
