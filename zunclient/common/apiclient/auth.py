@@ -65,8 +65,6 @@ class BaseAuthPlugin(object):
         "auth_system",
         "username",
         "password",
-        "tenant_name",
-        "token",
         "auth_url",
     ]
 
