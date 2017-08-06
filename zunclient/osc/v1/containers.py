@@ -138,6 +138,13 @@ class CreateContainer(command.ShowOne):
                  'v4-fixed-ip: IPv4 fixed address for container. '
                  'v6-fixed-ip: IPv6 fixed address for container.')
         parser.add_argument(
+            '--mount',
+            action='append',
+            default=[],
+            metavar='<mount>',
+            help='A dictionary to configure volumes mounted inside the '
+                 'container.')
+        parser.add_argument(
             '--rm',
             dest='auto_remove',
             action='store_true',
@@ -180,6 +187,7 @@ class CreateContainer(command.ShowOne):
             opts['interactive'] = True
         opts['hints'] = zun_utils.format_args(parsed_args.hint)
         opts['nets'] = zun_utils.parse_nets(parsed_args.net)
+        opts['mounts'] = zun_utils.parse_mounts(parsed_args.mount)
         opts['runtime'] = parsed_args.runtime
         opts['hostname'] = parsed_args.hostname
 
@@ -681,6 +689,13 @@ class RunContainer(command.ShowOne):
                  'v4-fixed-ip: IPv4 fixed address for container. '
                  'v6-fixed-ip: IPv6 fixed address for container.')
         parser.add_argument(
+            '--mount',
+            action='append',
+            default=[],
+            metavar='<mount>',
+            help='A dictionary to configure volumes mounted inside the '
+                 'container.')
+        parser.add_argument(
             '--rm',
             dest='auto_remove',
             action='store_true',
@@ -723,6 +738,7 @@ class RunContainer(command.ShowOne):
             opts['interactive'] = True
         opts['hints'] = zun_utils.format_args(parsed_args.hint)
         opts['nets'] = zun_utils.parse_nets(parsed_args.net)
+        opts['mounts'] = zun_utils.parse_mounts(parsed_args.mount)
         opts['runtime'] = parsed_args.runtime
         opts['hostname'] = parsed_args.hostname
 

@@ -23,7 +23,7 @@ CREATION_ATTRIBUTES = ['name', 'image', 'command', 'cpu', 'memory',
                        'environment', 'workdir', 'labels', 'image_pull_policy',
                        'restart_policy', 'interactive', 'image_driver',
                        'security_groups', 'hints', 'nets', 'auto_remove',
-                       'runtime', 'hostname']
+                       'runtime', 'hostname', 'mounts']
 
 
 class Container(base.Resource):

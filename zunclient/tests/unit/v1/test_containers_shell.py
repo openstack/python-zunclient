@@ -12,6 +12,7 @@
 
 import mock
 
+from zunclient.common.apiclient import exceptions as apiexec
 from zunclient.common import utils as zun_utils
 from zunclient.common.websocketclient import exceptions
 from zunclient.tests.unit.v1 import shell_test_base
@@ -166,6 +167,39 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
             'run --runtime wrong x',
             self._invalid_choice_error)
         self.assertFalse(mock_run.called)
+
+    @mock.patch('zunclient.v1.containers_shell._show_container')
+    @mock.patch('zunclient.v1.containers.ContainerManager.run')
+    def test_zun_container_run_with_mount(
+            self, mock_run, mock_show_container):
+        mock_run.return_value = 'container'
+        self._test_arg_success(
+            'run --mount source=s,destination=d x')
+        mock_show_container.assert_called_once_with('container')
+
+    def test_zun_container_run_with_mount_invalid_format(self):
+        self.assertRaisesRegex(
+            apiexec.CommandError, 'Invalid mounts argument',
+            self.shell,
+            'run --mount source,destination=d x')
+
+    def test_zun_container_run_with_mount_missed_key(self):
+        self.assertRaisesRegex(
+            apiexec.CommandError, 'Invalid mounts argument',
+            self.shell,
+            'run --mount source=s x')
+
+    def test_zun_container_run_with_mount_duplicated_key(self):
+        self.assertRaisesRegex(
+            apiexec.CommandError, 'Invalid mounts argument',
+            self.shell,
+            'run --mount source=s,source=s,destination=d x')
+
+    def test_zun_container_run_with_mount_invalid_key(self):
+        self.assertRaisesRegex(
+            apiexec.CommandError, 'Invalid mounts argument',
+            self.shell,
+            'run --mount invalid=s,destination=d x')
 
     @mock.patch('zunclient.v1.containers_shell._show_container')
     @mock.patch('zunclient.v1.containers.ContainerManager.run')

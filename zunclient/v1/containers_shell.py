@@ -112,6 +112,12 @@ def _show_container(container):
                 'port: attach container to the neutron port with this UUID. '
                 'v4-fixed-ip: IPv4 fixed address for container. '
                 'v6-fixed-ip: IPv6 fixed address for container.')
+@utils.arg('--mount',
+           action='append',
+           default=[],
+           metavar='<mount>',
+           help='A dictionary to configure volumes mounted inside the '
+                'container.')
 @utils.arg('--runtime',
            metavar='<runtime>',
            choices=['runc'],
@@ -136,6 +142,7 @@ def do_create(cs, args):
     opts['image_driver'] = args.image_driver
     opts['hints'] = zun_utils.format_args(args.hint)
     opts['nets'] = zun_utils.parse_nets(args.net)
+    opts['mounts'] = zun_utils.parse_mounts(args.mount)
     opts['runtime'] = args.runtime
     opts['hostname'] = args.hostname
 
@@ -503,6 +510,12 @@ def do_kill(cs, args):
                 'port: attach container to the neutron port with this UUID. '
                 'v4-fixed-ip: IPv4 fixed address for container. '
                 'v6-fixed-ip: IPv6 fixed address for container.')
+@utils.arg('--mount',
+           action='append',
+           default=[],
+           metavar='<mount>',
+           help='A dictionary to configure volumes mounted inside the '
+                'container.')
 @utils.arg('--runtime',
            metavar='<runtime>',
            choices=['runc'],
@@ -527,6 +540,7 @@ def do_run(cs, args):
     opts['image_driver'] = args.image_driver
     opts['hints'] = zun_utils.format_args(args.hint)
     opts['nets'] = zun_utils.parse_nets(args.net)
+    opts['mounts'] = zun_utils.parse_mounts(args.mount)
     opts['runtime'] = args.runtime
     opts['hostname'] = args.hostname
 
