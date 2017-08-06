@@ -654,20 +654,13 @@ def do_stats(cs, args):
 @utils.arg('container',
            metavar='<container>',
            help='ID or name of the container to commit.')
-@utils.arg('--repository',
-           metavar='<repository>',
-           required=True,
-           help='The repository of the image.')
-@utils.arg('--tag',
-           metavar='<tag>',
-           help='The tag of the image')
+@utils.arg('repository',
+           metavar='<repository>[:<tag>]',
+           help='The repository and tag of the image.')
 def do_commit(cs, args):
     """Create a new image from a container's changes."""
-    opts = {}
-    if args.repository is not None:
-        opts['repository'] = args.repository
-    if args.tag is not None:
-        opts['tag'] = args.tag
+    opts = zun_utils.check_commit_container_args(args)
+    opts = zun_utils.remove_null_parms(**opts)
     try:
         image = cs.containers.commit(args.container, **opts)
         print("Request to commit container %s has been accepted. "
