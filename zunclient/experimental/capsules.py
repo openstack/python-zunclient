@@ -104,3 +104,9 @@ class CapsuleManager(base.Manager):
     def delete(self, id, force):
         return self._delete(self._path(id),
                             qparams={'force': force})
+
+    def describe(self, id):
+        try:
+            return self._list(self._path(id))[0]
+        except IndexError:
+            return None
