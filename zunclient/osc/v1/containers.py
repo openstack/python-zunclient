@@ -923,22 +923,15 @@ class CommitContainer(command.Command):
             metavar='<container>',
             help='ID or name of the (container)s to commit.')
         parser.add_argument(
-            '--repository',
-            required=True,
-            metavar='<repository>',
-            help='Repository of the new image.')
-        parser.add_argument(
-            '--tag',
-            metavar='<tag>',
-            help='Tag of the new iamge')
+            'repository',
+            metavar='<repository>[:<tag>]',
+            help='Repository and tag of the new image.')
         return parser
 
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         container = parsed_args.container
-        opts = {}
-        opts['repository'] = parsed_args.repository
-        opts['tag'] = parsed_args.tag
+        opts = zun_utils.check_commit_container_args(parsed_args)
         opts = zun_utils.remove_null_parms(**opts)
         try:
             image = client.containers.commit(container, **opts)

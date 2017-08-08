@@ -132,6 +132,18 @@ def check_restart_policy(policy):
     return restart_policy
 
 
+def check_commit_container_args(commit_args):
+    opts = {}
+    if commit_args.repository is not None:
+        if ':' in commit_args.repository:
+            args_list = commit_args.repository.split(':')
+            opts['repository'] = args_list[0]
+            opts['tag'] = args_list[1]
+        else:
+            opts['repository'] = commit_args.repository
+    return opts
+
+
 def remove_null_parms(**kwargs):
     new = {}
     for (key, value) in kwargs.items():
