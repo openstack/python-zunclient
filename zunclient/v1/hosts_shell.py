@@ -40,6 +40,7 @@ def do_host_list(cs, args):
     opts['limit'] = args.limit
     opts['sort_key'] = args.sort_key
     opts['sort_dir'] = args.sort_dir
+    opts = zun_utils.remove_null_parms(**opts)
     hosts = cs.hosts.list(**opts)
     columns = ('uuid', 'hostname', 'mem_total', 'cpus', 'os', 'labels')
     utils.print_list(hosts, columns,

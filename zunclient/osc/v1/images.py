@@ -15,6 +15,8 @@ import logging
 from osc_lib.command import command
 from osc_lib import utils
 
+from zunclient.common import utils as zun_utils
+
 
 def _image_columns(image):
     return image._info.keys()
@@ -61,6 +63,7 @@ class ListImage(command.Lister):
         opts['limit'] = parsed_args.limit
         opts['sort_key'] = parsed_args.sort_key
         opts['sort_dir'] = parsed_args.sort_dir
+        opts = zun_utils.remove_null_parms(**opts)
         images = client.images.list(**opts)
         columns = ('uuid', 'image_id', 'repo', 'tag', 'size')
         return (columns, (utils.get_item_properties(image, columns)
