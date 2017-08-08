@@ -17,7 +17,6 @@ from osc_lib import utils
 
 
 def _host_columns(host):
-    del host._info['links']
     return host._info.keys()
 
 
