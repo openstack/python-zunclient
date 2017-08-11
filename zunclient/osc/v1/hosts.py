@@ -15,6 +15,8 @@ import logging
 from osc_lib.command import command
 from osc_lib import utils
 
+from zunclient.common import utils as zun_utils
+
 
 def _host_columns(host):
     del host._info['links']
@@ -62,6 +64,7 @@ class ListHost(command.Lister):
         opts['limit'] = parsed_args.limit
         opts['sort_key'] = parsed_args.sort_key
         opts['sort_dir'] = parsed_args.sort_dir
+        opts = zun_utils.remove_null_parms(**opts)
         hosts = client.hosts.list(**opts)
         columns = ('uuid', 'hostname', 'mem_total', 'cpus', 'os', 'labels')
         return (columns, (utils.get_item_properties(host, columns)

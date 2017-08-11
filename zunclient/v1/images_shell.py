@@ -51,6 +51,7 @@ def do_image_list(cs, args):
     opts['limit'] = args.limit
     opts['sort_key'] = args.sort_key
     opts['sort_dir'] = args.sort_dir
+    opts = zun_utils.remove_null_parms(**opts)
     images = cs.images.list(**opts)
     columns = ('uuid', 'image_id', 'repo', 'tag', 'size')
     utils.print_list(images, columns,
