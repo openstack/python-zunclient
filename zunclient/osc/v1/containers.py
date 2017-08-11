@@ -127,7 +127,7 @@ class CreateContainer(command.ShowOne):
                  'May be used multiple times.')
         parser.add_argument(
             '--net',
-            metavar='<auto, networks=networks, port=port-uuid,'
+            metavar='<auto, network=network, port=port-uuid,'
                     'v4-fixed-ip=ip-addr,v6-fixed-ip=ip-addr>',
             action='append',
             default=[],
@@ -657,7 +657,7 @@ class RunContainer(command.ShowOne):
                  'May be used multiple times.')
         parser.add_argument(
             '--net',
-            metavar='<auto, networks=networks, port=port-uuid,'
+            metavar='<auto, network=network, port=port-uuid,'
                     'v4-fixed-ip=ip-addr,v6-fixed-ip=ip-addr>',
             action='append',
             default=[],
