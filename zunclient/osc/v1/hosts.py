@@ -19,7 +19,6 @@ from zunclient.common import utils as zun_utils
 
 
 def _host_columns(host):
-    del host._info['links']
     return host._info.keys()
 
 
