@@ -689,3 +689,24 @@ def do_add_security_group(cs, args):
     except Exception as e:
         print("Add security group for container %(container)s "
               "failed: %(e)s" % {'container': args.container, 'e': e})
+
+
+@utils.arg('container',
+           metavar='<container>',
+           help='ID or name of the container to detach the network.')
+@utils.arg('network',
+           metavar='<network>',
+           help='The neutron network that container will detach from.')
+def do_network_detach(cs, args):
+    """Detach a network from the container."""
+    opts = {}
+    opts['container'] = args.container
+    opts['network'] = args.network
+    opts = zun_utils.remove_null_parms(**opts)
+    try:
+        cs.containers.network_detach(**opts)
+        print("Request to detach network from container %s "
+              "has been accepted." % args.container)
+    except Exception as e:
+        print("Detach network from container %(container)s "
+              "failed: %(e)s" % {'container': args.container, 'e': e})
