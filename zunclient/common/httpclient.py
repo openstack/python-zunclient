@@ -411,7 +411,7 @@ def _construct_http_client(*args, **kwargs):
     auth = kwargs.pop('auth', None)
 
     if session:
-        service_type = kwargs.pop('service_type', 'baremetal')
+        service_type = kwargs.pop('service_type', 'container')
         interface = kwargs.pop('endpoint_type', None)
         region_name = kwargs.pop('region_name', None)
         return SessionClient(session=session,
