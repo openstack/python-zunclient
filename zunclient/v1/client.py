@@ -15,7 +15,6 @@
 
 from keystoneauth1 import loading
 from keystoneauth1 import session as ksa_session
-from oslo_utils import importutils
 
 from zunclient.common import httpclient
 from zunclient.v1 import containers
@@ -23,99 +22,108 @@ from zunclient.v1 import hosts
 from zunclient.v1 import images
 from zunclient.v1 import services
 
-profiler = importutils.try_import("osprofiler.profiler")
-
 
 class Client(object):
-    def __init__(self, username=None, api_key=None, project_id=None,
-                 project_name=None, auth_url=None, zun_url=None,
-                 endpoint_type=None, endpoint_override=None,
-                 service_type='container',
-                 region_name=None, input_auth_token=None,
-                 session=None, password=None, auth_type='password',
-                 interface='public', service_name=None, insecure=False,
-                 user_domain_id=None, user_domain_name=None,
+    """Top-level object to access the OpenStack Container API."""
+
+    def __init__(self, api_version=None, auth_token=None,
+                 auth_type='password', auth_url=None, endpoint_override=None,
+                 interface='public', insecure=False, password=None,
                  project_domain_id=None, project_domain_name=None,
-                 api_version=None, **kwargs):
+                 project_id=None, project_name=None, region_name=None,
+                 service_name=None, service_type='container', session=None,
+                 user_domain_id=None, user_domain_name=None,
+                 username=None, **kwargs):
+        """Initialization of Client object.
 
-        # fix (yolanda): os-cloud-config is using endpoint_override
-        # instead of zun_url
-        if endpoint_override and not zun_url:
-            zun_url = endpoint_override
-
-        if zun_url and input_auth_token:
+        :param api_version: Container API version
+        :type api_version: zunclient.api_version.APIVersion
+        :param str auth_token: Auth token
+        :param str auth_url: Auth URL
+        :param str auth_type: Auth Type
+        :param str endpoint_override: Bypass URL
+        :param str interface: Interface
+        :param str insecure: Allow insecure
+        :param str password: User password
+        :param str project_domain_id: ID of project domain
+        :param str project_domain_name: Nam of project domain
+        :param str project_id: Project/Tenant ID
+        :param str project_name: Project/Tenant Name
+        :param str region_name: Region Name
+        :param str service_name: Service Name
+        :param str service_type: Service Type
+        :param str session: Session
+        :param str user_domain_id: ID of user domain
+        :param str user_id: User ID
+        :param str username: Username
+        """
+        if endpoint_override and auth_token:
             auth_type = 'admin_token'
             session = None
-            loader_kwargs = dict(
-                token=input_auth_token,
-                endpoint=zun_url)
-        elif input_auth_token and not session:
+            loader_kwargs = {
+                'token': auth_token,
+                'endpoint': endpoint_override
+            }
+        elif auth_token and not session:
             auth_type = 'token'
-            loader_kwargs = dict(
-                token=input_auth_token,
-                auth_url=auth_url,
-                project_id=project_id,
-                project_name=project_name,
-                user_domain_id=user_domain_id,
-                user_domain_name=user_domain_name,
-                project_domain_id=project_domain_id,
-                project_domain_name=project_domain_name)
+            loader_kwargs = {
+                'token': auth_token,
+                'auth_url': auth_url,
+                'project_domain_id': project_domain_id,
+                'project_domain_name': project_domain_name,
+                'project_id': project_id,
+                'project_name': project_name,
+                'user_domain_id': user_domain_id,
+                'user_domain_name': user_domain_name
+            }
         else:
-            loader_kwargs = dict(
-                username=username,
-                password=password,
-                auth_url=auth_url,
-                project_id=project_id,
-                project_name=project_name,
-                user_domain_id=user_domain_id,
-                user_domain_name=user_domain_name,
-                project_domain_id=project_domain_id,
-                project_domain_name=project_domain_name)
+            loader_kwargs = {
+                'auth_url': auth_url,
+                'password': password,
+                'project_domain_id': project_domain_id,
+                'project_domain_name': project_domain_name,
+                'project_id': project_id,
+                'project_name': project_name,
+                'user_domain_id': user_domain_id,
+                'user_domain_name': user_domain_name,
+                'username': username,
+            }
 
         # Backwards compatibility for people not passing in Session
         if session is None:
             loader = loading.get_plugin_loader(auth_type)
-
             # This should be able to handle v2 and v3 Keystone Auth
             auth_plugin = loader.load_from_options(**loader_kwargs)
-            session = ksa_session.Session(
-                auth=auth_plugin, verify=(not insecure))
-
+            session = ksa_session.Session(auth=auth_plugin,
+                                          verify=(not insecure))
         client_kwargs = {}
-        if zun_url:
-            client_kwargs['endpoint_override'] = zun_url
-
-        if not zun_url:
+        if not endpoint_override:
             try:
                 # Trigger an auth error so that we can throw the exception
                 # we always have
                 session.get_endpoint(
-                    service_type=service_type,
                     service_name=service_name,
+                    service_type=service_type,
                     interface=interface,
-                    region_name=region_name)
+                    region_name=region_name
+                )
             except Exception:
-                raise RuntimeError("Not Authorized")
+                raise RuntimeError('Not authorized')
+        else:
+            client_kwargs = {'endpoint_override': endpoint_override}
 
-        self.http_client = httpclient.SessionClient(
-            service_type=service_type,
-            service_name=service_name,
-            interface=interface,
-            region_name=region_name,
-            session=session,
-            api_version=api_version,
-            **client_kwargs)
+        self.http_client = httpclient.SessionClient(service_type=service_type,
+                                                    service_name=service_name,
+                                                    interface=interface,
+                                                    region_name=region_name,
+                                                    session=session,
+                                                    api_version=api_version,
+                                                    **client_kwargs)
         self.containers = containers.ContainerManager(self.http_client)
         self.images = images.ImageManager(self.http_client)
         self.services = services.ServiceManager(self.http_client)
         self.hosts = hosts.HostManager(self.http_client)
 
-        profile = kwargs.pop("profile", None)
-        if profiler and profile:
-            # Initialize the root of the future trace: the created trace ID
-            # will be used as the very first parent to which all related
-            # traces will be bound to. The given HMAC key must correspond to
-            # the one set in zun-api zun.conf, otherwise the latter
-            # will fail to check the request signature and will skip
-            # initialization of osprofiler on the server side.
-            profiler.init(profile)
+    @property
+    def api_version(self):
+        return self.http_client.api_version
