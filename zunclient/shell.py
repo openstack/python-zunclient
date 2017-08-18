@@ -53,11 +53,11 @@ except ImportError:
     pass
 
 from zunclient import api_versions
+from zunclient import client
 from zunclient.common.apiclient import auth
 from zunclient.common import cliutils
 from zunclient import exceptions as exc
 from zunclient.i18n import _
-from zunclient.v1 import client as client_v1
 from zunclient.v1 import shell as shell_v1
 from zunclient import version
 
@@ -136,7 +136,7 @@ class SecretsHelper(object):
         if not HAS_KEYRING or not self.args.os_cache:
             return
         if (auth_token == self.auth_token and
-           management_url == self.management_url):
+                management_url == self.management_url):
             # Nothing changed....
             return
         if not all([management_url, auth_token, tenant_id]):
@@ -575,16 +575,16 @@ class OpenStackZunShell(object):
                     os_auth_url = auth_plugin.get_auth_url()
 
             if not os_auth_url:
-                    raise exc.CommandError("You must provide an auth url "
-                                           "via either --os-auth-url or "
-                                           "env[OS_AUTH_URL] or specify an "
-                                           "auth_system which defines a "
-                                           "default url with --os-auth-system "
-                                           "or env[OS_AUTH_SYSTEM]")
+                raise exc.CommandError("You must provide an auth url "
+                                       "via either --os-auth-url or "
+                                       "env[OS_AUTH_URL] or specify an "
+                                       "auth_system which defines a "
+                                       "default url with --os-auth-system "
+                                       "or env[OS_AUTH_SYSTEM]")
 
-# NOTE: The Zun client authenticates when you create it. So instead of
-#       creating here and authenticating later, which is what the novaclient
-#       does, we just create the client later.
+        # NOTE: The Zun client authenticates when you create it. So instead of
+        #       creating here and authenticating later, which is what the
+        #       novaclient does, we just create the client later.
 
         # Now check for the password/token of which pieces of the
         # identifying keyring key can come from the underlying client
@@ -608,19 +608,13 @@ class OpenStackZunShell(object):
                         '--os-password, env[OS_PASSWORD], or '
                         'prompted response')
 
-        try:
-            client = {
-                '1': client_v1,
-            }[api_version.ver_major]
-        except KeyError:
-            client = client_v1
-
         kwargs = {}
         if profiler:
             kwargs["profile"] = args.profile
 
-        self.cs = client.Client(username=os_username,
-                                api_key=os_password,
+        self.cs = client.Client(version=api_version,
+                                username=os_username,
+                                password=os_password,
                                 project_id=os_project_id,
                                 project_name=os_project_name,
                                 user_domain_id=os_user_domain_id,
@@ -630,10 +624,9 @@ class OpenStackZunShell(object):
                                 auth_url=os_auth_url,
                                 service_type=service_type,
                                 region_name=args.os_region_name,
-                                zun_url=bypass_url,
-                                endpoint_type=endpoint_type,
+                                endpoint_override=bypass_url,
+                                interface=endpoint_type,
                                 insecure=insecure,
-                                api_version=api_version,
                                 **kwargs)
 
         args.func(self.cs, args)
