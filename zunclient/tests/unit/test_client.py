@@ -15,24 +15,35 @@
 import mock
 import testtools
 
+from zunclient import api_versions
 from zunclient import client
+from zunclient import exceptions
 
 
 class ClientTest(testtools.TestCase):
 
     @mock.patch('zunclient.v1.client.Client')
-    def test_no_version_argument(self, mock_zun_client):
-        client.Client(input_auth_token='mytoken', zun_url='http://myurl/')
-        mock_zun_client.assert_called_with(
-            input_auth_token='mytoken', zun_url='http://myurl/')
+    def test_no_version_argument(self, mock_zun_client_v1):
+        client.Client(auth_url='http://example/identity',
+                      username='admin')
+        api_version = api_versions.get_api_version('1')
+        mock_zun_client_v1.assert_called_with(
+            api_version=api_version,
+            auth_url='http://example/identity',
+            username='admin')
 
     @mock.patch('zunclient.v1.client.Client')
-    def test_valid_version_argument(self, mock_zun_client):
-        client.Client(version='1', zun_url='http://myurl/')
-        mock_zun_client.assert_called_with(zun_url='http://myurl/')
+    def test_valid_version_argument(self, mock_zun_client_v1):
+        client.Client(version='1',
+                      auth_url='http://example/identity',
+                      username='admin')
+        api_version = api_versions.get_api_version('1')
+        mock_zun_client_v1.assert_called_with(
+            api_version=api_version,
+            auth_url='http://example/identity',
+            username='admin')
 
-    @mock.patch('zunclient.v1.client.Client')
-    def test_invalid_version_argument(self, mock_zun_client):
+    def test_invalid_version_argument(self):
         self.assertRaises(
-            ValueError,
-            client.Client, version='2', zun_url='http://myurl/')
+            exceptions.UnsupportedVersion,
+            client.Client, version='2')

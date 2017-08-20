@@ -12,13 +12,29 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from zunclient.v1 import client
+from oslo_utils import importutils
+
+from zunclient import api_versions
+from zunclient import exceptions
+from zunclient.i18n import _
 
 
-def Client(version='1', **kwargs):
-    """Factory function to create a new container service client."""
-    if version != '1':
-        raise ValueError(
-            "zun only has one API version. Valid values for 'version'"
-            " are '1'")
-    return client.Client(**kwargs)
+def _get_client_class_and_version(version):
+    if not isinstance(version, api_versions.APIVersion):
+        version = api_versions.get_api_version(version)
+    else:
+        api_versions.check_major_version(version)
+    if version.is_latest():
+        raise exceptions.UnsupportedVersion(
+            _('The version should be explicit, not latest.'))
+    return version, importutils.import_class(
+        'zunclient.v%s.client.Client' % version.ver_major)
+
+
+def Client(version='1', username=None, auth_url=None, **kwargs):
+    """Initialize client objects based on given version"""
+    api_version, client_class = _get_client_class_and_version(version)
+    return client_class(api_version=api_version,
+                        auth_url=auth_url,
+                        username=username,
+                        **kwargs)
