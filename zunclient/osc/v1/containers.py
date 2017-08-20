@@ -970,3 +970,34 @@ class AddSecurityGroup(command.Command):
         except Exception as e:
             print("Add security group for container %(container)s failed: "
                   "%(e)s" % {'container': parsed_args.container, 'e': e})
+
+
+class NetworkDetach(command.Command):
+    """Detach neutron network from specified container."""
+    log = logging.getLogger(__name__ + ".NetworkDetach")
+
+    def get_parser(self, prog_name):
+        parser = super(NetworkDetach, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help='ID or name of the container to detach network.')
+        parser.add_argument(
+            'network',
+            metavar='<network>',
+            help='The network for specified container to detach.')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        opts = {}
+        opts['container'] = parsed_args.container
+        opts['network'] = parsed_args.network
+        opts = zun_utils.remove_null_parms(**opts)
+        try:
+            client.containers.network_detach(**opts)
+            print("Request to detach network for container %s "
+                  "has been accepted." % parsed_args.container)
+        except Exception as e:
+            print("Detach network for container %(container)s failed: "
+                  "%(e)s" % {'container': parsed_args.container, 'e': e})
