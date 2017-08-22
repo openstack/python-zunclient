@@ -186,24 +186,21 @@ class ShellTest(utils.TestCase):
         else:
             self.fail('CommandError not raised')
 
-    # FIXME(madhuri) Remove this harcoded v1 Client class.
-    #                In future, when a new version of API will
-    #                introduce, this needs to be dynamic then.
-    @mock.patch('zunclient.v1.client.Client')
+    @mock.patch('zunclient.client.Client')
     def test_service_type(self, mock_client):
         self.make_env()
         self.shell('service-list')
         _, client_kwargs = mock_client.call_args_list[0]
         self.assertEqual('container', client_kwargs['service_type'])
 
-    @mock.patch('zunclient.v1.client.Client')
+    @mock.patch('zunclient.client.Client')
     def test_container_format_env(self, mock_client):
         self.make_env()
         self.shell('create --environment key=value test')
         _, create_args = mock_client.return_value.containers.create.call_args
         self.assertEqual({'key': 'value'}, create_args['environment'])
 
-    @mock.patch('zunclient.v1.client.Client')
+    @mock.patch('zunclient.client.Client')
     def test_insecure(self, mock_client):
         self.make_env()
         self.shell('--insecure service-list')
@@ -238,18 +235,18 @@ class ShellTest(utils.TestCase):
         self.assertIn('Command-line interface to the OpenStack Zun API',
                       sys.stdout.getvalue())
 
-    @mock.patch('zunclient.v1.client.Client')
+    @mock.patch('zunclient.client.Client')
     def _test_main_region(self, command, expected_region_name, mock_client):
         self.shell(command)
         mock_client.assert_called_once_with(
-            username='username', api_key='password',
-            endpoint_type='publicURL', project_id=None,
+            username='username', password='password',
+            interface='publicURL', project_id=None,
             project_name='project_name', auth_url=self.AUTH_URL,
             service_type='container', region_name=expected_region_name,
             project_domain_id='', project_domain_name='',
             user_domain_id='', user_domain_name='', profile=None,
-            zun_url=None, insecure=False,
-            api_version=api_versions.APIVersion('1.4'))
+            endpoint_override=None, insecure=False,
+            version=api_versions.APIVersion('1.4'))
 
     def test_main_option_region(self):
         self.make_env()
@@ -265,33 +262,33 @@ class ShellTest(utils.TestCase):
         self.make_env()
         self._test_main_region('service-list', None)
 
-    @mock.patch('zunclient.v1.client.Client')
+    @mock.patch('zunclient.client.Client')
     def test_main_endpoint_public(self, mock_client):
         self.make_env()
         self.shell('--endpoint-type publicURL service-list')
         mock_client.assert_called_once_with(
-            username='username', api_key='password',
-            endpoint_type='publicURL', project_id=None,
+            username='username', password='password',
+            interface='publicURL', project_id=None,
             project_name='project_name', auth_url=self.AUTH_URL,
             service_type='container', region_name=None,
             project_domain_id='', project_domain_name='',
             user_domain_id='', user_domain_name='', profile=None,
-            zun_url=None, insecure=False,
-            api_version=api_versions.APIVersion('1.4'))
+            endpoint_override=None, insecure=False,
+            version=api_versions.APIVersion('1.4'))
 
-    @mock.patch('zunclient.v1.client.Client')
+    @mock.patch('zunclient.client.Client')
     def test_main_endpoint_internal(self, mock_client):
         self.make_env()
         self.shell('--endpoint-type internalURL service-list')
         mock_client.assert_called_once_with(
-            username='username', api_key='password',
-            endpoint_type='internalURL', project_id=None,
+            username='username', password='password',
+            interface='internalURL', project_id=None,
             project_name='project_name', auth_url=self.AUTH_URL,
             service_type='container', region_name=None,
             project_domain_id='', project_domain_name='',
             user_domain_id='', user_domain_name='', profile=None,
-            zun_url=None, insecure=False,
-            api_version=api_versions.APIVersion('1.4'))
+            endpoint_override=None, insecure=False,
+            version=api_versions.APIVersion('1.4'))
 
 
 class ShellTestKeystoneV3(ShellTest):
@@ -310,16 +307,16 @@ class ShellTestKeystoneV3(ShellTest):
             'GET', v3_url, json=_create_ver_list([v3_version]),
             status_code=200)
 
-    @mock.patch('zunclient.v1.client.Client')
+    @mock.patch('zunclient.client.Client')
     def test_main_endpoint_public(self, mock_client):
         self.make_env(fake_env=FAKE_ENV4)
         self.shell('--endpoint-type publicURL service-list')
         mock_client.assert_called_once_with(
-            username='username', api_key='password',
-            endpoint_type='publicURL', project_id='project_id',
+            username='username', password='password',
+            interface='publicURL', project_id='project_id',
             project_name=None, auth_url=self.AUTH_URL,
             service_type='container', region_name=None,
             project_domain_id='', project_domain_name='Default',
             user_domain_id='', user_domain_name='Default',
-            zun_url=None, insecure=False, profile=None,
-            api_version=api_versions.APIVersion('1.4'))
+            endpoint_override=None, insecure=False, profile=None,
+            version=api_versions.APIVersion('1.4'))
