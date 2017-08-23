@@ -150,3 +150,19 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
         self.assertRaises(exceptions.ContainerStateError,
                           self.shell,
                           'run -i x ')
+
+    @mock.patch('zunclient.v1.containers_shell._show_container')
+    @mock.patch('zunclient.v1.containers.ContainerManager.run')
+    def test_zun_container_run_success_with_runtime(
+            self, mock_run, mock_show_container):
+        mock_run.return_value = 'container'
+        self._test_arg_success('run --runtime runc x')
+        mock_show_container.assert_called_once_with('container')
+
+    @mock.patch('zunclient.v1.containers.ContainerManager.run')
+    def test_zun_container_run_failure_with_wrong_runtime(
+            self, mock_run):
+        self._test_arg_failure(
+            'run --runtime wrong x',
+            self._invalid_choice_error)
+        self.assertFalse(mock_run.called)

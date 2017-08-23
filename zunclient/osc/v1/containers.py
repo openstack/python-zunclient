@@ -143,6 +143,12 @@ class CreateContainer(command.ShowOne):
             action='store_true',
             default=False,
             help='Automatically remove the container when it exits')
+        parser.add_argument(
+            '--runtime',
+            choices=['runc'],
+            metavar='<runtime>',
+            help='The container runtime tool to create container with. '
+                 'It can have following value: "runc"')
         return parser
 
     def take_action(self, parsed_args):
@@ -169,6 +175,7 @@ class CreateContainer(command.ShowOne):
             opts['interactive'] = True
         opts['hints'] = zun_utils.format_args(parsed_args.hint)
         opts['nets'] = zun_utils.parse_nets(parsed_args.net)
+        opts['runtime'] = parsed_args.runtime
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.create(**opts)
@@ -673,6 +680,12 @@ class RunContainer(command.ShowOne):
             action='store_true',
             default=False,
             help='Automatically remove the container when it exits')
+        parser.add_argument(
+            '--runtime',
+            metavar='<runtime>',
+            choices=['runc'],
+            help='The container runtime tool to create container with. '
+                 'It can have following value: "runc"')
         return parser
 
     def take_action(self, parsed_args):
@@ -699,6 +712,7 @@ class RunContainer(command.ShowOne):
             opts['interactive'] = True
         opts['hints'] = zun_utils.format_args(parsed_args.hint)
         opts['nets'] = zun_utils.parse_nets(parsed_args.net)
+        opts['runtime'] = parsed_args.runtime
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.run(**opts)

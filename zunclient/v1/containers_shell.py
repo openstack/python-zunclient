@@ -112,6 +112,11 @@ def _show_container(container):
                 'port: attach container to the neutron port with this UUID. '
                 'v4-fixed-ip: IPv4 fixed address for container. '
                 'v6-fixed-ip: IPv6 fixed address for container.')
+@utils.arg('--runtime',
+           metavar='<runtime>',
+           choices=['runc'],
+           help='The container runtime tool to create container with. '
+                'It can have following value: "runc"')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -127,6 +132,7 @@ def do_create(cs, args):
     opts['image_driver'] = args.image_driver
     opts['hints'] = zun_utils.format_args(args.hint)
     opts['nets'] = zun_utils.parse_nets(args.net)
+    opts['runtime'] = args.runtime
 
     if args.security_group:
         opts['security_groups'] = args.security_group
@@ -492,6 +498,11 @@ def do_kill(cs, args):
                 'port: attach container to the neutron port with this UUID. '
                 'v4-fixed-ip: IPv4 fixed address for container. '
                 'v6-fixed-ip: IPv6 fixed address for container.')
+@utils.arg('--runtime',
+           metavar='<runtime>',
+           choices=['runc'],
+           help='The container runtime tool to create container with. '
+                'It can have following value: "runc"')
 def do_run(cs, args):
     """Run a command in a new container."""
     opts = {}
@@ -507,6 +518,7 @@ def do_run(cs, args):
     opts['image_driver'] = args.image_driver
     opts['hints'] = zun_utils.format_args(args.hint)
     opts['nets'] = zun_utils.parse_nets(args.net)
+    opts['runtime'] = args.runtime
 
     if args.security_group:
         opts['security_groups'] = args.security_group
