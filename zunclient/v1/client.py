@@ -38,15 +38,6 @@ class Client(object):
                  project_domain_id=None, project_domain_name=None,
                  api_version=None, **kwargs):
 
-        # We have to keep the api_key are for backwards compat, but let's
-        # remove it from the rest of our code since it's not a keystone
-        # concept
-        if not password:
-            password = api_key
-        # Backwards compat for people assing in endpoint_type
-        if endpoint_type:
-            interface = endpoint_type
-
         # fix (yolanda): os-cloud-config is using endpoint_override
         # instead of zun_url
         if endpoint_override and not zun_url:
