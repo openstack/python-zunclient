@@ -20,6 +20,8 @@ from zunclient import api_versions
 from zunclient import exceptions
 from zunclient.i18n import _
 
+osprofiler_profiler = importutils.try_import("osprofiler.profiler")
+
 
 def _get_client_class_and_version(version):
     if not isinstance(version, api_versions.APIVersion):
@@ -80,6 +82,16 @@ def Client(version='1', username=None, auth_url=None, **kwargs):
     _check_arguments(kwargs, 'Queens', 'tenant_name',
                      right_name='project_name')
     _check_arguments(kwargs, 'Queens', 'tenant_id', right_name='project_id')
+
+    profile = kwargs.pop('profile', None)
+    if osprofiler_profiler and profile:
+        # Initialize the root of the future trace: the created trace ID
+        # will be used as the very first parent to which all related
+        # traces will be bound to. The given HMAC key must correspond to
+        # the one set in zun-api zun.conf, otherwise the latter
+        # will fail to check the request signature and will skip
+        # initialization of osprofiler on the server side.
+        osprofiler_profiler.init(profile)
 
     api_version, client_class = _get_client_class_and_version(version)
     return client_class(api_version=api_version,

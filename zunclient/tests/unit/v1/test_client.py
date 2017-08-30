@@ -43,7 +43,8 @@ class ClientTest(testtools.TestCase):
         mock_token.return_value = mock_auth_plugin
         session = mock.Mock()
         mock_session.return_value = session
-        client.Client(input_auth_token='mytoken', zun_url='http://myurl/')
+        client.Client(auth_token='mytoken',
+                      endpoint_override='http://myurl/')
         mock_session.assert_called_once_with(
             auth=mock_auth_plugin, verify=True)
         http_client.assert_called_once_with(
@@ -62,7 +63,7 @@ class ClientTest(testtools.TestCase):
             self, mock_session, mock_loader, http_client):
         mock_plugin = mock.Mock()
         mock_loader.return_value = mock_plugin
-        client.Client(input_auth_token='mytoken', auth_url='authurl')
+        client.Client(auth_token='mytoken', auth_url='authurl')
         mock_loader.assert_called_once_with('token')
         mock_plugin.load_from_options.assert_called_once_with(
             auth_url='authurl',
@@ -155,7 +156,7 @@ class ClientTest(testtools.TestCase):
                                                      http_client):
         session = mock.Mock()
         client.Client(session=session, zun_url='zunurl',
-                      endpoint_override='zunurl_override')
+                      endpoint_override='zunurl')
         mock_session.assert_not_called()
         http_client.assert_called_once_with(
             interface='public',
