@@ -54,7 +54,8 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
         fake_container._info = {}
         fake_container.addresses = {'private': [{'addr': '10.0.0.1'}]}
         containers_shell._show_container(fake_container)
-        mock_print_dict.assert_called_once_with({'addresses': '10.0.0.1'})
+        mock_print_dict.assert_called_once_with({'networks': 'private',
+                                                 'addresses': '10.0.0.1'})
 
     @mock.patch('zunclient.common.cliutils.print_list')
     def test_list_container(self, mock_print_list):

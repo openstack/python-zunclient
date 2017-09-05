@@ -162,15 +162,19 @@ def check_container_status(container, status):
 def format_container_addresses(container):
     addresses = getattr(container, 'addresses', {})
     output = []
+    networks = []
     try:
         for address_name, address_list in addresses.items():
             for a in address_list:
                 output.append(a['addr'])
+            networks.append(address_name)
     except Exception:
         pass
 
     setattr(container, 'addresses', ', '.join(output))
+    setattr(container, 'networks', ', '.join(networks))
     container._info['addresses'] = ', '.join(output)
+    container._info['networks'] = ', '.join(networks)
 
 
 def list_containers(containers):
