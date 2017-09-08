@@ -1015,3 +1015,34 @@ class NetworkDetach(command.Command):
         except Exception as e:
             print("Detach network for container %(container)s failed: "
                   "%(e)s" % {'container': parsed_args.container, 'e': e})
+
+
+class NetworkAttach(command.Command):
+    """Attach neutron network to specified container."""
+    log = logging.getLogger(__name__ + ".NetworkAttach")
+
+    def get_parser(self, prog_name):
+        parser = super(NetworkAttach, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help='ID or name of the container to attach network.')
+        parser.add_argument(
+            'network',
+            metavar='<network>',
+            help='The network for specified container to attach.')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        opts = {}
+        opts['container'] = parsed_args.container
+        opts['network'] = parsed_args.network
+        opts = zun_utils.remove_null_parms(**opts)
+        try:
+            client.containers.network_attach(**opts)
+            print("Request to attach network to container %s "
+                  "has been accepted." % parsed_args.container)
+        except Exception as e:
+            print("Attach network to container %(container)s failed: "
+                  "%(e)s" % {'container': parsed_args.container, 'e': e})
