@@ -722,3 +722,24 @@ def do_network_detach(cs, args):
     except Exception as e:
         print("Detach network from container %(container)s "
               "failed: %(e)s" % {'container': args.container, 'e': e})
+
+
+@utils.arg('container',
+           metavar='<container>',
+           help='ID or name of the container to attach network.')
+@utils.arg('network',
+           metavar='<network>',
+           help='The neutron network that container will attach to.')
+def do_network_attach(cs, args):
+    """Attach a network to the container."""
+    opts = {}
+    opts['container'] = args.container
+    opts['network'] = args.network
+    opts = zun_utils.remove_null_parms(**opts)
+    try:
+        cs.containers.network_attach(**opts)
+        print("Request to attach network to container %s "
+              "has been accepted." % args.container)
+    except Exception as e:
+        print("Attach network to container %(container)s "
+              "failed: %(e)s" % {'container': args.container, 'e': e})

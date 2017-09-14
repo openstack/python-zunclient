@@ -30,7 +30,7 @@ if not LOG.handlers:
 
 HEADER_NAME = "OpenStack-API-Version"
 SERVICE_TYPE = "container"
-DEFAULT_API_VERSION = '1.7'
+DEFAULT_API_VERSION = '1.8'
 
 _SUBSTITUTIONS = {}
 

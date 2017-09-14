@@ -211,3 +211,7 @@ class ContainerManager(base.Manager):
     def network_detach(self, container, network):
         return self._action(container, '/network_detach',
                             qparams={'network': network})
+
+    def network_attach(self, container, network):
+        return self._action(container, '/network_attach',
+                            qparams={'network': network})
