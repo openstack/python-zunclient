@@ -149,6 +149,11 @@ class CreateContainer(command.ShowOne):
             metavar='<runtime>',
             help='The container runtime tool to create container with. '
                  'It can have following value: "runc"')
+        parser.add_argument(
+            '--hostname',
+            metavar='<hostname>',
+            help='Container host name'
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -176,6 +181,7 @@ class CreateContainer(command.ShowOne):
         opts['hints'] = zun_utils.format_args(parsed_args.hint)
         opts['nets'] = zun_utils.parse_nets(parsed_args.net)
         opts['runtime'] = parsed_args.runtime
+        opts['hostname'] = parsed_args.hostname
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.create(**opts)
@@ -686,6 +692,11 @@ class RunContainer(command.ShowOne):
             choices=['runc'],
             help='The container runtime tool to create container with. '
                  'It can have following value: "runc"')
+        parser.add_argument(
+            '--hostname',
+            metavar='<hostname>',
+            help='Container host name'
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -713,6 +724,7 @@ class RunContainer(command.ShowOne):
         opts['hints'] = zun_utils.format_args(parsed_args.hint)
         opts['nets'] = zun_utils.parse_nets(parsed_args.net)
         opts['runtime'] = parsed_args.runtime
+        opts['hostname'] = parsed_args.hostname
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.run(**opts)

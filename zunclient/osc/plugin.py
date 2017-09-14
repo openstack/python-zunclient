@@ -22,7 +22,7 @@ LOG = logging.getLogger(__name__)
 DEFAULT_CONTAINER_API_VERSION = api_versions.DEFAULT_API_VERSION
 API_VERSION_OPTION = "os_container_api_version"
 API_NAME = "container"
-LAST_KNOWN_API_VERSION = 8
+LAST_KNOWN_API_VERSION = 9
 API_VERSIONS = {
     '1.%d' % i: 'zunclient.v1.client.Client'
     for i in range(1, LAST_KNOWN_API_VERSION + 1)

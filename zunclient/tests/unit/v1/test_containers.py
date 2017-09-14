@@ -33,7 +33,8 @@ CONTAINER1 = {'id': '1234',
               'restart_policy': 'no',
               'security_groups': ['test'],
               'auto_remove': True,
-              'runtime': 'runc'
+              'runtime': 'runc',
+              'hostname': 'testhost',
               }
 
 CONTAINER2 = {'id': '1235',
@@ -51,7 +52,8 @@ CONTAINER2 = {'id': '1235',
               'restart_policy': 'on-failure:5',
               'security_groups': ['test'],
               'auto_remove': False,
-              'runtime': 'runc'
+              'runtime': 'runc',
+              'hostname': 'testhost'
               }
 
 CREATE_CONTAINER1 = copy.deepcopy(CONTAINER1)

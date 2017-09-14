@@ -117,6 +117,10 @@ def _show_container(container):
            choices=['runc'],
            help='The container runtime tool to create container with. '
                 'It can have following value: "runc"')
+@utils.arg('--hostname',
+           metavar='<hostname>',
+           default=None,
+           help='Container host name')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -133,6 +137,7 @@ def do_create(cs, args):
     opts['hints'] = zun_utils.format_args(args.hint)
     opts['nets'] = zun_utils.parse_nets(args.net)
     opts['runtime'] = args.runtime
+    opts['hostname'] = args.hostname
 
     if args.security_group:
         opts['security_groups'] = args.security_group
@@ -503,6 +508,10 @@ def do_kill(cs, args):
            choices=['runc'],
            help='The container runtime tool to create container with. '
                 'It can have following value: "runc"')
+@utils.arg('--hostname',
+           metavar='<hostname>',
+           default=None,
+           help='Container hostname')
 def do_run(cs, args):
     """Run a command in a new container."""
     opts = {}
@@ -519,6 +528,7 @@ def do_run(cs, args):
     opts['hints'] = zun_utils.format_args(args.hint)
     opts['nets'] = zun_utils.parse_nets(args.net)
     opts['runtime'] = args.runtime
+    opts['hostname'] = args.hostname
 
     if args.security_group:
         opts['security_groups'] = args.security_group
