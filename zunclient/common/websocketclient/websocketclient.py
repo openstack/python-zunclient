@@ -67,9 +67,9 @@ class BaseClient(object):
     def tty_resize(self, height, width):
         """Resize the tty session
 
-            Get the client and send the tty size data to zun api server
-            The environment variables need to get when implement sending
-            operation.
+        Get the client and send the tty size data to zun api server
+        The environment variables need to get when implement sending
+        operation.
         """
         raise NotImplementedError()
 
@@ -239,7 +239,7 @@ class WebSocketClient(BaseClient):
             self.ws = websocket.create_connection(
                 url, skip_utf8_validation=True,
                 subprotocols=["binary", "base64"])
-            print('connected to %s ,press Enter to continue' % self.id)
+            print('connected to %s, press Enter to continue' % self.id)
             print('type %s. to disconnect' % self.escape)
         except socket.error as e:
             raise exceptions.ConnectionFailed(e)
@@ -260,9 +260,9 @@ class WebSocketClient(BaseClient):
     def tty_resize(self, height, width):
         """Resize the tty session
 
-            Get the client and send the tty size data to zun api server
-            The environment variables need to get when implement sending
-            operation.
+        Get the client and send the tty size data to zun api server
+        The environment variables need to get when implement sending
+        operation.
         """
         height = str(height)
         width = str(width)
@@ -300,9 +300,9 @@ class HTTPClient(BaseClient):
     def tty_resize(self, height, width):
         """Resize the tty session
 
-            Get the client and send the tty size data to zun api server
-            The environment variables need to get when implement sending
-            operation.
+        Get the client and send the tty size data to zun api server
+        The environment variables need to get when implement sending
+        operation.
         """
         height = str(height)
         width = str(width)
