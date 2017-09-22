@@ -166,3 +166,11 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
             'run --runtime wrong x',
             self._invalid_choice_error)
         self.assertFalse(mock_run.called)
+
+    @mock.patch('zunclient.v1.containers_shell._show_container')
+    @mock.patch('zunclient.v1.containers.ContainerManager.run')
+    def test_zun_container_run_success_with_hostname(
+        self, mock_run, mock_show):
+        mock_run.return_value = 'container'
+        self._test_arg_success('run --hostname testhost x')
+        mock_show.assert_called_once_with('container')
