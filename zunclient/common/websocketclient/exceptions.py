@@ -15,7 +15,7 @@
 
 
 class ContainerWebSocketException(Exception):
-    'base for all ContainerWebSocket interactive generated exceptions'
+    """base for all ContainerWebSocket interactive generated exceptions"""
     def __init__(self, wrapped=None, message=None):
         self.wrapped = wrapped
         if message:
