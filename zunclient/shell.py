@@ -53,10 +53,12 @@ except ImportError:
     pass
 
 from zunclient import api_versions
-from zunclient import client
+from zunclient import client as base_client
 from zunclient.common.apiclient import auth
 from zunclient.common import cliutils
 from zunclient import exceptions as exc
+from zunclient.experimental import client as client_experimental
+from zunclient.experimental import shell as shell_experimental
 from zunclient.i18n import _
 from zunclient.v1 import shell as shell_v1
 from zunclient import version
@@ -64,6 +66,7 @@ from zunclient import version
 DEFAULT_API_VERSION = api_versions.DEFAULT_API_VERSION
 DEFAULT_ENDPOINT_TYPE = 'publicURL'
 DEFAULT_SERVICE_TYPE = 'container'
+EXPERIENTAL_SERVICE_TYPE = 'container-experimental'
 
 logger = logging.getLogger(__name__)
 
@@ -361,6 +364,10 @@ class OpenStackZunShell(object):
                             action='store_true',
                             help="Do not verify https connections")
 
+        parser.add_argument('--experimental-api',
+                            action='store_true',
+                            help="Using experimental API")
+
         if profiler:
             parser.add_argument('--profile',
                                 metavar='HMAC_KEY',
@@ -382,21 +389,22 @@ class OpenStackZunShell(object):
 
         return parser
 
-    def get_subcommand_parser(self, version, do_help=False):
+    def get_subcommand_parser(self, version, experimental, do_help=False):
         parser = self.get_base_parser()
 
         self.subcommands = {}
         subparsers = parser.add_subparsers(metavar='<subcommand>')
 
         try:
-            actions_modules = {
-                '1': shell_v1.COMMAND_MODULES
-            }[version.ver_major]
+            actions_modules = shell_v1.COMMAND_MODULES
+            if experimental:
+                for items in shell_experimental.COMMAND_MODULES:
+                    actions_modules.append(items)
         except KeyError:
             actions_modules = shell_v1.COMMAND_MODULES
 
-        for actions_module in actions_modules:
-            self._find_actions(subparsers, actions_module, version, do_help)
+        for action_modules in actions_modules:
+            self._find_actions(subparsers, action_modules, version, do_help)
         self._find_actions(subparsers, self, version, do_help)
 
         self._add_bash_completion_subparser(subparsers)
@@ -504,8 +512,12 @@ class OpenStackZunShell(object):
             spot = argv.index('--endpoint_type')
             argv[spot] = '--endpoint-type'
 
+        experimental = False
+        if '--experimental-api' in argv:
+            experimental = True
+
         subcommand_parser = self.get_subcommand_parser(
-            api_version, do_help=("help" in args))
+            api_version, experimental, do_help=("help" in args))
 
         self.parser = subcommand_parser
 
@@ -549,6 +561,9 @@ class OpenStackZunShell(object):
 
         if not service_type:
             service_type = DEFAULT_SERVICE_TYPE
+
+        if experimental:
+            service_type = EXPERIENTAL_SERVICE_TYPE
 # NA - there is only one service this CLI accesses
 #            service_type = utils.get_service_type(args.func) or service_type
 
@@ -607,6 +622,11 @@ class OpenStackZunShell(object):
                         'Expecting a password provided via either '
                         '--os-password, env[OS_PASSWORD], or '
                         'prompted response')
+
+        if experimental:
+            client = client_experimental
+        else:
+            client = base_client
 
         kwargs = {}
         if profiler:
@@ -671,7 +691,6 @@ class OpenStackZunShell(object):
         """Display help about this program or one of its subcommands."""
         # NOTE(jamespage): args.command is not guaranteed with python >= 3.4
         command = getattr(args, 'command', '')
-
         if command:
             if args.command in self.subcommands:
                 self.subcommands[args.command].print_help()

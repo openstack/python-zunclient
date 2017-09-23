@@ -15,9 +15,11 @@
 #    under the License.
 
 import json
+import os
 
 from oslo_utils import netutils
-
+from six.moves.urllib import parse
+from six.moves.urllib import request
 from zunclient.common.apiclient import exceptions as apiexec
 from zunclient.common import cliutils as utils
 from zunclient import exceptions as exc
@@ -232,3 +234,24 @@ def parse_nets(ns):
 
         nets.append(net_info)
     return nets
+
+
+def normalise_file_path_to_url(path):
+    if parse.urlparse(path).scheme:
+        return path
+    path = os.path.abspath(path)
+    return parse.urljoin('file:', request.pathname2url(path))
+
+
+def base_url_for_url(url):
+    parsed = parse.urlparse(url)
+    parsed_dir = os.path.dirname(parsed.path)
+    return parse.urljoin(url, parsed_dir)
+
+
+def list_capsules(capsules):
+    columns = ('uuid', 'status', 'meta_name',
+               'meta_labels', 'containers_uuids', 'created_at', 'addresses')
+    utils.print_list(capsules, columns,
+                     {'versions': print_list_field('versions')},
+                     sortby_index=None)
