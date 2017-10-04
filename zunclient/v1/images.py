@@ -16,6 +16,7 @@ from zunclient import exceptions
 
 
 PULL_ATTRIBUTES = ['repo']
+IMAGE_SEARCH_ATTRIBUTES = ['image', 'image_driver']
 
 
 class Image(base.Resource):
@@ -94,3 +95,20 @@ class ImageManager(base.Manager):
                 raise exceptions.InvalidAttribute(
                     "Key must be in %s" % ','.join(PULL_ATTRIBUTES))
         return self._create(self._path(), new)
+
+    def search_image(self, **kwargs):
+        """Retrieves list of images based on image name and image_driver name
+
+        :returns: A list of images based on the search query
+         i.e., image_name & image_driver
+
+        """
+        image_query = {}
+        for (key, value) in kwargs.items():
+            if key in IMAGE_SEARCH_ATTRIBUTES:
+                image_query[key] = value
+            else:
+                raise exceptions.InvalidAttribute(
+                    "Key must be in %s" % ','.join(IMAGE_SEARCH_ATTRIBUTES))
+        path = ''
+        return self._search(self._path(path), image_query)

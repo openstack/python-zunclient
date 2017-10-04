@@ -57,3 +57,22 @@ def do_image_list(cs, args):
     utils.print_list(images, columns,
                      {'versions': zun_utils.print_list_field('versions')},
                      sortby_index=None)
+
+
+@utils.arg('image',
+           metavar='<image>',
+           help='Name of the image')
+@utils.arg('image_driver',
+           metavar='<image-driver>',
+           choices=['glance', 'docker'],
+           help='Name of the image driver (glance, docker)')
+def do_image_search(cs, args):
+    """Print list of available images from repository based on user query."""
+    opts = {}
+    opts['image'] = args.image
+    opts['image_driver'] = args.image_driver
+    images = cs.images.search_image(**opts)
+    columns = ('ID', 'Name', 'Tags', 'Status', 'Size', 'Metadata')
+    utils.print_list(images, columns,
+                     {'versions': zun_utils.print_list_field('versions')},
+                     sortby_index=None)
