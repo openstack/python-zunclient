@@ -46,7 +46,7 @@ echo "Running OSC commands test for Zun"
 
 export ZUNCLIENT_DIR="$BASE/new/python-zunclient"
 
-sudo chown -R jenkins:stack $ZUNCLIENT_DIR
+sudo chown -R $USER:stack $ZUNCLIENT_DIR
 
 # Go to the zunclient dir
 cd $ZUNCLIENT_DIR
@@ -54,7 +54,7 @@ cd $ZUNCLIENT_DIR
 # Run tests
 set +e
 source $BASE/new/devstack/openrc admin admin
-sudo -E -H -u jenkins ./tools/run_functional.sh
+sudo -E -H -u $USER ./tools/run_functional.sh
 
 EXIT_CODE=$?
 
