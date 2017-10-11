@@ -1,19 +1,37 @@
-===============================
-python-zunclient
-===============================
+========================
+Team and repository tags
+========================
 
-Client Library for Zun
+.. image:: https://governance.openstack.org/tc/badges/python-zunclient.svg
+    :target: https://governance.openstack.org/tc/reference/tags/index.html
+
+.. Change things from this point on
+
+==============================================
+Python bindings to the OpenStack Container API
+==============================================
+
+.. image:: https://img.shields.io/pypi/v/python-zunclient.svg
+    :target: https://pypi.python.org/pypi/python-zunclient/
+    :alt: Latest Version
 
 This is a client library for Zun built on the Zun API.
 It provides a Python API (the zunclient module)
-and a command-line tool(zun).
+and a command-line tool (zun).
 
-* Free software: Apache license
-* Documentation: https://docs.openstack.org/python-zunclient/latest/
-* Source: https://git.openstack.org/cgit/openstack/python-zunclient
-* Bugs: http://bugs.launchpad.net/python-zunclient
+* License: Apache License, Version 2.0
+* `PyPi`_ - package installation
+* `Online Documentation`_
+* `Launchpad project`_ - release management
+* `Blueprints`_ - feature specifications
+* `Bugs`_ - issue tracking
+* `Source`_
+* `How to Contribute`_
 
-Features
---------
-
-* TODO
+.. _PyPi: https://pypi.python.org/pypi/python-zunclient
+.. _Online Documentation: https://docs.openstack.org/python-zunclient/latest
+.. _Launchpad project: https://launchpad.net/zun
+.. _Blueprints: https://blueprints.launchpad.net/zun
+.. _Bugs: https://bugs.launchpad.net/zun
+.. _Source: https://git.openstack.org/cgit/openstack/python-zunclient
+.. _How to Contribute: https://docs.openstack.org/infra/manual/developers.html
