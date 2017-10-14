@@ -166,7 +166,7 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
             self, mock_run, mock_show_container):
         mock_run.return_value = 'container'
         self._test_arg_success(
-            'run --mount source=s,destination=d x')
+            'run --mount type=local,source=s,destination=d x')
         mock_show_container.assert_called_once_with('container')
 
     def test_zun_container_run_with_mount_invalid_format(self):
