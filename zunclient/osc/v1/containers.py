@@ -294,6 +294,10 @@ class DeleteContainer(command.Command):
             action='store_true',
             help='Force delete the container.')
         parser.add_argument(
+            '--stop',
+            action='store_true',
+            help='Stop the running container first before delete.')
+        parser.add_argument(
             '--all-tenants',
             action="store_true",
             default=False,
@@ -307,6 +311,7 @@ class DeleteContainer(command.Command):
             opts = {}
             opts['id'] = container
             opts['force'] = parsed_args.force
+            opts['stop'] = parsed_args.stop
             opts['all_tenants'] = parsed_args.all_tenants
             opts = zun_utils.remove_null_parms(**opts)
             try:

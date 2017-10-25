@@ -197,6 +197,9 @@ def do_list(cs, args):
 @utils.arg('-f', '--force',
            action='store_true',
            help='Force delete the container.')
+@utils.arg('-s', '--stop',
+           action='store_true',
+           help='Stop the running container first before delete.')
 @utils.arg('--all-tenants',
            action="store_true",
            default=False,
@@ -207,6 +210,7 @@ def do_delete(cs, args):
         opts = {}
         opts['id'] = container
         opts['force'] = args.force
+        opts['stop'] = args.stop
         opts['all_tenants'] = args.all_tenants
         opts = zun_utils.remove_null_parms(**opts)
         try:
