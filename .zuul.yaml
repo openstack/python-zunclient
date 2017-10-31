@@ -11,6 +11,7 @@
       - openstack/kuryr-libnetwork
       - openstack/python-zunclient
       - openstack/zun
+      - openstack/zun-tempest-plugin
 
 - project:
     name: openstack/python-zunclient

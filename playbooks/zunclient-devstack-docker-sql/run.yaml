@@ -52,6 +52,7 @@
           export PROJECTS="openstack/python-zunclient $PROJECTS"
           export PROJECTS="openstack/kuryr-libnetwork $PROJECTS"
           export PROJECTS="openstack/devstack-plugin-container $PROJECTS"
+          export PROJECTS="openstack/zun-tempest-plugin $PROJECTS"
 
           # Keep localrc to be able to set some vars in post_test_hook
           export KEEP_LOCALRC=1
