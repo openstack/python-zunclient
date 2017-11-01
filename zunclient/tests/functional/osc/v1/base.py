@@ -21,7 +21,7 @@ from zunclient.tests.functional import base
 class TestCase(base.FunctionalTestBase):
 
     def openstack(self, *args, **kwargs):
-        return self._zun_osc(*args, **kwargs)
+        return self._zun(cmd='openstack', *args, **kwargs)
 
     def get_opts(self, fields=None, output_format='json'):
         """Get options for OSC output fields format.
@@ -77,7 +77,8 @@ class TestCase(base.FunctionalTestBase):
             self.fail('Container has not run!')
         return container
 
-    def container_delete(self, identifier, ignore_exceptions=False):
+    def container_delete(self, identifier, force=True,
+                         ignore_exceptions=False):
         """Try to delete container by name or UUID.
 
         :param String identifier: Name or UUID of the container
@@ -86,9 +87,10 @@ class TestCase(base.FunctionalTestBase):
         :raise: CommandFailed exception when command fails
                 to delete a container
         """
+        arg = '--force' if force else ''
         try:
-            return self.openstack('appcontainer delete {0}'
-                                  .format(identifier))
+            return self.openstack('appcontainer delete {0} {1}'
+                                  .format(arg, identifier))
         except exceptions.CommandFailed:
             if not ignore_exceptions:
                 raise

@@ -13,7 +13,6 @@
 #    under the License.
 
 import ddt
-from tempest.lib.common.utils import data_utils
 import time
 
 from zunclient.tests.functional.osc.v1 import base
@@ -30,7 +29,7 @@ class ContainerTests(base.TestCase):
         """Check container list command.
 
         """
-        container = self.container_create(name='test')
+        container = self.container_create(name='test_list')
         container_list = self.container_list()
         self.assertIn(container['name'], [x['name'] for x in
                       container_list])
@@ -44,12 +43,11 @@ class ContainerTests(base.TestCase):
         """Check container create command.
 
         """
-        name = data_utils.rand_name('test_container')
-        container_info = self.container_create(name=name)
-        self.assertEqual(container_info['name'], name)
+        container_info = self.container_create(name='test_create')
+        self.assertEqual(container_info['name'], 'test_create')
         self.assertEqual(container_info['image'], 'cirros')
         container_list = self.container_list()
-        self.assertIn(name, [x['name'] for x in container_list])
+        self.assertIn('test_create', [x['name'] for x in container_list])
         self.container_delete(container_info['name'])
 
     def test_delete(self):
@@ -58,9 +56,9 @@ class ContainerTests(base.TestCase):
         Test steps:
         1) Create container in setUp.
         2) Delete container by name/UUID.
-        3) Check that node deleted successfully.
+        3) Check that container deleted successfully.
         """
-        container = self.container_create(name='test_del')
+        container = self.container_create(name='test_delete')
         container_list = self.container_list()
         self.assertIn(container['name'],
                       [x['name'] for x in container_list])
@@ -109,6 +107,7 @@ class ContainerTests(base.TestCase):
         self.container_rename(container['name'], new_name)
         container_list = self.container_list()
         self.assertIn(new_name, [x['name'] for x in container_list])
+        self.container_delete(new_name)
 
     def test_execute(self):
         """Check container execute command with name and UUID arguments.
@@ -131,3 +130,4 @@ class ContainerTests(base.TestCase):
         command = "sh -c 'echo hello'"
         result = self.container_execute(container['name'], command)
         self.assertIn('hello', result)
+        self.container_delete(container['name'])
