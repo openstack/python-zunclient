@@ -1,8 +1,8 @@
 - job:
     name: zunclient-devstack-docker-sql
     parent: legacy-dsvm-base
-    run: playbooks/zunclient-devstack-docker-sql/run
-    post-run: playbooks/zunclient-devstack-docker-sql/post
+    run: playbooks/zunclient-devstack-docker-sql/run.yaml
+    post-run: playbooks/zunclient-devstack-docker-sql/post.yaml
     timeout: 4200
     required-projects:
       - openstack-dev/devstack
