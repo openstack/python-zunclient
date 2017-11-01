@@ -145,10 +145,9 @@ class CreateContainer(command.ShowOne):
             help='Automatically remove the container when it exits')
         parser.add_argument(
             '--runtime',
-            choices=['runc'],
             metavar='<runtime>',
             help='The container runtime tool to create container with. '
-                 'It can have following value: "runc"')
+                 'It can have value "runc" or any other custom runtime.')
         parser.add_argument(
             '--hostname',
             metavar='<hostname>',
@@ -689,9 +688,8 @@ class RunContainer(command.ShowOne):
         parser.add_argument(
             '--runtime',
             metavar='<runtime>',
-            choices=['runc'],
             help='The container runtime tool to create container with. '
-                 'It can have following value: "runc"')
+                 'It can have value "runc" or any other custom runtime.')
         parser.add_argument(
             '--hostname',
             metavar='<hostname>',

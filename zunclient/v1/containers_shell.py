@@ -114,9 +114,8 @@ def _show_container(container):
                 'v6-fixed-ip: IPv6 fixed address for container.')
 @utils.arg('--runtime',
            metavar='<runtime>',
-           choices=['runc'],
            help='The container runtime tool to create container with. '
-                'It can have following value: "runc"')
+                'It can have value "runc" or any other custom runtime.')
 @utils.arg('--hostname',
            metavar='<hostname>',
            default=None,
@@ -505,9 +504,8 @@ def do_kill(cs, args):
                 'v6-fixed-ip: IPv6 fixed address for container.')
 @utils.arg('--runtime',
            metavar='<runtime>',
-           choices=['runc'],
            help='The container runtime tool to create container with. '
-                'It can have following value: "runc"')
+                'It can have value "runc" or any other custom runtime.')
 @utils.arg('--hostname',
            metavar='<hostname>',
            default=None,
