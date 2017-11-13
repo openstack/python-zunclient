@@ -74,6 +74,14 @@ class ContainerTests(base.TestCase):
             time.sleep(2)
             count = count + 1
         self.container_delete(container['name'])
+        # Wait for the container to be deleted
+        count = 0
+        while count < 5:
+            container_list = self.container_list()
+            if container['name'] not in [x['name'] for x in container_list]:
+                break
+            time.sleep(2)
+            count = count + 1
         container_list = self.container_list()
         self.assertNotIn(container['name'],
                          [x['name'] for x in container_list])
