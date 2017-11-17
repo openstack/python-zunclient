@@ -198,6 +198,33 @@ def parse_command(command):
     return " ".join(output)
 
 
+def parse_mounts(mounts):
+    err_msg = ("Invalid mounts argument '%s'. mounts arguments must be of "
+               "the form --mount source=<volume>,destination=<path>.")
+    parsed_mounts = []
+    for mount in mounts:
+        mount_info = {"source": "", "destination": ""}
+        for mnt in mount.split(","):
+            try:
+                k, v = mnt.split("=", 1)
+                k = k.strip()
+                v = v.strip()
+            except ValueError:
+                raise apiexec.CommandError(err_msg % mnt)
+            if k in mount_info:
+                if mount_info[k]:
+                    raise apiexec.CommandError(err_msg % mnt)
+                mount_info[k] = v
+            else:
+                raise apiexec.CommandError(err_msg % mnt)
+
+        if not mount_info['source'] or not mount_info['destination']:
+            raise apiexec.CommandError(err_msg % mnt)
+
+        parsed_mounts.append(mount_info)
+    return parsed_mounts
+
+
 def parse_nets(ns):
     err_msg = ("Invalid nets argument '%s'. nets arguments must be of "
                "the form --nets <network=network, v4-fixed-ip=ip-addr,"
