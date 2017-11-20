@@ -144,7 +144,6 @@ class BaseClient(object):
             self.quit = True
 
         data = os.read(sys.stdin.fileno(), 1024)
-        LOG.debug('read %s (%d bytes) from stdin', repr(data), len(data))
 
         if not data:
             return
@@ -173,8 +172,6 @@ class BaseClient(object):
             self.quit = True
 
         data = self.recv()
-        LOG.debug('read %s (%d bytes) from socket from container',
-                  repr(data), len(data))
         if not data:
             self.poll.unregister(self.fileno())
             self.quit = True
