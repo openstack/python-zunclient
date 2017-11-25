@@ -144,6 +144,17 @@ class Manager(object):
             url = "%s?%s" % (url, urlparse.urlencode(qparams))
         self.api.raw_request('DELETE', url)
 
+    def _search(self, url, body=None, response_key=None, obj_class=None,
+                qparams=None):
+        if qparams:
+            url = "%s?%s" % (url, urlparse.urlencode(qparams))
+
+        resp, body = self.api.json_request('SEARCH', url, body=body)
+        data = self._format_body_data(body, response_key)
+        if obj_class is None:
+            obj_class = self.resource_class
+        return [obj_class(self, res, loaded=True) for res in data if res]
+
 
 class Resource(base.Resource):
     """Represents a particular instance of an object (tenant, user, etc).

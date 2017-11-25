@@ -29,6 +29,17 @@ IMAGE2 = {'uuid': '1996ba70-b074-454b-a8fc-0895ae26c7c6',
           'tag': 'latest',
           'size': '1024',
           }
+IMAGE3 = {'uuid': '1267gf34-34e4-tf4b-b84c-1345avf6c7c6',
+          'image_id': '24r5tt6y87c6',
+          'image': 'fake-name3',
+          'tag': 'latest',
+          'size': '1024',
+          'image_driver': 'fake-driver',
+          }
+SEARCH_IMAGE = {'image': 'fake-name3',
+                'image_driver': 'fake-driver',
+                }
+
 
 fake_responses = {
     '/v1/images/':
@@ -36,6 +47,10 @@ fake_responses = {
         'GET': (
             {},
             {'images': [IMAGE1, IMAGE2]},
+        ),
+        'SEARCH': (
+            {},
+            {'images': [IMAGE3]},
         ),
     },
     '/v1/images/?limit=2':
@@ -161,3 +176,13 @@ class ImageManagerTest(testtools.TestCase):
         self._test_image_list_with_filters(
             sort_key='image_id', sort_dir='desc',
             expect=expect)
+
+    def test_image_search(self):
+        images = self.mgr.search_image(**SEARCH_IMAGE)
+        expect = [
+            ('SEARCH', '/v1/images/', {},
+             {'image': IMAGE3['image'],
+              'image_driver': IMAGE3['image_driver']}),
+        ]
+        self.assertEqual(expect, self.api.calls)
+        self.assertThat(images, matchers.HasLength(1))
