@@ -713,7 +713,7 @@ def do_commit(cs, args):
            help='ID or name of the container to add security group.')
 @utils.arg('security_group',
            metavar='<security_group>',
-           help='The security group for specified container.')
+           help='Security group ID or name for specified container.')
 def do_add_security_group(cs, args):
     """Add security group for specified container."""
     opts = {}

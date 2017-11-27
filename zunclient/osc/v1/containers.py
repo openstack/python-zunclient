@@ -999,7 +999,7 @@ class AddSecurityGroup(command.Command):
         parser.add_argument(
             'security_group',
             metavar='<security_group>',
-            help='The security group for specified container. ')
+            help='Security group ID or name for specified container. ')
         return parser
 
     def take_action(self, parsed_args):
