@@ -33,6 +33,7 @@ import websocket
 
 import docker
 
+from zunclient.common.apiclient import exceptions as acexceptions
 from zunclient.common.websocketclient import exceptions
 
 LOG = logging.getLogger(__name__)
@@ -194,6 +195,8 @@ class BaseClient(object):
             try:
                 self.tty_resize(height=rows, width=cols)
             except IOError:  # Container already exited
+                pass
+            except acexceptions.BadRequest:
                 pass
 
     def tty_size(self, fd):
