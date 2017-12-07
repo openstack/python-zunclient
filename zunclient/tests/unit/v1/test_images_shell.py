@@ -29,3 +29,14 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
         self._test_arg_failure('image-list --wrong',
                                self._unrecognized_arg_error)
         self.assertFalse(mock_list.called)
+
+    @mock.patch('zunclient.v1.images.ImageManager.get')
+    def test_zun_image_show_success(self, mock_get):
+        self._test_arg_success('image-show 111')
+        self.assertTrue(mock_get.called)
+
+    @mock.patch('zunclient.v1.images.ImageManager.get')
+    def test_zun_image_show_failure(self, mock_get):
+        self._test_arg_failure('image-show --wrong 1111',
+                               self._unrecognized_arg_error)
+        self.assertFalse(mock_get.called)

@@ -59,6 +59,13 @@ def do_image_list(cs, args):
                      sortby_index=None)
 
 
+@utils.arg('id', metavar='<uuid>', help='UUID of image to describe.')
+def do_image_show(cs, args):
+    """Describe a specific image."""
+    image = cs.images.get(args.id)
+    _show_image(image)
+
+
 @utils.arg('image',
            metavar='<image>',
            help='Name of the image')
