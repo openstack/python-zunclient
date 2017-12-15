@@ -153,7 +153,7 @@ class CreateContainer(command.ShowOne):
         parser.add_argument(
             '--runtime',
             metavar='<runtime>',
-            help='The container runtime tool to create container with. '
+            help='The runtime to use for this container. '
                  'It can have value "runc" or any other custom runtime.')
         parser.add_argument(
             '--hostname',
@@ -708,7 +708,7 @@ class RunContainer(command.ShowOne):
         parser.add_argument(
             '--runtime',
             metavar='<runtime>',
-            help='The container runtime tool to create container with. '
+            help='The runtime to use for this container. '
                  'It can have value "runc" or any other custom runtime.')
         parser.add_argument(
             '--hostname',

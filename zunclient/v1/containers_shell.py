@@ -120,7 +120,7 @@ def _show_container(container):
                 'container.')
 @utils.arg('--runtime',
            metavar='<runtime>',
-           help='The container runtime tool to create container with. '
+           help='The runtime to use for this container. '
                 'It can have value "runc" or any other custom runtime.')
 @utils.arg('--hostname',
            metavar='<hostname>',
@@ -521,7 +521,7 @@ def do_kill(cs, args):
                 'container.')
 @utils.arg('--runtime',
            metavar='<runtime>',
-           help='The container runtime tool to create container with. '
+           help='The runtime to use for this container. '
                 'It can have value "runc" or any other custom runtime.')
 @utils.arg('--hostname',
            metavar='<hostname>',
