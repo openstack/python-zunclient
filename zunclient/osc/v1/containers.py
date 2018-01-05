@@ -145,7 +145,7 @@ class CreateContainer(command.ShowOne):
             help='A dictionary to configure volumes mounted inside the '
                  'container.')
         parser.add_argument(
-            '--rm',
+            '--auto-remove',
             dest='auto_remove',
             action='store_true',
             default=False,
@@ -700,7 +700,7 @@ class RunContainer(command.ShowOne):
             help='A dictionary to configure volumes mounted inside the '
                  'container.')
         parser.add_argument(
-            '--rm',
+            '--auto-remove',
             dest='auto_remove',
             action='store_true',
             default=False,
