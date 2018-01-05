@@ -17,7 +17,7 @@ from zunclient.common import utils
 from zunclient import exceptions
 
 
-CREATION_ATTRIBUTES = ['spec']
+CREATION_ATTRIBUTES = ['template']
 
 
 class Capsule(base.Resource):
