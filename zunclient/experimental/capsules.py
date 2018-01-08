@@ -53,10 +53,10 @@ class CapsuleManager(base.Manager):
         return self._create(self._path(), new)
 
     def list(self, marker=None, limit=None, sort_key=None,
-             sort_dir=None, detail=False, all_tenants=False):
+             sort_dir=None, detail=False, all_projects=False):
         """Retrieve a list of capsules.
 
-        :param all_tenants: Optional, list containers in all tenants
+        :param all_projects: Optional, list containers in all projects
 
         :param marker: Optional, the UUID of a containers, eg the last
                        containers from a previous result set. Return
@@ -85,7 +85,7 @@ class CapsuleManager(base.Manager):
             limit = int(limit)
 
         filters = utils.common_filters(marker, limit, sort_key,
-                                       sort_dir, all_tenants)
+                                       sort_dir, all_projects)
 
         path = ''
         if detail:

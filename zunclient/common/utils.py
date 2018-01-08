@@ -37,10 +37,10 @@ VALID_UNITS = (
 
 
 def common_filters(marker=None, limit=None, sort_key=None,
-                   sort_dir=None, all_tenants=False):
+                   sort_dir=None, all_projects=False):
     """Generate common filters for any list request.
 
-    :param all_tenants: list containers in all tenants or not
+    :param all_projects: list containers in all projects or not
     :param marker: entity ID from which to start returning entities.
     :param limit: maximum number of entities to return.
     :param sort_key: field to use for sorting.
@@ -48,8 +48,8 @@ def common_filters(marker=None, limit=None, sort_key=None,
     :returns: list of string filters.
     """
     filters = []
-    if all_tenants is True:
-        filters.append('all_tenants=1')
+    if all_projects is True:
+        filters.append('all_projects=1')
     if isinstance(limit, int):
         filters.append('limit=%s' % limit)
     if marker is not None:

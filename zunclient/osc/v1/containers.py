@@ -208,17 +208,17 @@ class ShowContainer(command.ShowOne):
             metavar='<container>',
             help='ID or name of the container to show.')
         parser.add_argument(
-            '--all-tenants',
+            '--all-projects',
             action="store_true",
             default=False,
-            help='Show container(s) in all tenant by name.')
+            help='Show container(s) in all projects by name.')
         return parser
 
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         opts = {}
         opts['id'] = parsed_args.container
-        opts['all_tenants'] = parsed_args.all_tenants
+        opts['all_projects'] = parsed_args.all_projects
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.get(**opts)
         columns = _container_columns(container)
@@ -234,10 +234,10 @@ class ListContainer(command.Lister):
     def get_parser(self, prog_name):
         parser = super(ListContainer, self).get_parser(prog_name)
         parser.add_argument(
-            '--all-tenants',
+            '--all-projects',
             action="store_true",
             default=False,
-            help='List containers in all tenants')
+            help='List containers in all projects')
         parser.add_argument(
             '--marker',
             metavar='<marker>',
@@ -262,7 +262,7 @@ class ListContainer(command.Lister):
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         opts = {}
-        opts['all_tenants'] = parsed_args.all_tenants
+        opts['all_projects'] = parsed_args.all_projects
         opts['marker'] = parsed_args.marker
         opts['limit'] = parsed_args.limit
         opts['sort_key'] = parsed_args.sort_key
@@ -298,10 +298,10 @@ class DeleteContainer(command.Command):
             action='store_true',
             help='Stop the running container first before delete.')
         parser.add_argument(
-            '--all-tenants',
+            '--all-projects',
             action="store_true",
             default=False,
-            help='Delete container(s) in all tenant by name.')
+            help='Delete container(s) in all projects by name.')
         return parser
 
     def take_action(self, parsed_args):
@@ -312,7 +312,7 @@ class DeleteContainer(command.Command):
             opts['id'] = container
             opts['force'] = parsed_args.force
             opts['stop'] = parsed_args.stop
-            opts['all_tenants'] = parsed_args.all_tenants
+            opts['all_projects'] = parsed_args.all_projects
             opts = zun_utils.remove_null_parms(**opts)
             try:
                 client.containers.delete(**opts)

@@ -157,10 +157,10 @@ def do_create(cs, args):
     _show_container(cs.containers.create(**opts))
 
 
-@utils.arg('--all-tenants',
+@utils.arg('--all-projects',
            action="store_true",
            default=False,
-           help='List containers in all tenants')
+           help='List containers in all projects')
 @utils.arg('--marker',
            metavar='<marker>',
            default=None,
@@ -180,7 +180,7 @@ def do_create(cs, args):
 def do_list(cs, args):
     """Print a list of available containers."""
     opts = {}
-    opts['all_tenants'] = args.all_tenants
+    opts['all_projects'] = args.all_projects
     opts['marker'] = args.marker
     opts['limit'] = args.limit
     opts['sort_key'] = args.sort_key
@@ -200,10 +200,10 @@ def do_list(cs, args):
 @utils.arg('-s', '--stop',
            action='store_true',
            help='Stop the running container first before delete.')
-@utils.arg('--all-tenants',
+@utils.arg('--all-projects',
            action="store_true",
            default=False,
-           help='Delete container(s) in all tenant by name.')
+           help='Delete container(s) in all projects by name.')
 def do_delete(cs, args):
     """Delete specified containers."""
     for container in args.containers:
@@ -211,7 +211,7 @@ def do_delete(cs, args):
         opts['id'] = container
         opts['force'] = args.force
         opts['stop'] = args.stop
-        opts['all_tenants'] = args.all_tenants
+        opts['all_projects'] = args.all_projects
         opts = zun_utils.remove_null_parms(**opts)
         try:
             cs.containers.delete(**opts)
@@ -233,15 +233,15 @@ def do_delete(cs, args):
            help='Print representation of the container.'
                 'The choices of the output format is json,table,yaml.'
                 'Defaults to table.')
-@utils.arg('--all-tenants',
+@utils.arg('--all-projects',
            action="store_true",
            default=False,
-           help='Show container(s) in all tenant by name.')
+           help='Show container(s) in all projects by name.')
 def do_show(cs, args):
     """Show details of a container."""
     opts = {}
     opts['id'] = args.container
-    opts['all_tenants'] = args.all_tenants
+    opts['all_projects'] = args.all_projects
     opts = zun_utils.remove_null_parms(**opts)
     container = cs.containers.get(**opts)
     if args.format == 'json':

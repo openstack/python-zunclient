@@ -40,10 +40,10 @@ def do_capsule_create(cs, args):
         cs.capsules.create(**opts)
 
 
-@utils.arg('--all-tenants',
+@utils.arg('--all-projects',
            action="store_true",
            default=False,
-           help='List containers in all tenants')
+           help='List containers in all projects')
 @utils.arg('--marker',
            metavar='<marker>',
            default=None,
@@ -66,7 +66,7 @@ def do_capsule_list(cs, args):
     Add '--experimental-api' due to capsule now is the experimental API
     """
     opts = {}
-    opts['all_tenants'] = args.all_tenants
+    opts['all_projects'] = args.all_projects
     opts['marker'] = args.marker
     opts['limit'] = args.limit
     opts['sort_key'] = args.sort_key
