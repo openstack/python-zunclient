@@ -15,7 +15,6 @@
 import json
 import yaml
 
-from zunclient.i18n import _
 
 yaml_loader = yaml.SafeLoader
 
@@ -56,8 +55,5 @@ def parse(tmpl_str):
         else:
             if tpl is None:
                 tpl = {}
-    # Looking for supported version keys in the loaded template
-    if not ('CapsuleTemplateFormatVersion' in tpl
-            or 'capsule_template_version' in tpl):
-        raise ValueError(_("Template format version not found."))
+
     return tpl

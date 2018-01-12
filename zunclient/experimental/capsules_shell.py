@@ -36,8 +36,9 @@ def do_capsule_create(cs, args):
     if args.template_file:
         template = template_utils.get_template_contents(
             args.template_file)
-        opts['spec'] = template
+        opts['template'] = template
         cs.capsules.create(**opts)
+        print("Request to create capsule has been accepted.")
 
 
 @utils.arg('--all-projects',
