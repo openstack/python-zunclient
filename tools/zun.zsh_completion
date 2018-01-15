@@ -1,0 +1,29 @@
+#compdef zun
+
+local -a nbc _zun_opts _zun_flags _zun_opts_exp cur prev
+
+nbc=(${(ps: :)$(_call_program options "$service bash-completion" 2>/dev/null)})
+_zun_opts=(${nbc:#-*})
+_zun_flags=(${(M)nbc:#-*})
+_zun_opt_exp=${${nbc:#-*}// /|}
+cur=$words[CURRENT]
+prev=$words[(( CURRENT - 1 ))]
+
+_checkcomp(){
+    for word in $words[@]; do
+        if [[ -n ${_zun_opts[(r)$word]} ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+echo $_zun_opts[@] |grep --color zun
+if [[ "$prev" != "help" ]] && _checkcomp; then
+    COMPLETION_CACHE=(~/.zunclient/*/*-cache)
+    cflags=($_zun_flags[@] ${(ps: :)$(cat $COMPLETION_CACHE 2>/dev/null)})
+    compadd "$@" -d $cflags[@]
+else
+    compadd "$@" -d $_zun_opts[@]
+fi
+
