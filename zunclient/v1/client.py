@@ -21,6 +21,7 @@ from zunclient.v1 import containers
 from zunclient.v1 import hosts
 from zunclient.v1 import images
 from zunclient.v1 import services
+from zunclient.v1 import versions
 
 
 class Client(object):
@@ -123,6 +124,7 @@ class Client(object):
         self.images = images.ImageManager(self.http_client)
         self.services = services.ServiceManager(self.http_client)
         self.hosts = hosts.HostManager(self.http_client)
+        self.versions = versions.VersionManager(self.http_client)
 
     @property
     def api_version(self):

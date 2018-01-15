@@ -57,6 +57,9 @@ class FakeAPI(object):
         response = self._request(*args, **kwargs)
         return FakeResponse(response[0]), response[1]
 
+    def get_endpoint(self, *args, **kwargs):
+        return '/v1'
+
 
 class FakeConnection(object):
     def __init__(self, response=None):

@@ -17,10 +17,12 @@ from zunclient.v1 import containers_shell
 from zunclient.v1 import hosts_shell
 from zunclient.v1 import images_shell
 from zunclient.v1 import services_shell
+from zunclient.v1 import versions_shell
 
 COMMAND_MODULES = [
     containers_shell,
     images_shell,
     services_shell,
     hosts_shell,
+    versions_shell,
 ]
