@@ -126,6 +126,11 @@ def _show_container(container):
            metavar='<hostname>',
            default=None,
            help='Container host name')
+@utils.arg('--disk',
+           metavar='<disk>',
+           type=int,
+           default=None,
+           help='The disk size in GiB for per container.')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -144,6 +149,7 @@ def do_create(cs, args):
     opts['mounts'] = zun_utils.parse_mounts(args.mount)
     opts['runtime'] = args.runtime
     opts['hostname'] = args.hostname
+    opts['disk'] = args.disk
 
     if args.security_group:
         opts['security_groups'] = args.security_group
@@ -527,6 +533,11 @@ def do_kill(cs, args):
            metavar='<hostname>',
            default=None,
            help='Container hostname')
+@utils.arg('--disk',
+           metavar='<disk>',
+           type=int,
+           default=None,
+           help='The disk size in GiB for per container.')
 def do_run(cs, args):
     """Run a command in a new container."""
     opts = {}
@@ -545,6 +556,7 @@ def do_run(cs, args):
     opts['mounts'] = zun_utils.parse_mounts(args.mount)
     opts['runtime'] = args.runtime
     opts['hostname'] = args.hostname
+    opts['disk'] = args.disk
 
     if args.security_group:
         opts['security_groups'] = args.security_group

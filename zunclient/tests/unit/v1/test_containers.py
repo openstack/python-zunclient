@@ -35,6 +35,7 @@ CONTAINER1 = {'id': '1234',
               'auto_remove': True,
               'runtime': 'runc',
               'hostname': 'testhost',
+              'disk': '20',
               }
 
 CONTAINER2 = {'id': '1235',
