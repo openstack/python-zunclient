@@ -395,13 +395,10 @@ class OpenStackZunShell(object):
         self.subcommands = {}
         subparsers = parser.add_subparsers(metavar='<subcommand>')
 
-        try:
-            actions_modules = shell_v1.COMMAND_MODULES
-            if experimental:
-                for items in shell_experimental.COMMAND_MODULES:
-                    actions_modules.append(items)
-        except KeyError:
-            actions_modules = shell_v1.COMMAND_MODULES
+        actions_modules = shell_v1.COMMAND_MODULES
+        if experimental:
+            for items in shell_experimental.COMMAND_MODULES:
+                actions_modules.append(items)
 
         for action_modules in actions_modules:
             self._find_actions(subparsers, action_modules, version, do_help)
