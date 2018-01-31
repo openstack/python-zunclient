@@ -77,9 +77,11 @@ class BaseClient(object):
     def start_loop(self):
         self.poll = select.poll()
         self.poll.register(sys.stdin,
-                           select.POLLIN | select.POLLHUP | select.POLLPRI)
+                           select.POLLIN | select.POLLHUP
+                           | select.POLLPRI | select.POLLNVAL)
         self.poll.register(self.fileno(),
-                           select.POLLIN | select.POLLHUP | select.POLLPRI)
+                           select.POLLIN | select.POLLHUP |
+                           select.POLLPRI | select.POLLNVAL)
 
         self.start_of_line = False
         self.read_escape = False
