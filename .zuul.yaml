@@ -14,7 +14,6 @@
       - openstack/zun-tempest-plugin
 
 - project:
-    name: openstack/python-zunclient
     check:
       jobs:
         - zunclient-devstack-docker-sql
