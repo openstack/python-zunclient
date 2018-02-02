@@ -221,6 +221,7 @@ class ShowContainer(command.ShowOne):
         opts['all_projects'] = parsed_args.all_projects
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.get(**opts)
+        zun_utils.format_container_addresses(container)
         columns = _container_columns(container)
 
         return columns, utils.get_item_properties(container, columns)
