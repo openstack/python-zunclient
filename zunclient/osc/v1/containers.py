@@ -158,8 +158,13 @@ class CreateContainer(command.ShowOne):
         parser.add_argument(
             '--hostname',
             metavar='<hostname>',
-            help='Container host name'
-        )
+            help='Container host name')
+        parser.add_argument(
+            '--disk',
+            metavar='<disk>',
+            type=int,
+            default=None,
+            help='The disk size in GiB for per container.')
         return parser
 
     def take_action(self, parsed_args):
@@ -189,6 +194,7 @@ class CreateContainer(command.ShowOne):
         opts['mounts'] = zun_utils.parse_mounts(parsed_args.mount)
         opts['runtime'] = parsed_args.runtime
         opts['hostname'] = parsed_args.hostname
+        opts['disk'] = parsed_args.disk
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.create(**opts)
@@ -714,8 +720,13 @@ class RunContainer(command.ShowOne):
         parser.add_argument(
             '--hostname',
             metavar='<hostname>',
-            help='Container host name'
-        )
+            help='Container host name')
+        parser.add_argument(
+            '--disk',
+            metavar='<disk>',
+            type=int,
+            default=None,
+            help='The disk size in GiB for per container.')
         return parser
 
     def take_action(self, parsed_args):
@@ -745,6 +756,7 @@ class RunContainer(command.ShowOne):
         opts['mounts'] = zun_utils.parse_mounts(parsed_args.mount)
         opts['runtime'] = parsed_args.runtime
         opts['hostname'] = parsed_args.hostname
+        opts['disk'] = parsed_args.disk
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.run(**opts)
