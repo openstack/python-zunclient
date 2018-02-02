@@ -16,8 +16,8 @@
 
 import copy
 import json
-import logging
 import os
+from oslo_log import log as logging
 import socket
 import ssl
 
