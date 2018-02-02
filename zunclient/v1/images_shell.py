@@ -73,11 +73,16 @@ def do_image_show(cs, args):
            metavar='<image-driver>',
            choices=['glance', 'docker'],
            help='Name of the image driver (glance, docker)')
+@utils.arg('--exact-match',
+           default=False,
+           action='store_true',
+           help='exact match image name')
 def do_image_search(cs, args):
     """Print list of available images from repository based on user query."""
     opts = {}
     opts['image'] = args.image
     opts['image_driver'] = args.image_driver
+    opts['exact_match'] = args.exact_match
     images = cs.images.search_image(**opts)
     columns = ('ID', 'Name', 'Tags', 'Status', 'Size', 'Metadata')
     utils.print_list(images, columns,

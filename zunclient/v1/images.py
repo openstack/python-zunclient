@@ -16,7 +16,7 @@ from zunclient import exceptions
 
 
 PULL_ATTRIBUTES = ['repo']
-IMAGE_SEARCH_ATTRIBUTES = ['image', 'image_driver']
+IMAGE_SEARCH_ATTRIBUTES = ['image', 'image_driver', 'exact_match']
 
 
 class Image(base.Resource):

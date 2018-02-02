@@ -107,6 +107,11 @@ class SearchImage(command.Lister):
             'image_name',
             metavar='<image_name>',
             help='Name of the image')
+        parser.add_argument(
+            '--exact-match',
+            default=False,
+            action='store_true',
+            help='exact match image name')
         return parser
 
     def take_action(self, parsed_args):
@@ -114,6 +119,7 @@ class SearchImage(command.Lister):
         opts = {}
         opts['image_driver'] = parsed_args.image_driver
         opts['image'] = parsed_args.image_name
+        opts['exact_match'] = parsed_args.exact_match
         opts = zun_utils.remove_null_parms(**opts)
         images = client.images.search_image(**opts)
         columns = ('ID', 'Name', 'Tags', 'Status', 'Size', 'Metadata')
