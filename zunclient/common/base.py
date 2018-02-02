@@ -144,8 +144,8 @@ class Manager(object):
             url = "%s?%s" % (url, urlparse.urlencode(qparams))
         self.api.raw_request('DELETE', url)
 
-    def _search(self, url, body=None, response_key=None, obj_class=None,
-                qparams=None):
+    def _search(self, url, qparams=None, response_key=None, obj_class=None,
+                body=None):
         if qparams:
             url = "%s?%s" % (url, urlparse.urlencode(qparams))
 

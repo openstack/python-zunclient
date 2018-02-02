@@ -91,7 +91,8 @@ fake_responses = {
             {'images': [IMAGE2, IMAGE1]},
         ),
     },
-    '/v1/images/%s/search' % IMAGE3['image']:
+    '/v1/images/%s/search?image_driver=%s' % (IMAGE3['image'],
+                                              IMAGE3['image_driver']):
     {
         'GET': (
             {},
@@ -182,9 +183,10 @@ class ImageManagerTest(testtools.TestCase):
 
     def test_image_search(self):
         images = self.mgr.search_image(**SEARCH_IMAGE)
+        url = '/v1/images/%s/search?image_driver=%s' \
+              % (IMAGE3['image'], IMAGE3['image_driver'])
         expect = [
-            ('GET', '/v1/images/%s/search' % IMAGE3['image'], {},
-             {'image_driver': IMAGE3['image_driver']}),
+            ('GET', url, {}, None),
         ]
         self.assertEqual(expect, self.api.calls)
         self.assertThat(images, matchers.HasLength(1))
