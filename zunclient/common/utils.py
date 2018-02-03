@@ -200,12 +200,13 @@ def parse_command(command):
 
 def parse_mounts(mounts):
     err_msg = ("Invalid mounts argument '%s'. mounts arguments must be of "
-               "the form --mount source=<volume>,destination=<path>. Or use "
-               "--mount size=<size>,destination=<path> to create a new volume "
+               "the form --mount type=<local|cinder>,source=<volume>,"
+               "destination=<path>. Or use --mount type=<local|cinder>,"
+               "size=<size>,destination=<path> to create a new volume "
                "and mount to the container")
     parsed_mounts = []
     for mount in mounts:
-        mount_info = {"source": "", "destination": "", "size": ""}
+        mount_info = {"type": "", "source": "", "destination": "", "size": ""}
         for mnt in mount.split(","):
             try:
                 k, v = mnt.split("=", 1)
@@ -220,11 +221,15 @@ def parse_mounts(mounts):
             else:
                 raise apiexec.CommandError(err_msg % mnt)
 
+        if mount_info['type'] not in ["local", "cinder"]:
+            raise apiexec.CommandError(err_msg % mnt)
+
         if not mount_info['destination']:
             raise apiexec.CommandError(err_msg % mnt)
 
-        if not mount_info['source'] and not mount_info['size']:
-            raise apiexec.CommandError(err_msg % mnt)
+        if mount_info['type'] == 'cinder':
+            if not mount_info['source'] and not mount_info['size']:
+                raise apiexec.CommandError(err_msg % mnt)
 
         parsed_mounts.append(mount_info)
     return parsed_mounts
