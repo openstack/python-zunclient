@@ -30,8 +30,8 @@ and a command-line tool (zun).
 
 .. _PyPi: https://pypi.python.org/pypi/python-zunclient
 .. _Online Documentation: https://docs.openstack.org/python-zunclient/latest
-.. _Launchpad project: https://launchpad.net/zun
-.. _Blueprints: https://blueprints.launchpad.net/zun
-.. _Bugs: https://bugs.launchpad.net/zun
+.. _Launchpad project: https://launchpad.net/python-zunclient
+.. _Blueprints: https://blueprints.launchpad.net/python-zunclient
+.. _Bugs: https://bugs.launchpad.net/python-zunclient
 .. _Source: https://git.openstack.org/cgit/openstack/python-zunclient
 .. _How to Contribute: https://docs.openstack.org/infra/manual/developers.html
