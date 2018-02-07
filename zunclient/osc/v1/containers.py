@@ -13,8 +13,8 @@
 import argparse
 from contextlib import closing
 import io
-import logging
 import os
+from oslo_log import log as logging
 import tarfile
 import time
 

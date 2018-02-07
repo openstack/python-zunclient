@@ -11,7 +11,7 @@
 #    under the License.
 
 import argparse
-import logging
+from oslo_log import log as logging
 
 from osc_lib import utils
 
