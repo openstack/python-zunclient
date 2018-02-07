@@ -126,13 +126,11 @@ class CreateContainer(command.ShowOne):
                  'May be used multiple times.')
         parser.add_argument(
             '--net',
-            metavar='<auto, network=network, port=port-uuid,'
+            metavar='<network=network, port=port-uuid,'
                     'v4-fixed-ip=ip-addr,v6-fixed-ip=ip-addr>',
             action='append',
             default=[],
             help='Create network enpoints for the container. '
-                 'auto: do not specify the network, zun will automatically '
-                 'create one. '
                  'network: attach container to the specified neutron networks.'
                  ' port: attach container to the neutron port with this UUID. '
                  'v4-fixed-ip: IPv4 fixed address for container. '
@@ -688,13 +686,11 @@ class RunContainer(command.ShowOne):
                  'May be used multiple times.')
         parser.add_argument(
             '--net',
-            metavar='<auto, network=network, port=port-uuid,'
+            metavar='<network=network, port=port-uuid,'
                     'v4-fixed-ip=ip-addr,v6-fixed-ip=ip-addr>',
             action='append',
             default=[],
             help='Create network enpoints for the container. '
-                 'auto: do not specify the network, zun will automatically '
-                 'create one. '
                  'network: attach container to the specified neutron networks.'
                  ' port: attach container to the neutron port with this UUID. '
                  'v4-fixed-ip: IPv4 fixed address for container. '
