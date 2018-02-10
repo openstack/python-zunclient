@@ -96,7 +96,7 @@ class ImageManager(base.Manager):
                     "Key must be in %s" % ','.join(PULL_ATTRIBUTES))
         return self._create(self._path(), new)
 
-    def search_image(self, **kwargs):
+    def search_image(self, image, **kwargs):
         """Retrieves list of images based on image name and image_driver name
 
         :returns: A list of images based on the search query
@@ -110,5 +110,4 @@ class ImageManager(base.Manager):
             else:
                 raise exceptions.InvalidAttribute(
                     "Key must be in %s" % ','.join(IMAGE_SEARCH_ATTRIBUTES))
-        path = ''
-        return self._search(self._path(path), image_query)
+        return self._search(self._path(image) + '/search', image_query)

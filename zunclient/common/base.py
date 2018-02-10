@@ -149,7 +149,7 @@ class Manager(object):
         if qparams:
             url = "%s?%s" % (url, urlparse.urlencode(qparams))
 
-        resp, body = self.api.json_request('SEARCH', url, body=body)
+        resp, body = self.api.json_request('GET', url, body=body)
         data = self._format_body_data(body, response_key)
         if obj_class is None:
             obj_class = self.resource_class
