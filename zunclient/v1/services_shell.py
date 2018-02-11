@@ -21,7 +21,8 @@ def do_service_list(cs, args):
     """Print a list of zun services."""
     services = cs.services.list()
     columns = ('Id', 'Host', 'Binary', 'State', 'Disabled',
-               'Disabled Reason', 'Updated At')
+               'Disabled Reason', 'Updated At',
+               'Availability Zone')
     utils.print_list(services, columns,
                      {'versions': zun_utils.print_list_field('versions')})
 

@@ -21,11 +21,13 @@ SERVICE1 = {'id': 123,
             'host': 'fake-host1',
             'binary': 'fake-bin1',
             'state': 'up',
+            'availability_zone': 'nova',
             }
 SERVICE2 = {'id': 124,
             'host': 'fake-host2',
             'binary': 'fake-bin2',
             'state': 'down',
+            'availability_zone': 'nova',
             }
 
 fake_responses = {
