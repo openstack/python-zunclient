@@ -162,6 +162,14 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
 
     @mock.patch('zunclient.v1.containers_shell._show_container')
     @mock.patch('zunclient.v1.containers.ContainerManager.run')
+    def test_zun_container_run_success_with_availability_zone(
+            self, mock_run, mock_show_container):
+        mock_run.return_value = 'container'
+        self._test_arg_success('run --availability-zone nova x')
+        mock_show_container.assert_called_once_with('container')
+
+    @mock.patch('zunclient.v1.containers_shell._show_container')
+    @mock.patch('zunclient.v1.containers.ContainerManager.run')
     def test_zun_container_run_with_mount(
             self, mock_run, mock_show_container):
         mock_run.return_value = 'container'

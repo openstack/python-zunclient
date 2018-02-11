@@ -131,6 +131,10 @@ def _show_container(container):
            type=int,
            default=None,
            help='The disk size in GiB for per container.')
+@utils.arg('--availability-zone',
+           metavar='<availability_zone>',
+           default=None,
+           help='The availability zone of the container.')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -150,6 +154,7 @@ def do_create(cs, args):
     opts['runtime'] = args.runtime
     opts['hostname'] = args.hostname
     opts['disk'] = args.disk
+    opts['availability_zone'] = args.availability_zone
 
     if args.security_group:
         opts['security_groups'] = args.security_group
@@ -538,6 +543,10 @@ def do_kill(cs, args):
            type=int,
            default=None,
            help='The disk size in GiB for per container.')
+@utils.arg('--availability-zone',
+           metavar='<availability_zone>',
+           default=None,
+           help='The availability zone of the container.')
 def do_run(cs, args):
     """Run a command in a new container."""
     opts = {}
@@ -557,6 +566,7 @@ def do_run(cs, args):
     opts['runtime'] = args.runtime
     opts['hostname'] = args.hostname
     opts['disk'] = args.disk
+    opts['availability_zone'] = args.availability_zone
 
     if args.security_group:
         opts['security_groups'] = args.security_group
