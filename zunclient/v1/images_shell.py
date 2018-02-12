@@ -66,6 +66,14 @@ def do_image_show(cs, args):
     _show_image(image)
 
 
+@utils.arg('id',
+           metavar='<uuid>',
+           help='UUID of image to delete')
+def do_image_delete(cs, args):
+    """Delete a specific image."""
+    cs.images.delete(args.id)
+
+
 @utils.arg('image',
            metavar='<image>',
            help='Name of the image')
