@@ -690,7 +690,7 @@ class ContainerManagerTest(testtools.TestCase):
 
     def test_containers_network_attach(self):
         containers = self.mgr.network_attach(
-            CONTAINER1['id'], 'neutron_network')
+            CONTAINER1['id'], network='neutron_network')
         expect = [
             ('POST', '/v1/containers/%s/network_attach?%s'
              % (CONTAINER1['id'],
