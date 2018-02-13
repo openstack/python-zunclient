@@ -28,10 +28,7 @@ def _show_capsule(capsule):
 @utils.arg('-f', '--template-file', metavar='<file>',
            required=True, help=_('Path to the template.'))
 def do_capsule_create(cs, args):
-    """Create a capsule.
-
-    Add '--experimental-api' due to capsule now is the experimental API
-    """
+    """Create a capsule."""
     opts = {}
     if args.template_file:
         template = template_utils.get_template_contents(
@@ -62,10 +59,7 @@ def do_capsule_create(cs, args):
            choices=['desc', 'asc'],
            help='Direction to sort. "asc" or "desc".')
 def do_capsule_list(cs, args):
-    """Print a list of available capsules.
-
-    Add '--experimental-api' due to capsule now is the experimental API
-    """
+    """Print a list of available capsules."""
     opts = {}
     opts['all_projects'] = args.all_projects
     opts['marker'] = args.marker
@@ -85,10 +79,7 @@ def do_capsule_list(cs, args):
            action='store_true',
            help='Force delete the capsule.')
 def do_capsule_delete(cs, args):
-    """Delete specified capsules.
-
-    Add '--experimental-api' due to capsule now is the experimental API
-    """
+    """Delete specified capsules."""
     for capsule in args.capsules:
         try:
             cs.capsules.delete(capsule, args.force)

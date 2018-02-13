@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from zunclient.v1 import capsules_shell
 from zunclient.v1 import containers_shell
 from zunclient.v1 import hosts_shell
 from zunclient.v1 import images_shell
@@ -25,4 +26,5 @@ COMMAND_MODULES = [
     services_shell,
     hosts_shell,
     versions_shell,
+    capsules_shell,
 ]
