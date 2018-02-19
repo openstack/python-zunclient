@@ -993,7 +993,7 @@ class CommitContainer(command.Command):
         try:
             image = client.containers.commit(container, **opts)
             print("Request to commit container %s has been accepted. "
-                  "The image is %s." % (container, image))
+                  "The image is %s." % (container, image['uuid']))
         except Exception as e:
             print("commit container %(container)s failed: %(e)s" %
                   {'container': container, 'e': e})
