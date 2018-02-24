@@ -10,6 +10,7 @@ Contents
    readme
    install/index
    contributor/index
+   cli/index
 
 Indices and tables
 ------------------
