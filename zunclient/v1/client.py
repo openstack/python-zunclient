@@ -17,6 +17,7 @@ from keystoneauth1 import loading
 from keystoneauth1 import session as ksa_session
 
 from zunclient.common import httpclient
+from zunclient.v1 import capsules
 from zunclient.v1 import containers
 from zunclient.v1 import hosts
 from zunclient.v1 import images
@@ -125,6 +126,7 @@ class Client(object):
         self.services = services.ServiceManager(self.http_client)
         self.hosts = hosts.HostManager(self.http_client)
         self.versions = versions.VersionManager(self.http_client)
+        self.capsules = capsules.CapsuleManager(self.http_client)
 
     @property
     def api_version(self):
