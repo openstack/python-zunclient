@@ -34,7 +34,7 @@ class ListService(command.Lister):
         client = _get_client(self, parsed_args)
         services = client.services.list()
         columns = ('Id', 'Host', 'Binary', 'State', 'Disabled',
-                   'Disabled Reason', 'Created At', 'Updated At')
+                   'Disabled Reason', 'Updated At')
         return (columns, (utils.get_item_properties(service, columns)
                           for service in services))
 
