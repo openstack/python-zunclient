@@ -714,7 +714,7 @@ def do_commit(cs, args):
     try:
         image = cs.containers.commit(args.container, **opts)
         print("Request to commit container %s has been accepted. "
-              "The image is %s." % (args.container, image))
+              "The image is %s." % (args.container, image['uuid']))
     except Exception as e:
         print("Commit for container %(container)s failed: %(e)s" %
               {'container': args.container, 'e': e})
