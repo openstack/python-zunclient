@@ -220,14 +220,13 @@ class ParseNetsTest(test_utils.BaseTestCase):
     def test_nets_with_network(self):
         nets = [' network = 1234567 , v4-fixed-ip = 172.17.0.3 ']
         result = utils.parse_nets(nets)
-        self.assertEqual([{'network': '1234567', 'v4-fixed-ip': '172.17.0.3',
-                           'port': '', 'v6-fixed-ip': ''}], result)
+        self.assertEqual([{'network': '1234567', 'v4-fixed-ip': '172.17.0.3'}],
+                         result)
 
     def test_nets_with_port(self):
         nets = ['port=1234567, v6-fixed-ip=2001:db8::2']
         result = utils.parse_nets(nets)
-        self.assertEqual([{'network': '', 'v4-fixed-ip': '',
-                           'port': '1234567', 'v6-fixed-ip': '2001:db8::2'}],
+        self.assertEqual([{'port': '1234567', 'v6-fixed-ip': '2001:db8::2'}],
                          result)
 
     def test_nets_with_only_ip(self):
