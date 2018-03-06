@@ -80,10 +80,9 @@ def do_image_show(cs, args):
 def do_image_search(cs, args):
     """Print list of available images from repository based on user query."""
     opts = {}
-    opts['image'] = args.image
     opts['image_driver'] = args.image_driver
     opts['exact_match'] = args.exact_match
-    images = cs.images.search_image(**opts)
+    images = cs.images.search_image(args.image, **opts)
     columns = ('ID', 'Name', 'Tags', 'Status', 'Size', 'Metadata')
     utils.print_list(images, columns,
                      {'versions': zun_utils.print_list_field('versions')},
