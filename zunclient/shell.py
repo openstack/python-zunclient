@@ -429,6 +429,7 @@ class OpenStackZunShell(object):
                         continue
 
             action_help = desc.strip()
+            exclusive_args = getattr(callback, 'exclusive_args', {})
             arguments = getattr(callback, 'arguments', [])
 
             subparser = (
@@ -443,28 +444,45 @@ class OpenStackZunShell(object):
                                    help=argparse.SUPPRESS,)
             self.subcommands[command] = subparser
 
-            for (args, kwargs) in arguments:
-                start_version = kwargs.get("start_version", None)
-                if start_version:
-                    start_version = api_versions.APIVersion(start_version)
-                    end_version = kwargs.get("end_version", None)
-                    if end_version:
-                        end_version = api_versions.APIVersion(end_version)
-                    else:
-                        end_version = api_versions.APIVersion(
-                            "%s.latest" % start_version.ver_major)
-                    if do_help:
-                        kwargs["help"] = kwargs.get("help", "") + (msg % {
-                            "start": start_version.get_string(),
-                            "end": end_version.get_string()})
-                    else:
-                        if not version.matches(start_version, end_version):
-                            continue
-                kw = kwargs.copy()
-                kw.pop("start_version", None)
-                kw.pop("end_version", None)
-                subparser.add_argument(*args, **kwargs)
+            self._add_subparser_args(subparser, arguments, version, do_help,
+                                     msg)
+            self._add_subparser_exclusive_args(subparser, exclusive_args,
+                                               version, do_help, msg)
             subparser.set_defaults(func=callback)
+
+    def _add_subparser_exclusive_args(self, subparser, exclusive_args,
+                                      version, do_help, msg):
+        for group_name, arguments in exclusive_args.items():
+            if group_name == '__required__':
+                continue
+            required = exclusive_args['__required__'][group_name]
+            exclusive_group = subparser.add_mutually_exclusive_group(
+                required=required)
+            self._add_subparser_args(exclusive_group, arguments,
+                                     version, do_help, msg)
+
+    def _add_subparser_args(self, subparser, arguments, version, do_help, msg):
+        for (args, kwargs) in arguments:
+            start_version = kwargs.get("start_version", None)
+            if start_version:
+                start_version = api_versions.APIVersion(start_version)
+                end_version = kwargs.get("end_version", None)
+                if end_version:
+                    end_version = api_versions.APIVersion(end_version)
+                else:
+                    end_version = api_versions.APIVersion(
+                        "%s.latest" % start_version.ver_major)
+                if do_help:
+                    kwargs["help"] = kwargs.get("help", "") + (msg % {
+                        "start": start_version.get_string(),
+                        "end": end_version.get_string()})
+                else:
+                    if not version.matches(start_version, end_version):
+                        continue
+            kw = kwargs.copy()
+            kw.pop("start_version", None)
+            kw.pop("end_version", None)
+            subparser.add_argument(*args, **kwargs)
 
     def setup_debugging(self, debug):
         if debug:
