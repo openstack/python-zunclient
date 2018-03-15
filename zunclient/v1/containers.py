@@ -216,6 +216,10 @@ class ContainerManager(base.Manager):
         return self._action(container, '/network_attach',
                             qparams={'network': network})
 
+    def network_list(self, container):
+        return self._list(self._path(container) + '/network_list',
+                          "networks")
+
     def remove_security_group(self, id, security_group):
         return self._action(id, '/remove_security_group',
                             qparams={'name': security_group})

@@ -785,6 +785,21 @@ def do_network_attach(cs, args):
 
 @utils.arg('container',
            metavar='<container>',
+           help='ID or name of the container to display network info.')
+def do_network_list(cs, args):
+    """List networks on a container"""
+    opts = {}
+    opts['container'] = args.container
+    opts = zun_utils.remove_null_parms(**opts)
+    networks = cs.containers.network_list(**opts)
+    columns = ('net_id', 'subnet_id', 'port_id', 'version', 'ip_address')
+    utils.print_list(networks, columns,
+                     {'versions': zun_utils.print_list_field('versions')},
+                     sortby_index=None)
+
+
+@utils.arg('container',
+           metavar='<container>',
            help='ID or name of the container to remove security group.')
 @utils.arg('security_group',
            metavar='<security_group>',
