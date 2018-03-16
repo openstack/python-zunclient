@@ -1148,3 +1148,27 @@ class RebuildContainer(command.Command):
             except Exception as e:
                 print("rebuild container %(container)s failed: %(e)s" %
                       {'container': container, 'e': e})
+
+
+class NetworkList(command.Lister):
+    """List networks on a container"""
+    log = logging.getLogger(__name__ + ".ListNetworks")
+
+    def get_parser(self, prog_name):
+        parser = super(NetworkList, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help='ID or name of the container to list networks.'
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        opts = {}
+        opts['container'] = parsed_args.container
+        opts = zun_utils.remove_null_parms(**opts)
+        networks = client.containers.network_list(**opts)
+        columns = ('net_id', 'subnet_id', 'port_id', 'version', 'ip_address')
+        return (columns, (utils.get_item_properties(network, columns)
+                for network in networks))
