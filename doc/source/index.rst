@@ -1,7 +1,8 @@
 Welcome to python-zunclient's documentation!
-==============================================
+============================================
 
-Contents:
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2
@@ -11,7 +12,7 @@ Contents:
    contributor/index
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
