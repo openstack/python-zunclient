@@ -147,3 +147,28 @@ class ShowImage(command.ShowOne):
         image = client.images.get(**opts)
         columns = _image_columns(image)
         return columns, utils.get_item_properties(image, columns)
+
+
+class DeleteImage(command.Command):
+    """Delete specified image"""
+
+    log = logging.getlogger(__name__ + ".DeleteImage")
+
+    def get_parser(self, prog_name):
+        parser = super(DeleteImage, self).get_parser(prog_name)
+        parser.add_argument(
+            'uuid',
+            metavar='<uuid>',
+            help='UUID of image to describe')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        img_id = parsed_args.uuid
+        try:
+            client.images.delete(img_id)
+            print(_('Request to delete image %s has been accepted.')
+                  % img_id)
+        except Exception as e:
+            print("Delete for image %(image)s failed: %(e)s" %
+                  {'image': img_id, 'e': e})
