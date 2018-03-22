@@ -261,6 +261,22 @@ def do_show(cs, args):
 @utils.arg('containers',
            metavar='<container>',
            nargs='+',
+           help='ID of the (container)s to rebuild.')
+def do_rebuild(cs, args):
+    """Rebuild specified containers."""
+    for container in args.containers:
+        try:
+            cs.containers.rebuild(container)
+            print("Request to rebuild container %s has been accepted." %
+                  container)
+        except Exception as e:
+            print("Rebuild for container %(container)s failed: %(e)s" %
+                  {'container': container, 'e': e})
+
+
+@utils.arg('containers',
+           metavar='<container>',
+           nargs='+',
            help='ID or name of the (container)s to restart.')
 @utils.arg('-t', '--timeout',
            metavar='<timeout>',

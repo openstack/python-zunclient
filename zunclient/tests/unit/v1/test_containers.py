@@ -336,7 +336,14 @@ fake_responses = {
             None,
         ),
     },
-
+    '/v1/containers/%s/rebuild'
+    % (CONTAINER1['id']):
+    {
+        'POST': (
+            {},
+            None,
+        ),
+    },
 }
 
 
@@ -702,3 +709,12 @@ class ContainerManagerTest(testtools.TestCase):
         ]
         self.assertEqual(expect, self.api.calls)
         self.assertTrue(containers)
+
+    def test_containers_rebuild(self):
+        self.mgr.rebuild(CONTAINER1['id'])
+        expect = [
+            ('POST',
+             '/v1/containers/%s/rebuild' % (CONTAINER1['id']),
+             {'Content-Length': '0'}, None)
+        ]
+        self.assertEqual(expect, self.api.calls)
