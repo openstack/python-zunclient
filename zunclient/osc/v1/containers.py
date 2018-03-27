@@ -1134,6 +1134,18 @@ class RebuildContainer(command.Command):
             metavar='<container>',
             nargs='+',
             help='ID or name of the (container)s to rebuild.')
+        parser.add_argument(
+            '--image',
+            metavar='<image>',
+            help='The image for specified container to update.')
+        parser.add_argument(
+            '--image-driver',
+            metavar='<image_driver>',
+            help='The image driver to use to update container image. '
+                 'It can have following values: '
+                 '"docker": update the image from Docker Hub. '
+                 '"glance": update the image from Glance. '
+                 'The default value is source container\'s image driver ')
         return parser
 
     def take_action(self, parsed_args):
@@ -1141,6 +1153,10 @@ class RebuildContainer(command.Command):
         for container in parsed_args.containers:
             opts = {}
             opts['id'] = container
+            if parsed_args.image:
+                opts['image'] = parsed_args.image
+            if parsed_args.image_driver:
+                opts['image_driver'] = parsed_args.image_driver
             try:
                 client.containers.rebuild(**opts)
                 print(_('Request to rebuild container %s has '
