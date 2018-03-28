@@ -199,7 +199,7 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
         self._test_arg_success(
             'run --mount source=s,destination=d x')
         mock_show_container.assert_called_once_with('container')
-        mounts = [{'source': 's', 'destination': 'd', 'size': ''}]
+        mounts = [{'source': 's', 'destination': 'd'}]
         mock_run.assert_called_with(
             **_get_container_args(image='x', mounts=mounts))
 

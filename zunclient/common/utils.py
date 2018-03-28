@@ -205,7 +205,8 @@ def parse_mounts(mounts):
                "and mount to the container")
     parsed_mounts = []
     for mount in mounts:
-        mount_info = {"source": "", "destination": "", "size": ""}
+        keys = ["source", "destination", "size"]
+        mount_info = {}
         for mnt in mount.split(","):
             try:
                 k, v = mnt.split("=", 1)
@@ -213,17 +214,17 @@ def parse_mounts(mounts):
                 v = v.strip()
             except ValueError:
                 raise apiexec.CommandError(err_msg % mnt)
-            if k in mount_info:
-                if mount_info[k]:
+            if k in keys:
+                if mount_info.get(k):
                     raise apiexec.CommandError(err_msg % mnt)
                 mount_info[k] = v
             else:
                 raise apiexec.CommandError(err_msg % mnt)
 
-        if not mount_info['destination']:
+        if not mount_info.get('destination'):
             raise apiexec.CommandError(err_msg % mnt)
 
-        if not mount_info['source'] and not mount_info['size']:
+        if not mount_info.get('source') and not mount_info.get('size'):
             raise apiexec.CommandError(err_msg % mnt)
 
         parsed_mounts.append(mount_info)
