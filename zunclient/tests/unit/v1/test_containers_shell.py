@@ -19,6 +19,19 @@ from zunclient.tests.unit.v1 import shell_test_base
 from zunclient.v1 import containers_shell
 
 
+def _get_container_args(**kwargs):
+    default_args = {
+        'auto_remove': False,
+        'environment': {},
+        'hints': {},
+        'labels': {},
+        'mounts': [],
+        'nets': [],
+    }
+    default_args.update(kwargs)
+    return default_args
+
+
 class ShellTest(shell_test_base.TestCommandLineArgument):
 
     @mock.patch('zunclient.v1.containers_shell._show_container')
@@ -75,16 +88,22 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
         self._test_arg_success(
             'create --image-pull-policy never x')
         mock_show_container.assert_called_with('container-never')
+        mock_create.assert_called_with(
+            **_get_container_args(image='x', image_pull_policy='never'))
 
         mock_create.return_value = 'container-always'
         self._test_arg_success(
             'create --image-pull-policy always x')
         mock_show_container.assert_called_with('container-always')
+        mock_create.assert_called_with(
+            **_get_container_args(image='x', image_pull_policy='always'))
 
         mock_create.return_value = 'container-ifnotpresent'
         self._test_arg_success(
             'create --image-pull-policy ifnotpresent x')
         mock_show_container.assert_called_with('container-ifnotpresent')
+        mock_create.assert_called_with(
+            **_get_container_args(image='x', image_pull_policy='ifnotpresent'))
 
     @mock.patch('zunclient.v1.containers_shell._show_container')
     @mock.patch('zunclient.v1.containers.ContainerManager.create')
@@ -93,6 +112,7 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
         mock_create.return_value = 'container'
         self._test_arg_success('create x')
         mock_show_container.assert_called_once_with('container')
+        mock_create.assert_called_with(**_get_container_args(image='x'))
 
     @mock.patch('zunclient.v1.containers.ContainerManager.create')
     def test_zun_container_create_failure_with_wrong_pull_policy(
@@ -101,6 +121,7 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
             'create --image-pull-policy wrong x ',
             self._invalid_choice_error)
         self.assertFalse(mock_create.called)
+        mock_create.assert_not_called()
 
     @mock.patch('zunclient.v1.containers_shell._show_container')
     @mock.patch('zunclient.v1.containers.ContainerManager.run')
@@ -110,16 +131,22 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
         self._test_arg_success(
             'run --image-pull-policy never x')
         mock_show_container.assert_called_with('container-never')
+        mock_run.assert_called_with(
+            **_get_container_args(image='x', image_pull_policy='never'))
 
         mock_run.return_value = 'container-always'
         self._test_arg_success(
             'run --image-pull-policy always x ')
         mock_show_container.assert_called_with('container-always')
+        mock_run.assert_called_with(
+            **_get_container_args(image='x', image_pull_policy='always'))
 
         mock_run.return_value = 'container-ifnotpresent'
         self._test_arg_success(
             'run --image-pull-policy ifnotpresent x')
         mock_show_container.assert_called_with('container-ifnotpresent')
+        mock_run.assert_called_with(
+            **_get_container_args(image='x', image_pull_policy='ifnotpresent'))
 
     @mock.patch('zunclient.v1.containers_shell._show_container')
     @mock.patch('zunclient.v1.containers.ContainerManager.run')
@@ -128,6 +155,7 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
         mock_run.return_value = 'container'
         self._test_arg_success('run x')
         mock_show_container.assert_called_once_with('container')
+        mock_run.assert_called_with(**_get_container_args(image='x'))
 
     @mock.patch('zunclient.v1.containers.ContainerManager.run')
     def test_zun_container_run_failure_with_wrong_pull_policy(
@@ -136,6 +164,7 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
             'run --image-pull-policy wrong x',
             self._invalid_choice_error)
         self.assertFalse(mock_run.called)
+        mock_run.assert_not_called()
 
     @mock.patch('zunclient.v1.containers.ContainerManager.get')
     @mock.patch('zunclient.v1.containers_shell._show_container')
@@ -159,6 +188,8 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
         mock_run.return_value = 'container'
         self._test_arg_success('run --runtime runc x')
         mock_show_container.assert_called_once_with('container')
+        mock_run.assert_called_with(
+            **_get_container_args(image='x', runtime='runc'))
 
     @mock.patch('zunclient.v1.containers_shell._show_container')
     @mock.patch('zunclient.v1.containers.ContainerManager.run')
@@ -168,6 +199,9 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
         self._test_arg_success(
             'run --mount source=s,destination=d x')
         mock_show_container.assert_called_once_with('container')
+        mounts = [{'source': 's', 'destination': 'd', 'size': ''}]
+        mock_run.assert_called_with(
+            **_get_container_args(image='x', mounts=mounts))
 
     def test_zun_container_run_with_mount_invalid_format(self):
         self.assertRaisesRegex(
@@ -200,3 +234,5 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
         mock_run.return_value = 'container'
         self._test_arg_success('run --hostname testhost x')
         mock_show.assert_called_once_with('container')
+        mock_run.assert_called_with(
+            **_get_container_args(image='x', hostname='testhost'))
