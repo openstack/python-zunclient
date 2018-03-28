@@ -17,7 +17,9 @@
     check:
       jobs:
         - zunclient-devstack-docker-sql
+        - openstack-tox-lower-constraints
     gate:
       jobs:
         - zunclient-devstack-docker-sql
 
+        - openstack-tox-lower-constraints
