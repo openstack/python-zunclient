@@ -28,6 +28,12 @@ from zunclient.common.websocketclient import websocketclient
 from zunclient import exceptions as exc
 
 
+DEPRECATION_MESSAGE = (
+    'WARNING: Rename container command deprecated and will be removed '
+    'in a future release.\nUse Update container command to avoid '
+    'seeing this message.')
+
+
 def _show_container(container):
     zun_utils.format_container_addresses(container)
     utils.print_dict(container._info)
@@ -638,17 +644,6 @@ def do_run(cs, args):
 
 @utils.arg('container',
            metavar='<container>',
-           help='ID or name of the container to rename.')
-@utils.arg('name',
-           metavar='<name>',
-           help='The new name for the container')
-def do_rename(cs, args):
-    """Rename a container."""
-    cs.containers.rename(args.container, args.name)
-
-
-@utils.arg('container',
-           metavar='<container>',
            help="ID or name of the container to update.")
 @utils.arg('--cpu',
            metavar='<cpu>',
@@ -656,16 +651,32 @@ def do_rename(cs, args):
 @utils.arg('-m', '--memory',
            metavar='<memory>',
            help='The container memory size in MiB')
+@utils.arg('--name',
+           metavar='<name>',
+           help='The new name for the container')
 def do_update(cs, args):
     """Update one or more attributes of the container."""
     opts = {}
     opts['memory'] = args.memory
     opts['cpu'] = args.cpu
+    opts['name'] = args.name
     opts = zun_utils.remove_null_parms(**opts)
     if not opts:
         raise exc.CommandError("You must update at least one property")
     container = cs.containers.update(args.container, **opts)
     _show_container(container)
+
+
+@utils.deprecated(DEPRECATION_MESSAGE)
+@utils.arg('container',
+           metavar='<container>',
+           help='ID or name of the container to rename.')
+@utils.arg('name',
+           metavar='<name>',
+           help='The new name for the container')
+def do_rename(cs, args):
+    """Rename a container."""
+    cs.containers.rename(args.container, args.name)
 
 
 @utils.arg('container',
