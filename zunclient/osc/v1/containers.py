@@ -163,6 +163,11 @@ class CreateContainer(command.ShowOne):
             type=int,
             default=None,
             help='The disk size in GiB for per container.')
+        parser.add_argument(
+            '--availability-zone',
+            metavar='<availability_zone>',
+            default=None,
+            help='The availability zone of the container.')
         return parser
 
     def take_action(self, parsed_args):
@@ -193,6 +198,7 @@ class CreateContainer(command.ShowOne):
         opts['runtime'] = parsed_args.runtime
         opts['hostname'] = parsed_args.hostname
         opts['disk'] = parsed_args.disk
+        opts['availability_zone'] = parsed_args.availability_zone
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.create(**opts)
@@ -723,6 +729,11 @@ class RunContainer(command.ShowOne):
             type=int,
             default=None,
             help='The disk size in GiB for per container.')
+        parser.add_argument(
+            '--availability-zone',
+            metavar='<availability_zone>',
+            default=None,
+            help='The availability zone of the container.')
         return parser
 
     def take_action(self, parsed_args):
@@ -753,6 +764,7 @@ class RunContainer(command.ShowOne):
         opts['runtime'] = parsed_args.runtime
         opts['hostname'] = parsed_args.hostname
         opts['disk'] = parsed_args.disk
+        opts['availability_zone'] = parsed_args.availability_zone
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.run(**opts)
