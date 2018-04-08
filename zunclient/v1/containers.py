@@ -43,7 +43,7 @@ class ContainerManager(base.Manager):
             return '/v1/containers'
 
     def list(self, marker=None, limit=None, sort_key=None,
-             sort_dir=None, detail=False, all_projects=False):
+             sort_dir=None, detail=False, all_projects=False, **kwargs):
         """Retrieve a list of containers.
 
         :param all_projects: Optional, list containers in all projects
@@ -76,7 +76,6 @@ class ContainerManager(base.Manager):
 
         filters = utils.common_filters(marker, limit, sort_key,
                                        sort_dir, all_projects)
-
         path = ''
         if detail:
             path += 'detail'
@@ -85,7 +84,7 @@ class ContainerManager(base.Manager):
 
         if limit is None:
             return self._list(self._path(path),
-                              "containers")
+                              "containers", qparams=kwargs)
         else:
             return self._list_pagination(self._path(path),
                                          "containers",

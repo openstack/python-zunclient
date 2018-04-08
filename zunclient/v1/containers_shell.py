@@ -183,6 +183,34 @@ def do_create(cs, args):
            metavar='<sort-dir>',
            choices=['desc', 'asc'],
            help='Direction to sort. "asc" or "desc".')
+@utils.arg('--name',
+           metavar='<name>',
+           help='List containers according to their name.')
+@utils.arg('--image',
+           metavar='<image>',
+           help='List containers according to their image.')
+@utils.arg('--project-id',
+           metavar='<project-id>',
+           help='List containers according to their Project_id')
+@utils.arg('--user-id',
+           metavar='<user-id>',
+           help='List containers according to their user_id')
+@utils.arg('--task-state',
+           metavar='<task-state>',
+           help='List containers according to their task-state')
+@utils.arg('--status',
+           metavar='<status>',
+           help='List containers according to their status')
+@utils.arg('--memory',
+           metavar='<memory>',
+           help='List containers according to their memory size in MiB')
+@utils.arg('--host',
+           metavar='<host>',
+           help='List containers according to their hostname')
+@utils.arg('--auto-remove',
+           metavar='<auto-remove>',
+           help='List container according to whether they are'
+                'auto-removed on existing')
 def do_list(cs, args):
     """Print a list of available containers."""
     opts = {}
@@ -191,6 +219,15 @@ def do_list(cs, args):
     opts['limit'] = args.limit
     opts['sort_key'] = args.sort_key
     opts['sort_dir'] = args.sort_dir
+    opts['image'] = args.image
+    opts['name'] = args.name
+    opts['project_id'] = args.project_id
+    opts['user_id'] = args.user_id
+    opts['host'] = args.host
+    opts['task_state'] = args.task_state
+    opts['memory'] = args.memory
+    opts['auto_remove'] = args.auto_remove
+    opts['status'] = args.status
     opts = zun_utils.remove_null_parms(**opts)
     containers = cs.containers.list(**opts)
     zun_utils.list_containers(containers)

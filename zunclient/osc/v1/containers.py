@@ -264,6 +264,42 @@ class ListContainer(command.Lister):
             metavar='<sort-dir>',
             choices=['desc', 'asc'],
             help='Direction to sort. "asc" or "desc".')
+        parser.add_argument(
+            '--name',
+            metavar='<name>',
+            help='List containers according to their name.')
+        parser.add_argument(
+            '--image',
+            metavar='<image>',
+            help='List containers according to their image.')
+        parser.add_argument(
+            '--project-id',
+            metavar='<project-id>',
+            help='List containers according to their project_id')
+        parser.add_argument(
+            '--user-id',
+            metavar='<user-id>',
+            help='List containers according to their user_id')
+        parser.add_argument(
+            '--task-state',
+            metavar='<task-state>',
+            help='List containers according to their task-state')
+        parser.add_argument(
+            '--status',
+            metavar='<status>',
+            help='List containers according to their Status')
+        parser.add_argument(
+            '--memory',
+            metavar='<memory>',
+            help='List containers according to their memory size in MiB')
+        parser.add_argument(
+            '--host',
+            metavar='<host>',
+            help='List containers according to their hostname')
+        parser.add_argument(
+            '--auto-remove',
+            metavar='<auto-remove>',
+            help='List conatiner whether they are auto-removed on existing')
         return parser
 
     def take_action(self, parsed_args):
@@ -274,6 +310,15 @@ class ListContainer(command.Lister):
         opts['limit'] = parsed_args.limit
         opts['sort_key'] = parsed_args.sort_key
         opts['sort_dir'] = parsed_args.sort_dir
+        opts['image'] = parsed_args.image
+        opts['name'] = parsed_args.name
+        opts['project_id'] = parsed_args.project_id
+        opts['user_id'] = parsed_args.user_id
+        opts['host'] = parsed_args.host
+        opts['task_state'] = parsed_args.task_state
+        opts['memory'] = parsed_args.memory
+        opts['auto_remove'] = parsed_args.auto_remove
+        opts['status'] = parsed_args.status
         opts = zun_utils.remove_null_parms(**opts)
         containers = client.containers.list(**opts)
         for c in containers:
