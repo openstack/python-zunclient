@@ -168,6 +168,12 @@ class CreateContainer(command.ShowOne):
             metavar='<availability_zone>',
             default=None,
             help='The availability zone of the container.')
+        parser.add_argument(
+            '--auto-heal',
+            dest='auto_heal',
+            action='store_true',
+            default=False,
+            help='The flag of healing non-existent container in docker')
         return parser
 
     def take_action(self, parsed_args):
@@ -199,6 +205,7 @@ class CreateContainer(command.ShowOne):
         opts['hostname'] = parsed_args.hostname
         opts['disk'] = parsed_args.disk
         opts['availability_zone'] = parsed_args.availability_zone
+        opts['auto_heal'] = parsed_args.auto_heal
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.create(**opts)
@@ -734,6 +741,12 @@ class RunContainer(command.ShowOne):
             metavar='<availability_zone>',
             default=None,
             help='The availability zone of the container.')
+        parser.add_argument(
+            '--auto-heal',
+            dest='auto_heal',
+            action='store_true',
+            default=False,
+            help='The flag of healing non-existent container in docker')
         return parser
 
     def take_action(self, parsed_args):
@@ -765,6 +778,7 @@ class RunContainer(command.ShowOne):
         opts['hostname'] = parsed_args.hostname
         opts['disk'] = parsed_args.disk
         opts['availability_zone'] = parsed_args.availability_zone
+        opts['auto_heal'] = parsed_args.auto_heal
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.run(**opts)

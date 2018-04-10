@@ -133,6 +133,10 @@ def _show_container(container):
            metavar='<availability_zone>',
            default=None,
            help='The availability zone of the container.')
+@utils.arg('--auto-heal',
+           action='store_true',
+           default=False,
+           help='The flag of healing non-existent container in docker.')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -153,6 +157,7 @@ def do_create(cs, args):
     opts['hostname'] = args.hostname
     opts['disk'] = args.disk
     opts['availability_zone'] = args.availability_zone
+    opts['auto_heal'] = args.auto_heal
 
     if args.security_group:
         opts['security_groups'] = args.security_group
@@ -575,6 +580,10 @@ def do_kill(cs, args):
            metavar='<availability_zone>',
            default=None,
            help='The availability zone of the container.')
+@utils.arg('--auto-heal',
+           action='store_true',
+           default=False,
+           help='The flag of healing non-existent container in docker.')
 def do_run(cs, args):
     """Run a command in a new container."""
     opts = {}
@@ -595,6 +604,7 @@ def do_run(cs, args):
     opts['hostname'] = args.hostname
     opts['disk'] = args.disk
     opts['availability_zone'] = args.availability_zone
+    opts['auto_heal'] = args.auto_heal
 
     if args.security_group:
         opts['security_groups'] = args.security_group
