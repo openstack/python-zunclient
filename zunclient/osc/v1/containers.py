@@ -530,7 +530,7 @@ class ExecContainer(command.Command):
         response = client.containers.execute(container, **opts)
         if parsed_args.interactive:
             exec_id = response['exec_id']
-            url = response['url']
+            url = response['proxy_url']
             websocketclient.do_exec(client, url, container, exec_id, "~", 0.5)
         else:
             output = response['output']

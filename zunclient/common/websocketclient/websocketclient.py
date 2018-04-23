@@ -31,8 +31,6 @@ import time
 import tty
 import websocket
 
-import docker
-
 from zunclient.common.apiclient import exceptions as acexceptions
 from zunclient.common.websocketclient import exceptions
 
@@ -259,6 +257,9 @@ class WebSocketClient(BaseClient):
     def recv(self):
         return self.ws.recv()
 
+
+class AttachClient(WebSocketClient):
+
     def tty_resize(self, height, width):
         """Resize the tty session
 
@@ -272,32 +273,13 @@ class WebSocketClient(BaseClient):
         self.cs.containers.resize(self.id, width, height)
 
 
-class HTTPClient(BaseClient):
+class ExecClient(WebSocketClient):
 
     def __init__(self, zunclient, url, exec_id, id, escape='~',
                  close_wait=0.5):
-        super(HTTPClient, self).__init__(zunclient, url, id, escape,
+        super(ExecClient, self).__init__(zunclient, url, id, escape,
                                          close_wait)
         self.exec_id = exec_id
-
-    def connect(self):
-        try:
-            client = docker.APIClient(base_url=self.url)
-            self.socket = client.exec_start(self.exec_id, socket=True,
-                                            tty=True)
-            print('connected to container "%s"' % self.id)
-            print('type %s. to disconnect' % self.escape)
-        except docker.errors.APIError as e:
-            raise exceptions.ConnectionFailed(e)
-
-    def fileno(self):
-        return self.socket.fileno()
-
-    def send(self, data):
-        self.socket.send(data)
-
-    def recv(self):
-        return self.socket.recv(4096)
 
     def tty_resize(self, height, width):
         """Resize the tty session
@@ -373,9 +355,9 @@ class WINCHHandler(object):
 def do_attach(zunclient, url, container_id, escape, close_wait):
     if url.startswith("ws://"):
         try:
-            wscls = WebSocketClient(zunclient=zunclient, url=url,
-                                    id=container_id, escape=escape,
-                                    close_wait=close_wait)
+            wscls = AttachClient(zunclient=zunclient, url=url,
+                                 id=container_id, escape=escape,
+                                 close_wait=close_wait)
             wscls.connect()
             wscls.handle_resize()
             wscls.start_loop()
@@ -387,8 +369,17 @@ def do_attach(zunclient, url, container_id, escape, close_wait):
 
 
 def do_exec(zunclient, url, container_id, exec_id, escape, close_wait):
-    httpcls = HTTPClient(zunclient=zunclient, url=url, exec_id=exec_id,
-                         id=container_id, escape="~", close_wait=0.5)
-    httpcls.connect()
-    httpcls.handle_resize()
-    httpcls.start_loop()
+    if url.startswith("ws://"):
+        try:
+            wscls = ExecClient(zunclient=zunclient, url=url,
+                               exec_id=exec_id,
+                               id=container_id, escape=escape,
+                               close_wait=close_wait)
+            wscls.connect()
+            wscls.handle_resize()
+            wscls.start_loop()
+        except exceptions.ContainerWebSocketException as e:
+            print("%(e)s:%(container)s" %
+                  {'e': e, 'container': container_id})
+    else:
+        raise exceptions.InvalidWebSocketLink(container_id)
