@@ -12,7 +12,7 @@ Python bindings to the OpenStack Container API
 ==============================================
 
 .. image:: https://img.shields.io/pypi/v/python-zunclient.svg
-    :target: https://pypi.python.org/pypi/python-zunclient/
+    :target: https://pypi.org/project/python-zunclient/
     :alt: Latest Version
 
 This is a client library for Zun built on the Zun API.
@@ -28,7 +28,7 @@ and a command-line tool (zun).
 * `Source`_
 * `How to Contribute`_
 
-.. _PyPi: https://pypi.python.org/pypi/python-zunclient
+.. _PyPi: https://pypi.org/project/python-zunclient
 .. _Online Documentation: https://docs.openstack.org/python-zunclient/latest
 .. _Launchpad project: https://launchpad.net/python-zunclient
 .. _Blueprints: https://blueprints.launchpad.net/python-zunclient
