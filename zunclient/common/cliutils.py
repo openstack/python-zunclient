@@ -24,6 +24,7 @@ import os
 import sys
 import textwrap
 
+import decorator
 from oslo_utils import encodeutils
 from oslo_utils import strutils
 import prettytable
@@ -289,3 +290,11 @@ def exit(msg=''):
     if msg:
         print(msg, file=sys.stderr)
     sys.exit(1)
+
+
+def deprecated(message):
+    @decorator.decorator
+    def wrapper(func, *args, **kwargs):
+        print(message)
+        return func(*args, **kwargs)
+    return wrapper
