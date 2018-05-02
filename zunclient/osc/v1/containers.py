@@ -87,11 +87,18 @@ class CreateContainer(command.ShowOne):
                  'already exist on the node. '
                  '"always": Always pull the image from repository.'
                  '"never": never pull the image')
-        parser.add_argument(
+        restart_auto_remove_args = parser.add_mutually_exclusive_group()
+        restart_auto_remove_args.add_argument(
             '--restart',
             metavar='<restart>',
             help='Restart policy to apply when a container exits'
                  '(no, on-failure[:max-retry], always, unless-stopped)')
+        restart_auto_remove_args.add_argument(
+            '--auto-remove',
+            dest='auto_remove',
+            action='store_true',
+            default=False,
+            help='Automatically remove the container when it exits')
         parser.add_argument(
             '--image-driver',
             metavar='<image_driver>',
@@ -142,12 +149,6 @@ class CreateContainer(command.ShowOne):
             metavar='<mount>',
             help='A dictionary to configure volumes mounted inside the '
                  'container.')
-        parser.add_argument(
-            '--auto-remove',
-            dest='auto_remove',
-            action='store_true',
-            default=False,
-            help='Automatically remove the container when it exits')
         parser.add_argument(
             '--runtime',
             metavar='<runtime>',
@@ -705,11 +706,18 @@ class RunContainer(command.ShowOne):
                  'already exist on the node. '
                  '"always": Always pull the image from repository.'
                  '"never": never pull the image')
-        parser.add_argument(
+        restart_auto_remove_args = parser.add_mutually_exclusive_group()
+        restart_auto_remove_args.add_argument(
             '--restart',
             metavar='<restart>',
             help='Restart policy to apply when a container exits'
                  '(no, on-failure[:max-retry], always, unless-stopped)')
+        restart_auto_remove_args.add_argument(
+            '--auto-remove',
+            dest='auto_remove',
+            action='store_true',
+            default=False,
+            help='Automatically remove the container when it exits')
         parser.add_argument(
             '--image-driver',
             metavar='<image_driver>',
@@ -760,12 +768,6 @@ class RunContainer(command.ShowOne):
             metavar='<mount>',
             help='A dictionary to configure volumes mounted inside the '
                  'container.')
-        parser.add_argument(
-            '--auto-remove',
-            dest='auto_remove',
-            action='store_true',
-            default=False,
-            help='Automatically remove the container when it exits')
         parser.add_argument(
             '--runtime',
             metavar='<runtime>',

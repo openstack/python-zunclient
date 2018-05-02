@@ -18,6 +18,7 @@
 
 from __future__ import print_function
 
+import collections
 import getpass
 import inspect
 import os
@@ -90,6 +91,15 @@ def arg(*args, **kwargs):
     return _decorator
 
 
+def exclusive_arg(group_name, *args, **kwargs):
+    """Decorator for CLI mutually exclusive args."""
+    def _decorator(func):
+        required = kwargs.pop('required', None)
+        add_exclusive_arg(func, group_name, required, *args, **kwargs)
+        return func
+    return _decorator
+
+
 def env(*args, **kwargs):
     """Returns the first environment variable set.
 
@@ -114,6 +124,24 @@ def add_arg(func, *args, **kwargs):
         # Because of the semantics of decorator composition if we just append
         # to the options list positional options will appear to be backwards.
         func.arguments.insert(0, (args, kwargs))
+
+
+def add_exclusive_arg(func, group_name, required, *args, **kwargs):
+    """Bind CLI mutally exclusive arguments to a shell.py `do_foo` function."""
+
+    if not hasattr(func, 'exclusive_args'):
+        func.exclusive_args = collections.defaultdict(list)
+        # Default required to False
+        func.exclusive_args['__required__'] = collections.defaultdict(bool)
+
+    # NOTE(sirp): avoid dups that can occur when the module is shared across
+    # tests.
+    if (args, kwargs) not in func.exclusive_args[group_name]:
+        # Because of the semantics of decorator composition if we just append
+        # to the options list positional options will appear to be backwards.
+        func.exclusive_args[group_name].insert(0, (args, kwargs))
+        if required is not None:
+            func.exclusive_args['__required__'][group_name] = required
 
 
 def unauthenticated(func):

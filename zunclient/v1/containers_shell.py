@@ -39,6 +39,17 @@ def _show_container(container):
     utils.print_dict(container._info)
 
 
+@utils.exclusive_arg(
+    'restart_auto_remove',
+    '--auto-remove',
+    required=False, action='store_true',
+    help='Automatically remove the container when it exits')
+@utils.exclusive_arg(
+    'restart_auto_remove',
+    '--restart',
+    required=False, metavar='<restart>',
+    help='Restart policy to apply when a container exits'
+         '(no, on-failure[:max-retry], always, unless-stopped)')
 @utils.arg('-n', '--name',
            metavar='<name>',
            help='name of the container')
@@ -55,9 +66,6 @@ def _show_container(container):
 @utils.arg('--workdir',
            metavar='<workdir>',
            help='The working directory for commands to run in')
-@utils.arg('--auto-remove',
-           action='store_true',
-           help='Automatically remove the container when it exits')
 @utils.arg('--label',
            metavar='<KEY=VALUE>',
            action='append', default=[],
@@ -75,10 +83,6 @@ def _show_container(container):
                 '"always": Always pull the image from repository.'
                 '"never": never pull the image')
 @utils.arg('image', metavar='<image>', help='name or ID of the image')
-@utils.arg('--restart',
-           metavar='<restart>',
-           help='Restart policy to apply when a container exits'
-                '(no, on-failure[:max-retry], always, unless-stopped)')
 @utils.arg('-i', '--interactive',
            dest='interactive',
            action='store_true',
@@ -523,6 +527,17 @@ def do_kill(cs, args):
                 {'container': container, 'e': e})
 
 
+@utils.exclusive_arg(
+    'restart_auto_remove',
+    '--auto-remove',
+    required=False, action='store_true',
+    help='Automatically remove the container when it exits')
+@utils.exclusive_arg(
+    'restart_auto_remove',
+    '--restart',
+    required=False, metavar='<restart>',
+    help='Restart policy to apply when a container exits'
+         '(no, on-failure[:max-retry], always, unless-stopped)')
 @utils.arg('-n', '--name',
            metavar='<name>',
            help='name of the container')
@@ -539,9 +554,6 @@ def do_kill(cs, args):
 @utils.arg('--workdir',
            metavar='<workdir>',
            help='The working directory for commands to run in')
-@utils.arg('--auto-remove',
-           action='store_true',
-           help='Automatically remove the container when it exits')
 @utils.arg('--label',
            metavar='<KEY=VALUE>',
            action='append', default=[],
@@ -559,10 +571,6 @@ def do_kill(cs, args):
                 '"always": Always pull the image from repository.'
                 '"never": never pull the image')
 @utils.arg('image', metavar='<image>', help='name or ID of the image')
-@utils.arg('--restart',
-           metavar='<restart>',
-           help='Restart policy to apply when a container exits'
-                '(no, on-failure[:max-retry], always, unless-stopped)')
 @utils.arg('-i', '--interactive',
            dest='interactive',
            action='store_true',
