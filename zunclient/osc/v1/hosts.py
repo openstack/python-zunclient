@@ -65,7 +65,7 @@ class ListHost(command.Lister):
         opts['sort_dir'] = parsed_args.sort_dir
         opts = zun_utils.remove_null_parms(**opts)
         hosts = client.hosts.list(**opts)
-        columns = ('uuid', 'hostname', 'mem_total', 'cpus', 'os', 'labels')
+        columns = ('uuid', 'hostname', 'mem_total', 'cpus', 'disk_total')
         return (columns, (utils.get_item_properties(host, columns)
                           for host in hosts))
 

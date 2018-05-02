@@ -42,7 +42,7 @@ def do_host_list(cs, args):
     opts['sort_dir'] = args.sort_dir
     opts = zun_utils.remove_null_parms(**opts)
     hosts = cs.hosts.list(**opts)
-    columns = ('uuid', 'hostname', 'mem_total', 'cpus', 'os', 'labels')
+    columns = ('uuid', 'hostname', 'mem_total', 'cpus', 'disk_total')
     utils.print_list(hosts, columns,
                      {'versions': zun_utils.print_list_field('versions')},
                      sortby_index=None)
