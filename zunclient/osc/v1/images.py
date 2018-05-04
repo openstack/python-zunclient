@@ -152,7 +152,7 @@ class ShowImage(command.ShowOne):
 class DeleteImage(command.Command):
     """Delete specified image"""
 
-    log = logging.getlogger(__name__ + ".DeleteImage")
+    log = logging.getLogger(__name__ + ".DeleteImage")
 
     def get_parser(self, prog_name):
         parser = super(DeleteImage, self).get_parser(prog_name)
