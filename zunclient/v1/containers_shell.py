@@ -82,7 +82,8 @@ def _show_container(container):
                 'already exist on the node. '
                 '"always": Always pull the image from repository.'
                 '"never": never pull the image')
-@utils.arg('image', metavar='<image>', help='name or ID of the image')
+@utils.arg('image', metavar='<image>', help='name or ID or repo of the image '
+           '(e.g. cirros:latest)')
 @utils.arg('-i', '--interactive',
            dest='interactive',
            action='store_true',
