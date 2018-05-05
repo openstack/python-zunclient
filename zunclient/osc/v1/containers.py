@@ -51,7 +51,7 @@ class CreateContainer(command.ShowOne):
         parser.add_argument(
             'image',
             metavar='<image>',
-            help='name or ID of the image')
+            help='name or ID or repo of the image (e.g. cirros:latest)')
         parser.add_argument(
             '--cpu',
             metavar='<cpu>',
