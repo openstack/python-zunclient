@@ -28,10 +28,16 @@ from zunclient.common.websocketclient import websocketclient
 from zunclient import exceptions as exc
 
 
-DEPRECATION_MESSAGE = (
+RENAME_DEPRECATION_MESSAGE = (
     'WARNING: Rename container command deprecated and will be removed '
     'in a future release.\nUse Update container command to avoid '
     'seeing this message.')
+
+
+SG_DEPRECATION_MESSAGE = (
+    'WARNING: Security group related commands deprecated and will be removed '
+    'in a future release.\nUse Neutron commands to manage security groups '
+    'instead.')
 
 
 def _show_container(container):
@@ -767,7 +773,7 @@ def do_update(cs, args):
     _show_container(container)
 
 
-@utils.deprecated(DEPRECATION_MESSAGE)
+@utils.deprecated(RENAME_DEPRECATION_MESSAGE)
 @utils.arg('container',
            metavar='<container>',
            help='ID or name of the container to rename.')
@@ -885,6 +891,7 @@ def do_commit(cs, args):
               {'container': args.container, 'e': e})
 
 
+@utils.deprecated(SG_DEPRECATION_MESSAGE)
 @utils.arg('container',
            metavar='<container>',
            help='ID or name of the container to add security group.')
@@ -976,6 +983,7 @@ def do_network_list(cs, args):
     zun_utils.list_container_networks(networks)
 
 
+@utils.deprecated(SG_DEPRECATION_MESSAGE)
 @utils.arg('container',
            metavar='<container>',
            help='ID or name of the container to remove security group.')
