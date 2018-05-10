@@ -44,7 +44,7 @@ def do_service_delete(cs, args):
               {'binary': args.binary, 'host': args.host, 'e': e})
 
 
-@utils.arg('host', metavar='<hostname>', help='Name of host.')
+@utils.arg('host', metavar='<host>', help='Name of host.')
 @utils.arg('binary', metavar='<binary>', help='Service binary.')
 def do_service_enable(cs, args):
     """Enable the Zun service."""
@@ -52,7 +52,7 @@ def do_service_enable(cs, args):
     utils.print_dict(res[1]['service'])
 
 
-@utils.arg('host', metavar='<hostname>', help='Name of host.')
+@utils.arg('host', metavar='<host>', help='Name of host.')
 @utils.arg('binary', metavar='<binary>', help='Service binary.')
 @utils.arg(
     '--reason',
@@ -64,7 +64,7 @@ def do_service_disable(cs, args):
     utils.print_dict(res[1]['service'])
 
 
-@utils.arg('host', metavar='<hostname>', help='Name of host.')
+@utils.arg('host', metavar='<host>', help='Name of host.')
 @utils.arg('binary', metavar='<binary>', help='Service binary.')
 @utils.arg(
     '--unset',
