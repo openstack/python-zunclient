@@ -15,7 +15,7 @@ from zunclient.common import utils
 from zunclient import exceptions
 
 
-PULL_ATTRIBUTES = ['repo']
+PULL_ATTRIBUTES = ['repo', 'host']
 IMAGE_SEARCH_ATTRIBUTES = ['image', 'image_driver', 'exact_match']
 
 
@@ -96,12 +96,12 @@ class ImageManager(base.Manager):
                     "Key must be in %s" % ','.join(PULL_ATTRIBUTES))
         return self._create(self._path(), new)
 
-    def delete(self, image_id):
+    def delete(self, image_id, **kwargs):
         """Delete an image
 
         :params image_id: uuid of the image.
         """
-        return self._delete(self._path(image_id))
+        return self._delete(self._path(image_id), qparams=kwargs)
 
     def search_image(self, image, **kwargs):
         """Retrieves list of images based on image name and image_driver name

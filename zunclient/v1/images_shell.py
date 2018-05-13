@@ -21,10 +21,14 @@ def _show_image(image):
 @utils.arg('image',
            metavar='<image>',
            help='Name of the image')
+@utils.arg('host',
+           metavar='<host>',
+           help='Name or UUID of the host')
 def do_pull(cs, args):
-    """Pull an image."""
+    """Pull an image into a host."""
     opts = {}
     opts['repo'] = args.image
+    opts['host'] = args.host
     _show_image(cs.images.create(**opts))
 
 
@@ -69,9 +73,15 @@ def do_image_show(cs, args):
 @utils.arg('id',
            metavar='<uuid>',
            help='UUID of image to delete')
+@utils.arg('host',
+           metavar='<host>',
+           help='Name or UUID of the host')
 def do_image_delete(cs, args):
-    """Delete a specific image."""
-    cs.images.delete(args.id)
+    """Delete a specified image from a host."""
+    opts = {}
+    opts['image_id'] = args.id
+    opts['host'] = args.host
+    cs.images.delete(**opts)
 
 
 @utils.arg('image',

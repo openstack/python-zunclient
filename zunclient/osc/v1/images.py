@@ -16,6 +16,7 @@ from osc_lib.command import command
 from osc_lib import utils
 
 from zunclient.common import utils as zun_utils
+from zunclient.i18n import _
 
 
 def _image_columns(image):
@@ -71,7 +72,7 @@ class ListImage(command.Lister):
 
 
 class PullImage(command.ShowOne):
-    """Pull specified image"""
+    """Pull specified image into a host"""
 
     log = logging.getLogger(__name__ + ".PullImage")
 
@@ -81,12 +82,17 @@ class PullImage(command.ShowOne):
             'image',
             metavar='<image>',
             help='Name of the image')
+        parser.add_argument(
+            'host',
+            metavar='<host>',
+            help='Name or UUID of the host')
         return parser
 
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         opts = {}
         opts['repo'] = parsed_args.image
+        opts['host'] = parsed_args.host
         image = client.images.create(**opts)
         columns = _image_columns(image)
         return columns, utils.get_item_properties(image, columns)
@@ -150,7 +156,7 @@ class ShowImage(command.ShowOne):
 
 
 class DeleteImage(command.Command):
-    """Delete specified image"""
+    """Delete specified image from a host"""
 
     log = logging.getLogger(__name__ + ".DeleteImage")
 
@@ -160,15 +166,21 @@ class DeleteImage(command.Command):
             'uuid',
             metavar='<uuid>',
             help='UUID of image to describe')
+        parser.add_argument(
+            'host',
+            metavar='<host>',
+            help='Name or UUID of the host')
         return parser
 
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
-        img_id = parsed_args.uuid
+        opts = {}
+        opts['image_id'] = parsed_args.uuid
+        opts['host'] = parsed_args.host
         try:
-            client.images.delete(img_id)
+            client.images.delete(**opts)
             print(_('Request to delete image %s has been accepted.')
-                  % img_id)
+                  % opts['image_id'])
         except Exception as e:
             print("Delete for image %(image)s failed: %(e)s" %
-                  {'image': img_id, 'e': e})
+                  {'image': opts['image_id'], 'e': e})
