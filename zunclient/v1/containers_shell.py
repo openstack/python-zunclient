@@ -801,7 +801,7 @@ def do_cp(cs, args):
            metavar='<container>',
            help='ID or name of the container to display stats.')
 def do_stats(cs, args):
-    """Display stats snapshot of the container."""
+    """Display stats of the container."""
     stats_info = cs.containers.stats(args.container)
     utils.print_dict(stats_info)
 
