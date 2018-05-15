@@ -311,7 +311,7 @@ class ListContainer(command.Lister):
         parser.add_argument(
             '--auto-remove',
             metavar='<auto-remove>',
-            help='List conatiner whether they are auto-removed on existing')
+            help='List containers whether they are auto-removed on exiting')
         return parser
 
     def take_action(self, parsed_args):
