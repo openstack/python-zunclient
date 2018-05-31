@@ -189,6 +189,13 @@ def list_containers(containers):
                      sortby_index=None)
 
 
+def list_availability_zones(zones):
+    columns = ('availability_zone',)
+    utils.print_list(zones, columns,
+                     {'versions': print_list_field('versions')},
+                     sortby_index=None)
+
+
 def parse_command(command):
     output = []
     if command:
