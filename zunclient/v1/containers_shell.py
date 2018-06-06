@@ -228,8 +228,8 @@ def do_create(cs, args):
            help='List containers according to their hostname')
 @utils.arg('--auto-remove',
            metavar='<auto-remove>',
-           help='List container according to whether they are'
-                'auto-removed on existing')
+           help='List containers according to whether they are '
+                'auto-removed on exiting')
 def do_list(cs, args):
     """Print a list of available containers."""
     opts = {}
