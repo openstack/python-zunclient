@@ -75,14 +75,11 @@ def do_capsule_list(cs, args):
            metavar='<capsule>',
            nargs='+',
            help='ID or name of the (capsule)s to delete.')
-@utils.arg('-f', '--force',
-           action='store_true',
-           help='Force delete the capsule.')
 def do_capsule_delete(cs, args):
     """Delete specified capsules."""
     for capsule in args.capsules:
         try:
-            cs.capsules.delete(capsule, args.force)
+            cs.capsules.delete(capsule)
             print("Request to delete capsule %s has been accepted." %
                   capsule)
         except Exception as e:

@@ -101,9 +101,8 @@ class CapsuleManager(base.Manager):
                                          "capsules",
                                          limit=limit)
 
-    def delete(self, id, force):
-        return self._delete(self._path(id),
-                            qparams={'force': force})
+    def delete(self, id):
+        return self._delete(self._path(id))
 
     def describe(self, id):
         try:
