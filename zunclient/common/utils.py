@@ -295,3 +295,21 @@ def list_capsules(capsules):
     utils.print_list(capsules, columns,
                      {'versions': print_list_field('versions')},
                      sortby_index=None)
+
+
+def format_fixed_ips(fixed_ips):
+    if fixed_ips is None:
+        return None
+
+    return ",".join([fip['ip_address'] for fip in fixed_ips])
+
+
+def format_network_fixed_ips(network):
+    return format_fixed_ips(network.fixed_ips)
+
+
+def list_container_networks(networks):
+    columns = ('net_id', 'port_id', 'fixed_ips')
+    utils.print_list(networks, columns,
+                     {'fixed_ips': format_network_fixed_ips},
+                     sortby_index=None)

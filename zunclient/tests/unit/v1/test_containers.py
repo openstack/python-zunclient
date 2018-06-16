@@ -59,6 +59,14 @@ CONTAINER2 = {'id': '1235',
               'auto_heal': False
               }
 
+NETWORK1 = {'net_id': '99e90853-e1fd-4c57-a116-9e335deaa592',
+            'port_id': '83f39a10-45c8-4463-a274-5a7cda3e6c97',
+            'fixed_ips': [{
+                'ip_address': '10.0.0.7', 'version': 4,
+                'subnet_id': '5899aa85-c98f-4d1d-bc8f-99fed7bde5b9'}]
+            }
+
+
 CREATE_CONTAINER1 = copy.deepcopy(CONTAINER1)
 del CREATE_CONTAINER1['id']
 del CREATE_CONTAINER1['uuid']
@@ -328,6 +336,14 @@ fake_responses = {
         'POST': (
             {},
             None,
+        ),
+    },
+    '/v1/containers/%s/network_list'
+    % (CONTAINER1['id']):
+    {
+        'GET': (
+            {},
+            {'networks': NETWORK1},
         ),
     },
     '/v1/containers/%s/remove_security_group?%s'
@@ -699,6 +715,15 @@ class ContainerManagerTest(testtools.TestCase):
         ]
         self.assertEqual(expect, self.api.calls)
         self.assertTrue(containers)
+
+    def test_containers_network_list(self):
+        networks = self.mgr.network_list(CONTAINER1['id'])
+        expect = [
+            ('GET', '/v1/containers/%s/network_list'
+             % (CONTAINER1['id']), {}, None)
+        ]
+        self.assertEqual(expect, self.api.calls)
+        self.assertTrue(networks)
 
     def test_containers_remove_security_group(self):
         containers = self.mgr.remove_security_group(
