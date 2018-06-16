@@ -31,7 +31,7 @@ class HostManager(base.Manager):
             return '/v1/hosts/'
 
     def list(self, marker=None, limit=None, sort_key=None,
-             sort_dir=None, detail=False):
+             sort_dir=None):
         """Retrieve a list of hosts.
 
         :param marker: Optional, the UUID of an host, eg the last
@@ -50,9 +50,6 @@ class HostManager(base.Manager):
         :param sort_dir: Optional, direction of sorting, either 'asc' (the
                          default) or 'desc'.
 
-        :param detail: Optional, boolean whether to return detailed information
-                       about hosts.
-
         :returns: A list of hosts.
 
         """
@@ -62,8 +59,6 @@ class HostManager(base.Manager):
         filters = utils.common_filters(marker, limit, sort_key, sort_dir)
 
         path = ''
-        if detail:
-            path += 'detail'
         if filters:
             path += '?' + '&'.join(filters)
 

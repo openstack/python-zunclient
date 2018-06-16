@@ -53,7 +53,7 @@ class CapsuleManager(base.Manager):
         return self._create(self._path(), new)
 
     def list(self, marker=None, limit=None, sort_key=None,
-             sort_dir=None, detail=False, all_projects=False):
+             sort_dir=None, all_projects=False):
         """Retrieve a list of capsules.
 
         :param all_projects: Optional, list containers in all projects
@@ -75,9 +75,6 @@ class CapsuleManager(base.Manager):
         :param sort_dir: Optional, direction of sorting, either 'asc' (the
                          default) or 'desc'.
 
-        :param detail: Optional, boolean whether to return detailed information
-                       about containers.
-
         :returns: A list of containers.
 
         """
@@ -88,8 +85,6 @@ class CapsuleManager(base.Manager):
                                        sort_dir, all_projects)
 
         path = ''
-        if detail:
-            path += 'detail'
         if filters:
             path += '?' + '&'.join(filters)
 
