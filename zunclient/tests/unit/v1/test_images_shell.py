@@ -40,3 +40,19 @@ class ShellTest(shell_test_base.TestCommandLineArgument):
         self._test_arg_failure('image-show --wrong 1111',
                                self._unrecognized_arg_error)
         self.assertFalse(mock_get.called)
+
+    @mock.patch('zunclient.v1.images.ImageManager.search_image')
+    def test_zun_image_search_with_driver(self, mock_search_image):
+        self._test_arg_success('image-search 111 --image_driver glance')
+        self.assertTrue(mock_search_image.called)
+
+    @mock.patch('zunclient.v1.images.ImageManager.search_image')
+    def test_zun_image_search_default_driver(self, mock_search_image):
+        self._test_arg_success('image-search 111')
+        self.assertTrue(mock_search_image.called)
+
+    @mock.patch('zunclient.v1.images.ImageManager.search_image')
+    def test_zun_image_search_failure(self, mock_search_image):
+        self._test_arg_failure('image-search --wrong 1111',
+                               self._unrecognized_arg_error)
+        self.assertFalse(mock_search_image.called)

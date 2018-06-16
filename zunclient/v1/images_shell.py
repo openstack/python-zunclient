@@ -87,9 +87,10 @@ def do_image_delete(cs, args):
 @utils.arg('image',
            metavar='<image>',
            help='Name of the image')
-@utils.arg('image_driver',
+@utils.arg('--image_driver',
            metavar='<image-driver>',
            choices=['glance', 'docker'],
+           default='docker',
            help='Name of the image driver (glance, docker)')
 @utils.arg('--exact-match',
            default=False,
