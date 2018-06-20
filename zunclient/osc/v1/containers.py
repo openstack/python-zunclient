@@ -37,6 +37,10 @@ def _get_client(obj, parsed_args):
     return obj.app.client_manager.container
 
 
+def _action_columns(action):
+    return action._info.keys()
+
+
 class CreateContainer(command.ShowOne):
     """Create a container"""
 
@@ -1250,3 +1254,52 @@ class NetworkList(command.Lister):
             network, columns, formatters={
                 'fixed_ips': zun_utils.format_fixed_ips})
             for network in networks))
+
+
+class ActionList(command.Lister):
+    """List actions on a container"""
+    log = logging.getLogger(__name__ + ".ListActions")
+
+    def get_parser(self, prog_name):
+        parser = super(ActionList, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help='ID or name of the container to list actions.'
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        container = parsed_args.container
+        actions = client.actions.list(container)
+        columns = ('user_id', 'container_uuid', 'request_id', 'action',
+                   'message', 'start_time')
+        return (columns, (utils.get_item_properties(action, columns)
+                          for action in actions))
+
+
+class ActionShow(command.ShowOne):
+    """Show a action"""
+
+    log = logging.getLogger(__name__ + ".ShowAction")
+
+    def get_parser(self, prog_name):
+        parser = super(ActionShow, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help='ID or name of the container to show.')
+        parser.add_argument(
+            'request_id',
+            metavar='<request_id>',
+            help='request ID of action to describe.')
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        container = parsed_args.container
+        request_id = parsed_args.request_id
+        action = client.actions.get(container, request_id)
+        columns = _action_columns(action)
+        return columns, utils.get_item_properties(action, columns)
