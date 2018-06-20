@@ -876,10 +876,13 @@ class TopContainer(command.Command):
         output = client.containers.top(container, ps)
         for titles in output['Titles']:
             print("%-20s") % titles,
-        for process in output['Processes']:
+        if output['Processes']:
+            for process in output['Processes']:
+                print("")
+                for info in process:
+                    print("%-20s") % info,
+        else:
             print("")
-            for info in process:
-                print("%-20s") % info,
 
 
 class UpdateContainer(command.ShowOne):
