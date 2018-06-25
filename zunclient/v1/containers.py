@@ -212,9 +212,9 @@ class ContainerManager(base.Manager):
         return self._action(id, '/add_security_group',
                             qparams={'name': security_group})
 
-    def network_detach(self, container, network):
+    def network_detach(self, container, **kwargs):
         return self._action(container, '/network_detach',
-                            qparams={'network': network})
+                            qparams=kwargs)
 
     def network_attach(self, container, **kwargs):
         return self._action(container, '/network_attach',

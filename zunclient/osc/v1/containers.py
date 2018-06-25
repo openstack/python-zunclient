@@ -1120,10 +1120,15 @@ class NetworkDetach(command.Command):
             'container',
             metavar='<container>',
             help='ID or name of the container to detach network.')
-        parser.add_argument(
-            'network',
+        network_port_args = parser.add_mutually_exclusive_group()
+        network_port_args.add_argument(
+            '--network',
             metavar='<network>',
             help='The network for specified container to detach.')
+        network_port_args.add_argument(
+            '--port',
+            metavar='<port>',
+            help='The port for specified container to detach.')
         return parser
 
     def take_action(self, parsed_args):
@@ -1131,6 +1136,7 @@ class NetworkDetach(command.Command):
         opts = {}
         opts['container'] = parsed_args.container
         opts['network'] = parsed_args.network
+        opts['port'] = parsed_args.port
         opts = zun_utils.remove_null_parms(**opts)
         try:
             client.containers.network_detach(**opts)
@@ -1152,9 +1158,13 @@ class NetworkAttach(command.Command):
             metavar='<container>',
             help='ID or name of the container to attach network.')
         parser.add_argument(
-            'network',
+            '--network',
             metavar='<network>',
             help='The network for specified container to attach.')
+        parser.add_argument(
+            '--port',
+            metavar='<port>',
+            help='The port for specified container to attach.')
         return parser
 
     def take_action(self, parsed_args):
@@ -1162,6 +1172,7 @@ class NetworkAttach(command.Command):
         opts = {}
         opts['container'] = parsed_args.container
         opts['network'] = parsed_args.network
+        opts['port'] = parsed_args.port
         opts = zun_utils.remove_null_parms(**opts)
         try:
             client.containers.network_attach(**opts)

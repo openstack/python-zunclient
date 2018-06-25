@@ -678,7 +678,7 @@ class ContainerManagerTest(testtools.TestCase):
 
     def test_containers_network_detach(self):
         containers = self.mgr.network_detach(
-            CONTAINER1['id'], 'neutron_network')
+            CONTAINER1['id'], network='neutron_network')
         expect = [
             ('POST', '/v1/containers/%s/network_detach?%s'
              % (CONTAINER1['id'],
