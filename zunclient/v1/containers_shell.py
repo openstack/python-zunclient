@@ -50,6 +50,20 @@ def _show_container(container):
     required=False, metavar='<restart>',
     help='Restart policy to apply when a container exits'
          '(no, on-failure[:max-retry], always, unless-stopped)')
+@utils.exclusive_arg(
+    'secgroup_expose_port',
+    '--security-group',
+    metavar='<security-group>',
+    action='append', default=[],
+    help='The name of security group for the container. '
+         'May be used multiple times.')
+@utils.exclusive_arg(
+    'secgroup_expose_port',
+    '-p', '--expose-port',
+    action='append',
+    default=[],
+    metavar='<port>',
+    help='Expose container port(s) to outside (format: <port>[/<protocol>])')
 @utils.arg('-n', '--name',
            metavar='<name>',
            help='name of the container')
@@ -95,11 +109,6 @@ def _show_container(container):
                 'It can have following values: '
                 '"docker": pull the image from Docker Hub. '
                 '"glance": pull the image from Glance. ')
-@utils.arg('--security-group',
-           metavar='<security-group>',
-           action='append', default=[],
-           help='The name of security group for the container. '
-                'May be used multiple times.')
 @utils.arg('command',
            metavar='<command>',
            nargs=argparse.REMAINDER,
@@ -192,6 +201,8 @@ def do_create(cs, args):
 
     if args.security_group:
         opts['security_groups'] = args.security_group
+    if args.expose_port:
+        opts['exposed_ports'] = zun_utils.parse_exposed_ports(args.expose_port)
     if args.restart:
         opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
     if args.interactive:
@@ -559,6 +570,20 @@ def do_kill(cs, args):
     required=False, metavar='<restart>',
     help='Restart policy to apply when a container exits'
          '(no, on-failure[:max-retry], always, unless-stopped)')
+@utils.exclusive_arg(
+    'secgroup_expose_port',
+    '--security-group',
+    metavar='<security-group>',
+    action='append', default=[],
+    help='The name of security group for the container. '
+         'May be used multiple times.')
+@utils.exclusive_arg(
+    'secgroup_expose_port',
+    '-p', '--expose-port',
+    action='append',
+    default=[],
+    metavar='<port>',
+    help='Expose container port(s) to outside (format: <port>[/<protocol>])')
 @utils.arg('-n', '--name',
            metavar='<name>',
            help='name of the container')
@@ -603,11 +628,6 @@ def do_kill(cs, args):
                 'It can have following values: '
                 '"docker": pull the image from Docker Hub. '
                 '"glance": pull the image from Glance. ')
-@utils.arg('--security-group',
-           metavar='<security-group>',
-           action='append', default=[],
-           help='The name of security group for the container. '
-                'May be used multiple times.')
 @utils.arg('command',
            metavar='<command>',
            nargs=argparse.REMAINDER,
@@ -700,6 +720,8 @@ def do_run(cs, args):
 
     if args.security_group:
         opts['security_groups'] = args.security_group
+    if args.expose_port:
+        opts['exposed_ports'] = zun_utils.parse_exposed_ports(args.expose_port)
     if args.restart:
         opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
     if args.interactive:
