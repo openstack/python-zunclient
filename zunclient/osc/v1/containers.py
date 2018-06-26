@@ -1245,6 +1245,8 @@ class NetworkList(command.Lister):
         opts['container'] = parsed_args.container
         opts = zun_utils.remove_null_parms(**opts)
         networks = client.containers.network_list(**opts)
-        columns = ('net_id', 'subnet_id', 'port_id', 'version', 'ip_address')
-        return (columns, (utils.get_item_properties(network, columns)
-                for network in networks))
+        columns = ('net_id', 'port_id', 'fixed_ips')
+        return (columns, (utils.get_item_properties(
+            network, columns, formatters={
+                'fixed_ips': zun_utils.format_fixed_ips})
+            for network in networks))
