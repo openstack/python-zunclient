@@ -493,7 +493,7 @@ def do_exec(cs, args):
     response = cs.containers.execute(args.container, **opts)
     if args.interactive:
         exec_id = response['exec_id']
-        url = response['url']
+        url = response['proxy_url']
         websocketclient.do_exec(cs, url, args.container, exec_id, "~", 0.5)
     else:
         output = response['output']
