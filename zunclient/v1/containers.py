@@ -44,7 +44,7 @@ class ContainerManager(base.Manager):
             return '/v1/containers'
 
     def list(self, marker=None, limit=None, sort_key=None,
-             sort_dir=None, detail=False, all_projects=False, **kwargs):
+             sort_dir=None, all_projects=False, **kwargs):
         """Retrieve a list of containers.
 
         :param all_projects: Optional, list containers in all projects
@@ -66,9 +66,6 @@ class ContainerManager(base.Manager):
         :param sort_dir: Optional, direction of sorting, either 'asc' (the
                          default) or 'desc'.
 
-        :param detail: Optional, boolean whether to return detailed information
-                       about containers.
-
         :returns: A list of containers.
 
         """
@@ -78,8 +75,6 @@ class ContainerManager(base.Manager):
         filters = utils.common_filters(marker, limit, sort_key,
                                        sort_dir, all_projects)
         path = ''
-        if detail:
-            path += 'detail'
         if filters:
             path += '?' + '&'.join(filters)
 

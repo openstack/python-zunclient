@@ -29,7 +29,7 @@ class ServiceManager(base.Manager):
         return '/v1/services/%s' % id if id else '/v1/services'
 
     def list(self, marker=None, limit=None, sort_key=None,
-             sort_dir=None, detail=False):
+             sort_dir=None):
         """Retrieve list of zun services.
 
         :param marker: Optional, the ID of a zun service, eg the last
@@ -49,9 +49,6 @@ class ServiceManager(base.Manager):
         :param sort_dir: Optional, direction of sorting, either 'asc' (the
                          default) or 'desc'.
 
-        :param detail: Optional, boolean whether to return detailed information
-                       about services.
-
         :returns: A list of services.
         """
 
@@ -61,8 +58,6 @@ class ServiceManager(base.Manager):
         filters = utils.common_filters(marker, limit, sort_key, sort_dir)
 
         path = ''
-        if detail:
-            path += 'detail'
         if filters:
             path += '?' + '&'.join(filters)
 
