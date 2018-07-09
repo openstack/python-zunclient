@@ -14,6 +14,7 @@
 
 from six.moves.urllib import parse
 
+from zunclient import api_versions
 from zunclient.common import base
 from zunclient.common import utils
 from zunclient import exceptions
@@ -94,6 +95,8 @@ class ContainerManager(base.Manager):
             return None
 
     def create(self, **kwargs):
+        self._process_command(kwargs)
+
         new = {}
         for (key, value) in kwargs.items():
             if key in CREATION_ATTRIBUTES:
@@ -102,6 +105,13 @@ class ContainerManager(base.Manager):
                 raise exceptions.InvalidAttribute(
                     "Key must be in %s" % ','.join(CREATION_ATTRIBUTES))
         return self._create(self._path(), new)
+
+    def _process_command(self, kwargs):
+        cmd_microversion = api_versions.APIVersion("1.20")
+        if self.api_version < cmd_microversion:
+            command = kwargs.pop('command', None)
+            if command:
+                kwargs['command'] = utils.parse_command(command)
 
     def delete(self, id, **kwargs):
         return self._delete(self._path(id),
@@ -159,6 +169,8 @@ class ContainerManager(base.Manager):
                             qparams={'signal': signal})[1]
 
     def run(self, **kwargs):
+        self._process_command(kwargs)
+
         if not set(kwargs).issubset(CREATION_ATTRIBUTES):
             raise exceptions.InvalidAttribute(
                 "Key must be in %s" % ','.join(CREATION_ATTRIBUTES))

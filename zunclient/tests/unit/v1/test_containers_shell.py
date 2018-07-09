@@ -28,6 +28,7 @@ def _get_container_args(**kwargs):
         'labels': {},
         'mounts': [],
         'nets': [],
+        'command': [],
     }
     default_args.update(kwargs)
     return default_args

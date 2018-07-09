@@ -194,10 +194,9 @@ class CreateContainer(command.ShowOne):
         opts['image_pull_policy'] = parsed_args.image_pull_policy
         opts['image_driver'] = parsed_args.image_driver
         opts['auto_remove'] = parsed_args.auto_remove
+        opts['command'] = parsed_args.command
         if parsed_args.security_group:
             opts['security_groups'] = parsed_args.security_group
-        if parsed_args.command:
-            opts['command'] = zun_utils.parse_command(parsed_args.command)
         if parsed_args.restart:
             opts['restart_policy'] = \
                 zun_utils.check_restart_policy(parsed_args.restart)
@@ -813,10 +812,9 @@ class RunContainer(command.ShowOne):
         opts['image_pull_policy'] = parsed_args.image_pull_policy
         opts['image_driver'] = parsed_args.image_driver
         opts['auto_remove'] = parsed_args.auto_remove
+        opts['command'] = parsed_args.command
         if parsed_args.security_group:
             opts['security_groups'] = parsed_args.security_group
-        if parsed_args.command:
-            opts['command'] = zun_utils.parse_command(parsed_args.command)
         if parsed_args.restart:
             opts['restart_policy'] = \
                 zun_utils.check_restart_policy(parsed_args.restart)

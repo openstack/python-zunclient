@@ -169,11 +169,10 @@ def do_create(cs, args):
     opts['disk'] = args.disk
     opts['availability_zone'] = args.availability_zone
     opts['auto_heal'] = args.auto_heal
+    opts['command'] = args.command
 
     if args.security_group:
         opts['security_groups'] = args.security_group
-    if args.command:
-        opts['command'] = zun_utils.parse_command(args.command)
     if args.restart:
         opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
     if args.interactive:
@@ -657,11 +656,10 @@ def do_run(cs, args):
     opts['disk'] = args.disk
     opts['availability_zone'] = args.availability_zone
     opts['auto_heal'] = args.auto_heal
+    opts['command'] = args.command
 
     if args.security_group:
         opts['security_groups'] = args.security_group
-    if args.command:
-        opts['command'] = zun_utils.parse_command(args.command)
     if args.restart:
         opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
     if args.interactive:

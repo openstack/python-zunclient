@@ -22,6 +22,7 @@ import fixtures
 import six
 import testtools
 
+from zunclient import api_versions
 from zunclient.common import httpclient as http
 from zunclient import shell
 
@@ -42,6 +43,8 @@ class FakeAPI(object):
     def __init__(self, responses):
         self.responses = responses
         self.calls = []
+        self.api_version = api_versions.APIVersion(
+            api_versions.MAX_API_VERSION)
 
     def _request(self, method, url, headers=None, body=None):
         call = (method, url, headers or {}, body)
