@@ -208,12 +208,14 @@ def parse_command(command):
 
 def parse_mounts(mounts):
     err_msg = ("Invalid mounts argument '%s'. mounts arguments must be of "
-               "the form --mount source=<volume>,destination=<path>. Or use "
-               "--mount size=<size>,destination=<path> to create a new volume "
-               "and mount to the container")
+               "the form --mount source=<volume>,destination=<path>, "
+               "or use --mount size=<size>,destination=<path> to create "
+               "a new volume and mount to the container, "
+               "or use --mount type=bind,source=<file>,destination=<path> "
+               "to inject file into a path in the container, ")
     parsed_mounts = []
     for mount in mounts:
-        keys = ["source", "destination", "size"]
+        keys = ["source", "destination", "size", "type"]
         mount_info = {}
         for mnt in mount.split(","):
             try:
@@ -234,6 +236,16 @@ def parse_mounts(mounts):
 
         if not mount_info.get('source') and not mount_info.get('size'):
             raise apiexec.CommandError(err_msg % mnt)
+
+        type = mount_info.get('type', 'volume')
+        if type not in ('volume', 'bind'):
+            raise apiexec.CommandError(err_msg % mnt)
+
+        if type == 'bind':
+            # TODO(hongbin): handle the case that 'source' is a directory
+            filename = mount_info.pop('source')
+            with open(filename, 'rb') as file:
+                mount_info['source'] = file.read()
 
         parsed_mounts.append(mount_info)
     return parsed_mounts
