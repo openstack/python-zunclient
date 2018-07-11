@@ -28,7 +28,6 @@ cover
 cover-master
 nosetests.xml
 .stestr/
-.testrepository
 
 # Translations
 *.mo
