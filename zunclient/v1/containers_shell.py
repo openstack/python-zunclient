@@ -185,11 +185,12 @@ def do_create(cs, args):
     opts['hostname'] = args.hostname
     opts['disk'] = args.disk
     opts['availability_zone'] = args.availability_zone
-    opts['auto_heal'] = args.auto_heal
     opts['command'] = args.command
     if args.healthcheck:
         opts['healthcheck'] = zun_utils.parse_health(args.healthcheck)
 
+    if args.auto_heal:
+        opts['auto_heal'] = args.auto_heal
     if args.security_group:
         opts['security_groups'] = args.security_group
     if args.restart:
@@ -693,11 +694,12 @@ def do_run(cs, args):
     opts['hostname'] = args.hostname
     opts['disk'] = args.disk
     opts['availability_zone'] = args.availability_zone
-    opts['auto_heal'] = args.auto_heal
     opts['command'] = args.command
     if args.healthcheck:
         opts['healthcheck'] = zun_utils.parse_health(args.healthcheck)
 
+    if args.auto_heal:
+        opts['auto_heal'] = args.auto_heal
     if args.security_group:
         opts['security_groups'] = args.security_group
     if args.restart:

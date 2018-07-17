@@ -21,7 +21,6 @@ from zunclient.v1 import containers_shell
 
 def _get_container_args(**kwargs):
     default_args = {
-        'auto_heal': False,
         'auto_remove': False,
         'environment': {},
         'hints': {},

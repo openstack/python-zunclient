@@ -230,7 +230,8 @@ class CreateContainer(command.ShowOne):
         opts['hostname'] = parsed_args.hostname
         opts['disk'] = parsed_args.disk
         opts['availability_zone'] = parsed_args.availability_zone
-        opts['auto_heal'] = parsed_args.auto_heal
+        if parsed_args.auto_heal:
+            opts['auto_heal'] = parsed_args.auto_heal
         if parsed_args.healthcheck:
             opts['healthcheck'] = \
                 zun_utils.parse_health(parsed_args.healthcheck)
@@ -872,7 +873,8 @@ class RunContainer(command.ShowOne):
         opts['hostname'] = parsed_args.hostname
         opts['disk'] = parsed_args.disk
         opts['availability_zone'] = parsed_args.availability_zone
-        opts['auto_heal'] = parsed_args.auto_heal
+        if parsed_args.auto_heal:
+            opts['auto_heal'] = parsed_args.auto_heal
         if parsed_args.healthcheck:
             opts['healthcheck'] = \
                 zun_utils.parse_health(parsed_args.healthcheck)
