@@ -867,17 +867,22 @@ class TopContainer(command.Command):
             metavar='<container>',
             help='ID or name of the container to display processes.')
         parser.add_argument(
-            'ps_args',
-            metavar='<ps_args>',
-            nargs=argparse.REMAINDER,
-            help='The args of the ps command.')
+            '--pid',
+            metavar='<pid>',
+            action='append', default=[],
+            help='The args of the ps id.')
         return parser
 
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
-        container = parsed_args.container
-        ps = ' '.join(parsed_args.ps_args)
-        output = client.containers.top(container, ps)
+        if parsed_args.pid:
+            # List container single ps id top result
+            output = client.containers.top(parsed_args.container,
+                                           ' '.join(parsed_args.pid))
+        else:
+            # List container all processes top result
+            output = client.containers.top(parsed_args.container)
+
         for titles in output['Titles']:
             print("%-20s") % titles,
         if output['Processes']:
