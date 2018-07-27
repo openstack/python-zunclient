@@ -36,7 +36,8 @@ CONTAINER1 = {'id': '1234',
               'runtime': 'runc',
               'hostname': 'testhost',
               'disk': '20',
-              'auto_heal': False
+              'auto_heal': False,
+              'privileged': False,
               }
 
 CONTAINER2 = {'id': '1235',
@@ -56,7 +57,8 @@ CONTAINER2 = {'id': '1235',
               'auto_remove': False,
               'runtime': 'runc',
               'hostname': 'testhost',
-              'auto_heal': False
+              'auto_heal': False,
+              'privileged': True,
               }
 
 NETWORK1 = {'net_id': '99e90853-e1fd-4c57-a116-9e335deaa592',

@@ -179,6 +179,12 @@ class CreateContainer(command.ShowOne):
             action='store_true',
             default=False,
             help='The flag of healing non-existent container in docker')
+        parser.add_argument(
+            '--privileged',
+            dest='privileged',
+            action='store_true',
+            default=False,
+            help='Give extended privileges to this container')
         return parser
 
     def take_action(self, parsed_args):
@@ -202,6 +208,8 @@ class CreateContainer(command.ShowOne):
                 zun_utils.check_restart_policy(parsed_args.restart)
         if parsed_args.interactive:
             opts['interactive'] = True
+        if parsed_args.privileged:
+            opts['privileged'] = True
         opts['hints'] = zun_utils.format_args(parsed_args.hint)
         opts['nets'] = zun_utils.parse_nets(parsed_args.net)
         opts['mounts'] = zun_utils.parse_mounts(parsed_args.mount)
@@ -797,6 +805,12 @@ class RunContainer(command.ShowOne):
             action='store_true',
             default=False,
             help='The flag of healing non-existent container in docker')
+        parser.add_argument(
+            '--privileged',
+            dest='privileged',
+            action='store_true',
+            default=False,
+            help='Give extended privileges to this container')
         return parser
 
     def take_action(self, parsed_args):
@@ -820,6 +834,8 @@ class RunContainer(command.ShowOne):
                 zun_utils.check_restart_policy(parsed_args.restart)
         if parsed_args.interactive:
             opts['interactive'] = True
+        if parsed_args.privileged:
+            opts['privileged'] = True
         opts['hints'] = zun_utils.format_args(parsed_args.hint)
         opts['nets'] = zun_utils.parse_nets(parsed_args.net)
         opts['mounts'] = zun_utils.parse_mounts(parsed_args.mount)

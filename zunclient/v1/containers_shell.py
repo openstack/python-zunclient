@@ -148,6 +148,11 @@ def _show_container(container):
            action='store_true',
            default=False,
            help='The flag of healing non-existent container in docker.')
+@utils.arg('--privileged',
+           dest='privileged',
+           action='store_true',
+           default=False,
+           help='Give extended privileges to this container')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -177,6 +182,8 @@ def do_create(cs, args):
         opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
     if args.interactive:
         opts['interactive'] = True
+    if args.privileged:
+        opts['privileged'] = True
     opts = zun_utils.remove_null_parms(**opts)
     _show_container(cs.containers.create(**opts))
 
@@ -635,6 +642,11 @@ def do_kill(cs, args):
            action='store_true',
            default=False,
            help='The flag of healing non-existent container in docker.')
+@utils.arg('--privileged',
+           dest='privileged',
+           action='store_true',
+           default=False,
+           help='Give extended privileges to this container')
 def do_run(cs, args):
     """Run a command in a new container."""
     opts = {}
@@ -664,6 +676,8 @@ def do_run(cs, args):
         opts['restart_policy'] = zun_utils.check_restart_policy(args.restart)
     if args.interactive:
         opts['interactive'] = True
+    if args.privileged:
+        opts['privileged'] = True
     opts = zun_utils.remove_null_parms(**opts)
     container = cs.containers.run(**opts)
     _show_container(container)
