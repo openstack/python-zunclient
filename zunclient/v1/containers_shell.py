@@ -735,13 +735,19 @@ def do_attach(cs, args):
 @utils.arg('container',
            metavar='<container>',
            help='ID or name of the container to display processes.')
-@utils.arg('ps_args',
-           metavar='<ps_args>',
-           nargs=argparse.REMAINDER,
-           help='The args of the ps command.')
+@utils.arg('--pid',
+           metavar='<pid>',
+           action='append', default=[],
+           help='The args of the ps id.')
 def do_top(cs, args):
     """Display the running processes inside the container."""
-    output = cs.containers.top(args.container, ' '.join(args.ps_args))
+
+    if args.pid:
+        # List container single ps id top result
+        output = cs.containers.top(args.container, ' '.join(args.pid))
+    else:
+        # List container all processes top result
+        output = cs.containers.top(args.container)
     for titles in output['Titles']:
         print("%-20s") % titles,
     for process in output['Processes']:
