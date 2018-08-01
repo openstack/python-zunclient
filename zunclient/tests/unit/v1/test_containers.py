@@ -38,6 +38,7 @@ CONTAINER1 = {'id': '1234',
               'disk': '20',
               'auto_heal': False,
               'privileged': False,
+              'healthcheck': {}
               }
 
 CONTAINER2 = {'id': '1235',
@@ -59,6 +60,7 @@ CONTAINER2 = {'id': '1235',
               'hostname': 'testhost',
               'auto_heal': False,
               'privileged': True,
+              'healthcheck': {}
               }
 
 NETWORK1 = {'net_id': '99e90853-e1fd-4c57-a116-9e335deaa592',

@@ -153,6 +153,18 @@ def _show_container(container):
            action='store_true',
            default=False,
            help='Give extended privileges to this container')
+@utils.arg('--healthcheck',
+           action='append',
+           default=[],
+           metavar='<cmd=command,interval=time,retries=integer,timeout=time>',
+           help='Specify a test cmd to perform to check that the container'
+                'is healthy. '
+                'cmd: Command to run to check health. '
+                'interval: Time between running the check (s|m|h)'
+                '          (default 0s). '
+                'retries: Consecutive failures needed to report unhealthy. '
+                'timeout: Maximum time to allow one check to run (s|m|h)'
+                '         (default 0s).')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -175,6 +187,8 @@ def do_create(cs, args):
     opts['availability_zone'] = args.availability_zone
     opts['auto_heal'] = args.auto_heal
     opts['command'] = args.command
+    if args.healthcheck:
+        opts['healthcheck'] = zun_utils.parse_health(args.healthcheck)
 
     if args.security_group:
         opts['security_groups'] = args.security_group
@@ -647,6 +661,18 @@ def do_kill(cs, args):
            action='store_true',
            default=False,
            help='Give extended privileges to this container')
+@utils.arg('--healthcheck',
+           action='append',
+           default=[],
+           metavar='<cmd=command,interval=time,retries=integer,timeout=time>',
+           help='Specify a test cmd to perform to check that the container'
+                'is healthy. '
+                'cmd: Command to run to check health. '
+                'interval: Time between running the check (s|m|h)'
+                '          (default 0s). '
+                'retries: Consecutive failures needed to report unhealthy. '
+                'timeout: Maximum time to allow one check to run (s|m|h)'
+                '         (default 0s).')
 def do_run(cs, args):
     """Run a command in a new container."""
     opts = {}
@@ -669,6 +695,8 @@ def do_run(cs, args):
     opts['availability_zone'] = args.availability_zone
     opts['auto_heal'] = args.auto_heal
     opts['command'] = args.command
+    if args.healthcheck:
+        opts['healthcheck'] = zun_utils.parse_health(args.healthcheck)
 
     if args.security_group:
         opts['security_groups'] = args.security_group

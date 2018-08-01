@@ -185,6 +185,19 @@ class CreateContainer(command.ShowOne):
             action='store_true',
             default=False,
             help='Give extended privileges to this container')
+        parser.add_argument(
+            '--healthcheck',
+            action='append',
+            default=[],
+            metavar='<cmd=test_cmd,interval=time,retries=n,timeout=time>',
+            help='Specify a test cmd to perform to check that the container'
+                 'is healthy. '
+                 'cmd: Command to run to check health. '
+                 'interval: Time between running the check (|s|m|h)'
+                 '          (default 0s). '
+                 'retries: Consecutive failures needed to report unhealthy.'
+                 'timeout: Maximum time to allow one check to run (s|m|h)'
+                 '         (default 0s).')
         return parser
 
     def take_action(self, parsed_args):
@@ -218,6 +231,9 @@ class CreateContainer(command.ShowOne):
         opts['disk'] = parsed_args.disk
         opts['availability_zone'] = parsed_args.availability_zone
         opts['auto_heal'] = parsed_args.auto_heal
+        if parsed_args.healthcheck:
+            opts['healthcheck'] = \
+                zun_utils.parse_health(parsed_args.healthcheck)
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.create(**opts)
@@ -811,6 +827,19 @@ class RunContainer(command.ShowOne):
             action='store_true',
             default=False,
             help='Give extended privileges to this container')
+        parser.add_argument(
+            '--healthcheck',
+            action='append',
+            default=[],
+            metavar='<cmd=test_cmd,interval=time,retries=n,timeout=time>',
+            help='Specify a test cmd to perform to check that the container'
+                 'is healthy. '
+                 'cmd: Command to run to check health. '
+                 'interval: Time between running the check (s|m|h)'
+                 '          (default 0s). '
+                 'retries: Consecutive failures needed to report unhealthy.'
+                 'timeout: Maximum time to allow one check to run (s|m|h)'
+                 '         (default 0s).')
         return parser
 
     def take_action(self, parsed_args):
@@ -844,6 +873,9 @@ class RunContainer(command.ShowOne):
         opts['disk'] = parsed_args.disk
         opts['availability_zone'] = parsed_args.availability_zone
         opts['auto_heal'] = parsed_args.auto_heal
+        if parsed_args.healthcheck:
+            opts['healthcheck'] = \
+                zun_utils.parse_health(parsed_args.healthcheck)
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.run(**opts)

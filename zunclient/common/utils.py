@@ -16,6 +16,7 @@
 
 import json
 import os
+import re
 
 from oslo_utils import netutils
 from six.moves.urllib import parse
@@ -274,6 +275,52 @@ def parse_nets(ns):
 
         nets.append(net_info)
     return nets
+
+
+def parse_health(hc_str):
+    err_msg = ("Invalid healthcheck argument '%s'. healthcheck arguments"
+               " must be of the form --healthcheck <cmd='command',"
+               "interval=time,retries=integer,timeout=time>, and the unit "
+               "of time is s(seconds), m(minutes), h(hours).") % hc_str
+    keys = ["cmd", "interval", "retries", "timeout"]
+    health_info = {}
+    for kv_str in hc_str[0].split(","):
+        try:
+            k, v = kv_str.split("=", 1)
+            k = k.strip()
+            v = v.strip()
+        except ValueError:
+            raise apiexec.CommandError(err_msg)
+        if k in keys:
+            if health_info.get(k):
+                raise apiexec.CommandError(err_msg)
+            elif k in ['interval', 'timeout']:
+                health_info[k] = _convert_healthcheck_para(v, err_msg)
+            elif k == "retries":
+                health_info[k] = int(v)
+            else:
+                health_info[k] = v
+        else:
+            raise apiexec.CommandError(err_msg)
+    return health_info
+
+
+def _convert_healthcheck_para(time, err_msg):
+    int_pattern = '^\d+$'
+    time_pattern = '^\d+(s|m|h)$'
+    ret = 0
+    if re.match(int_pattern, time):
+        ret = int(time)
+    elif re.match(time_pattern, time):
+        if time.endswith('s'):
+            ret = int(time.split('s')[0])
+        elif time.endswith('m'):
+            ret = int(time.split('m')[0]) * 60
+        elif time.endswith('h'):
+            ret = int(time.split('h')[0]) * 3600
+    else:
+        raise apiexec.CommandError(err_msg)
+    return ret
 
 
 def normalise_file_path_to_url(path):
