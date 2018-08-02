@@ -37,7 +37,7 @@ class Client(object):
                  project_id=None, project_name=None, region_name=None,
                  service_name=None, service_type='container', session=None,
                  user_domain_id=None, user_domain_name=None,
-                 username=None, **kwargs):
+                 username=None, cacert=None, **kwargs):
         """Initialization of Client object.
 
         :param api_version: Container API version
@@ -60,6 +60,7 @@ class Client(object):
         :param str user_domain_id: ID of user domain
         :param str user_id: User ID
         :param str username: Username
+        :param str cacert: CA certificate
         """
         if endpoint_override and auth_token:
             auth_type = 'admin_token'
@@ -99,7 +100,7 @@ class Client(object):
             # This should be able to handle v2 and v3 Keystone Auth
             auth_plugin = loader.load_from_options(**loader_kwargs)
             session = ksa_session.Session(auth=auth_plugin,
-                                          verify=(not insecure))
+                                          verify=(cacert or not insecure))
         client_kwargs = {}
         if not endpoint_override:
             try:

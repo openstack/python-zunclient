@@ -541,12 +541,13 @@ class OpenStackZunShell(object):
          os_user_domain_id, os_user_domain_name,
          os_project_domain_id, os_project_domain_name,
          os_auth_url, os_auth_system, endpoint_type,
-         service_type, bypass_url, insecure) = (
+         service_type, bypass_url, insecure, os_cacert) = (
             (args.os_username, args.os_project_name, args.os_project_id,
              args.os_user_domain_id, args.os_user_domain_name,
              args.os_project_domain_id, args.os_project_domain_name,
              args.os_auth_url, args.os_auth_system, args.endpoint_type,
-             args.service_type, args.bypass_url, args.insecure)
+             args.service_type, args.bypass_url, args.insecure,
+             args.os_cacert)
         )
 
         if os_auth_system and os_auth_system != "keystone":
@@ -643,6 +644,7 @@ class OpenStackZunShell(object):
                                 endpoint_override=bypass_url,
                                 interface=endpoint_type,
                                 insecure=insecure,
+                                cacert=os_cacert,
                                 **kwargs)
 
         args.func(self.cs, args)

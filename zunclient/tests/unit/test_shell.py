@@ -245,7 +245,7 @@ class ShellTest(utils.TestCase):
             service_type='container', region_name=expected_region_name,
             project_domain_id='', project_domain_name='',
             user_domain_id='', user_domain_name='', profile=None,
-            endpoint_override=None, insecure=False,
+            endpoint_override=None, insecure=False, cacert=None,
             version=api_versions.APIVersion('1.20'))
 
     def test_main_option_region(self):
@@ -273,7 +273,7 @@ class ShellTest(utils.TestCase):
             service_type='container', region_name=None,
             project_domain_id='', project_domain_name='',
             user_domain_id='', user_domain_name='', profile=None,
-            endpoint_override=None, insecure=False,
+            endpoint_override=None, insecure=False, cacert=None,
             version=api_versions.APIVersion('1.20'))
 
     @mock.patch('zunclient.client.Client')
@@ -287,7 +287,7 @@ class ShellTest(utils.TestCase):
             service_type='container', region_name=None,
             project_domain_id='', project_domain_name='',
             user_domain_id='', user_domain_name='', profile=None,
-            endpoint_override=None, insecure=False,
+            endpoint_override=None, insecure=False, cacert=None,
             version=api_versions.APIVersion('1.20'))
 
 
@@ -319,4 +319,5 @@ class ShellTestKeystoneV3(ShellTest):
             project_domain_id='', project_domain_name='Default',
             user_domain_id='', user_domain_name='Default',
             endpoint_override=None, insecure=False, profile=None,
+            cacert=None,
             version=api_versions.APIVersion('1.20'))
