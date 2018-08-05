@@ -914,7 +914,17 @@ class UpdateContainer(command.ShowOne):
             '--name',
             metavar='<name>',
             help='The new name of container to update')
-
+        auto_heal_value = parser.add_mutually_exclusive_group()
+        auto_heal_value.add_argument(
+            '--auto-heal',
+            required=False,
+            action='store_true',
+            help='Automatic recovery the status of contaier')
+        auto_heal_value.add_argument(
+            '--no-auto-heal',
+            required=False,
+            action='store_true',
+            help='Needless recovery the status of contaier')
         return parser
 
     def take_action(self, parsed_args):
@@ -924,6 +934,10 @@ class UpdateContainer(command.ShowOne):
         opts['memory'] = parsed_args.memory
         opts['cpu'] = parsed_args.cpu
         opts['name'] = parsed_args.name
+        if 'auto_heal' in parsed_args and parsed_args.auto_heal:
+            opts['auto_heal'] = True
+        if 'no_auto_heal' in parsed_args and parsed_args.no_auto_heal:
+            opts['auto_heal'] = False
         opts = zun_utils.remove_null_parms(**opts)
         if not opts:
             raise exc.CommandError("You must update at least one property")

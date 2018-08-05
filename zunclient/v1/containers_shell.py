@@ -698,12 +698,26 @@ def do_run(cs, args):
 @utils.arg('--name',
            metavar='<name>',
            help='The new name for the container')
+@utils.exclusive_arg(
+    'auto_heal_value',
+    '--auto-heal',
+    required=False, action='store_true',
+    help='Automatic recovery the status of contaier')
+@utils.exclusive_arg(
+    'auto_heal_value',
+    '--no-auto-heal',
+    required=False, action='store_true',
+    help='Needless recovery the status of contaier')
 def do_update(cs, args):
     """Update one or more attributes of the container."""
     opts = {}
     opts['memory'] = args.memory
     opts['cpu'] = args.cpu
     opts['name'] = args.name
+    if 'auto_heal' in args and args.auto_heal:
+        opts['auto_heal'] = True
+    if 'no_auto_heal' in args and args.no_auto_heal:
+        opts['auto_heal'] = False
     opts = zun_utils.remove_null_parms(**opts)
     if not opts:
         raise exc.CommandError("You must update at least one property")
