@@ -41,8 +41,7 @@ class HostManager(base.Manager):
                       request, if:
 
             1) limit > 0, the maximum number of hosts to return.
-            2) limit == 0, return the entire list of hosts.
-            3) limit param is NOT specified (None), the number of items
+            2) limit param is NOT specified (None), the number of items
                returned respect the maximum imposed by the Zun api
 
         :param sort_key: Optional, field used for sorting.
