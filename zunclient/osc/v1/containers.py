@@ -1234,6 +1234,10 @@ class NetworkAttach(command.Command):
             '--port',
             metavar='<port>',
             help='The port for specified container to attach.')
+        parser.add_argument(
+            '--fixed-ip',
+            metavar='<fixed_ip>',
+            help='The fixed-ip that container will attach to.')
         return parser
 
     def take_action(self, parsed_args):
@@ -1242,6 +1246,7 @@ class NetworkAttach(command.Command):
         opts['container'] = parsed_args.container
         opts['network'] = parsed_args.network
         opts['port'] = parsed_args.port
+        opts['fixed_ip'] = parsed_args.fixed_ip
         opts = zun_utils.remove_null_parms(**opts)
         try:
             client.containers.network_attach(**opts)
