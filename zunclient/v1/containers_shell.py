@@ -806,10 +806,13 @@ def do_top(cs, args):
         output = cs.containers.top(args.container)
     for titles in output['Titles']:
         print("%-20s") % titles,
-    for process in output['Processes']:
+    if output['Processes']:
+        for process in output['Processes']:
+            print("")
+            for info in process:
+                print("%-20s") % info,
+    else:
         print("")
-        for info in process:
-            print("%-20s") % info,
 
 
 @utils.arg('source',
