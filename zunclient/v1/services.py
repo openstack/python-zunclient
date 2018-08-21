@@ -39,8 +39,7 @@ class ServiceManager(base.Manager):
                       request, if:
 
             1) limit > 0, the maximum number of services to return.
-            2) limit == 0, return the entire list of services.
-            3) limit param is NOT specified (None), the number of items
+            2) limit param is NOT specified (None), the number of items
                returned respect the maximum imposed by the Zun API
                (see Zun's api.max_limit option).
 
