@@ -1142,6 +1142,9 @@ class AddSecurityGroup(command.Command):
         opts['security_group'] = parsed_args.security_group
         opts = zun_utils.remove_null_parms(**opts)
         try:
+            # TODO(hongbin): add_security_group is removed starting from
+            # API version 1.15. Use Neutron APIs to add security groups
+            # to container's ports instead.
             client.containers.add_security_group(**opts)
             print("Request to add security group for container %s "
                   "has been accepted." % parsed_args.container)
@@ -1173,6 +1176,9 @@ class RemoveSecurityGroup(command.Command):
         opts['security_group'] = parsed_args.security_group
         opts = zun_utils.remove_null_parms(**opts)
         try:
+            # TODO(hongbin): remove_security_group is removed starting from
+            # API version 1.15. Use Neutron APIs to remove security groups
+            # from container's ports instead.
             client.containers.remove_security_group(**opts)
             print("Request to remove security group from container %s "
                   "has been accepted." % parsed_args.container)
