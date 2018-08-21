@@ -116,12 +116,20 @@ class CreateContainer(command.ShowOne):
             action='store_true',
             default=False,
             help='Keep STDIN open even if not attached, allocate a pseudo-TTY')
-        parser.add_argument(
+        secgroup_expose_port_args = parser.add_mutually_exclusive_group()
+        secgroup_expose_port_args.add_argument(
             '--security-group',
             metavar='<security_group>',
             action='append', default=[],
             help='The name of security group for the container. '
                  'May be used multiple times.')
+        secgroup_expose_port_args.add_argument(
+            '--expose-port',
+            action='append',
+            default=[],
+            metavar='<port>',
+            help='Expose container port(s) to outside (format: '
+                 '<port>[/<protocol>]).')
         parser.add_argument(
             'command',
             metavar='<command>',
@@ -216,6 +224,9 @@ class CreateContainer(command.ShowOne):
         opts['command'] = parsed_args.command
         if parsed_args.security_group:
             opts['security_groups'] = parsed_args.security_group
+        if parsed_args.expose_port:
+            opts['exposed_ports'] = zun_utils.parse_exposed_ports(
+                parsed_args.expose_port)
         if parsed_args.restart:
             opts['restart_policy'] = \
                 zun_utils.check_restart_policy(parsed_args.restart)
@@ -759,12 +770,20 @@ class RunContainer(command.ShowOne):
             action='store_true',
             default=False,
             help='Keep STDIN open even if not attached, allocate a pseudo-TTY')
-        parser.add_argument(
+        secgroup_expose_port_args = parser.add_mutually_exclusive_group()
+        secgroup_expose_port_args.add_argument(
             '--security-group',
             metavar='<security_group>',
             action='append', default=[],
             help='The name of security group for the container. '
                  'May be used multiple times.')
+        secgroup_expose_port_args.add_argument(
+            '--expose-port',
+            action='append',
+            default=[],
+            metavar='<port>',
+            help='Expose container port(s) to outside (format: '
+                 '<port>[/<protocol>]).')
         parser.add_argument(
             'command',
             metavar='<command>',
@@ -859,6 +878,9 @@ class RunContainer(command.ShowOne):
         opts['command'] = parsed_args.command
         if parsed_args.security_group:
             opts['security_groups'] = parsed_args.security_group
+        if parsed_args.expose_port:
+            opts['exposed_ports'] = zun_utils.parse_exposed_ports(
+                parsed_args.expose_port)
         if parsed_args.restart:
             opts['restart_policy'] = \
                 zun_utils.check_restart_policy(parsed_args.restart)

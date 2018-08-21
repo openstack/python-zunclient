@@ -323,6 +323,10 @@ def _convert_healthcheck_para(time, err_msg):
     return ret
 
 
+def parse_exposed_ports(ports):
+    return {p: {} for p in ports}
+
+
 def normalise_file_path_to_url(path):
     if parse.urlparse(path).scheme:
         return path
