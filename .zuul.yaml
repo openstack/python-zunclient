@@ -18,7 +18,7 @@
       - openstack-python-jobs
       - openstack-python35-jobs
       - check-requirements
-      - publish-openstack-sphinx-docs
+      - publish-openstack-docs-pti
     check:
       jobs:
         - zunclient-devstack-docker-sql
