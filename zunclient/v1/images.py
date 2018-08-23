@@ -90,12 +90,12 @@ class ImageManager(base.Manager):
                     "Key must be in %s" % ','.join(PULL_ATTRIBUTES))
         return self._create(self._path(), new)
 
-    def delete(self, image_id, **kwargs):
+    def delete(self, image_id):
         """Delete an image
 
         :params image_id: uuid of the image.
         """
-        return self._delete(self._path(image_id), qparams=kwargs)
+        return self._delete(self._path(image_id))
 
     def search_image(self, image, **kwargs):
         """Retrieves list of images based on image name and image_driver name
