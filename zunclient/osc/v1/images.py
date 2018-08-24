@@ -166,17 +166,12 @@ class DeleteImage(command.Command):
             'uuid',
             metavar='<uuid>',
             help='UUID of image to describe')
-        parser.add_argument(
-            'host',
-            metavar='<host>',
-            help='Name or UUID of the host')
         return parser
 
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         opts = {}
         opts['image_id'] = parsed_args.uuid
-        opts['host'] = parsed_args.host
         try:
             client.images.delete(**opts)
             print(_('Request to delete image %s has been accepted.')

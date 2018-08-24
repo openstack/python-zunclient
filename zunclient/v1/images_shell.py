@@ -73,14 +73,10 @@ def do_image_show(cs, args):
 @utils.arg('id',
            metavar='<uuid>',
            help='UUID of image to delete')
-@utils.arg('host',
-           metavar='<host>',
-           help='Name or UUID of the host')
 def do_image_delete(cs, args):
-    """Delete a specified image from a host."""
+    """Delete a specified image."""
     opts = {}
     opts['image_id'] = args.id
-    opts['host'] = args.host
     cs.images.delete(**opts)
 
 
