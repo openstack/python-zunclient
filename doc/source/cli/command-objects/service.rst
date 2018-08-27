@@ -150,3 +150,126 @@ Force the Zun service to down or up.
 .. option:: --prefix PREFIX
 
     add a prefix to all variable names
+
+appcontainer service enable
+---------------------------
+
+Enable the Zun service.
+
+.. program:: appcontainer service enable
+.. code:: bash
+
+    openstack appcontainer service enable [-h]
+                                          [-f {json,shell,table,value,yaml}]
+                                          [-c COLUMN]
+                                          [--max-width <integer>]
+                                          [--fit-width] [--print-empty]
+                                          [--noindent] [--prefix PREFIX]
+                                          <host> <binary>
+
+.. describe:: <host>
+
+    Name of host
+
+.. describe:: <binary>
+
+    Name of the binary to enable
+
+.. option:: -h, --help
+
+    show this help message and exit
+
+.. option:: -f {json,shell,table,value,yaml},
+            --format {json,shell,table,value,yaml}
+
+    the output format, defaults to table
+
+.. option:: -c COLUMN, --column COLUMN
+
+    specify the column(s) to include, can be repeated
+
+.. option:: --max-width <integer>
+
+    Maximum display width, <1 to disable. You can also use
+    the CLIFF_MAX_TERM_WIDTH environment variable, but the
+    parameter takes precedence.
+
+.. option:: --fit-width
+
+    Fit the table to the display width. Implied if --max-
+    width greater than 0. Set the environment variable
+    CLIFF_FIT_WIDTH=1 to always enable
+
+.. option:: --print-empty
+
+    Print empty table if there is no data to show.
+
+.. option:: --noindent
+
+    whether to disable indenting the JSON
+
+appcontainer service disable
+----------------------------
+
+Disable the Zun service.
+
+.. program:: appcontainer service disable
+.. code:: bash
+
+    openstack appcontainer service disable [-h]
+                                          [-f {json,shell,table,value,yaml}]
+                                          [-c COLUMN]
+                                          [--max-width <integer>]
+                                          [--fit-width] [--print-empty]
+                                          [--noindent] [--prefix PREFIX]
+                                          [--reason <reason>]
+                                          <host> <binary>
+
+.. describe:: <host>
+
+    Name of host
+
+.. describe:: <binary>
+
+    Name of the binary to disable
+
+.. option:: -h, --help
+
+    show this help message and exit
+
+.. option:: --reason <reason>
+
+    Reason for disabling service
+
+.. option:: -f {json,shell,table,value,yaml},
+            --format {json,shell,table,value,yaml}
+
+    the output format, defaults to table
+
+.. option:: -c COLUMN, --column COLUMN
+
+    specify the column(s) to include, can be repeated
+
+.. option:: --max-width <integer>
+
+    Maximum display width, <1 to disable. You can also use
+    the CLIFF_MAX_TERM_WIDTH environment variable, but the
+    parameter takes precedence.
+
+.. option:: --fit-width
+
+    Fit the table to the display width. Implied if --max-
+    width greater than 0. Set the environment variable
+    CLIFF_FIT_WIDTH=1 to always enable
+
+.. option:: --print-empty
+
+    Print empty table if there is no data to show.
+
+.. option:: --noindent
+
+    whether to disable indenting the JSON
+
+.. option:: --prefix PREFIX
+
+    add a prefix to all variable names
