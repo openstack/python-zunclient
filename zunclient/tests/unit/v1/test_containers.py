@@ -14,6 +14,7 @@ import copy
 from six.moves.urllib import parse
 import testtools
 from testtools import matchers
+from zunclient.common import utils as zun_utils
 from zunclient import exceptions
 from zunclient.tests.unit import utils
 from zunclient.v1 import containers
@@ -289,7 +290,7 @@ fake_responses = {
     {
         'GET': (
             {},
-            None,
+            {'data': data},
         ),
     },
     '/v1/containers/%s/put_archive?%s'
@@ -297,7 +298,7 @@ fake_responses = {
     {
         'POST': (
             {},
-            {'data': data},
+            None,
         ),
     },
     '/v1/containers/%s/stats?%s'
@@ -653,25 +654,25 @@ class ContainerManagerTest(testtools.TestCase):
         self.assertIsNone(containers)
 
     def test_containers_get_archive(self):
-        containers = self.mgr.get_archive(CONTAINER1['id'], path)
+        response = self.mgr.get_archive(CONTAINER1['id'], path)
         expect = [
             ('GET', '/v1/containers/%s/get_archive?%s'
              % (CONTAINER1['id'], parse.urlencode({'path': path})),
              {'Content-Length': '0'}, None)
         ]
         self.assertEqual(expect, self.api.calls)
-        self.assertIsNone(containers)
+        self.assertEqual(zun_utils.decode_file_data(data), response['data'])
 
     def test_containers_put_archive(self):
-        containers = self.mgr.put_archive(CONTAINER1['id'], path, data)
+        response = self.mgr.put_archive(CONTAINER1['id'], path, data)
         expect = [
             ('POST', '/v1/containers/%s/put_archive?%s'
              % (CONTAINER1['id'], parse.urlencode({'path': path})),
              {'Content-Length': '0'},
-             {'data': data})
+             {'data': zun_utils.encode_file_data(data)})
         ]
         self.assertEqual(expect, self.api.calls)
-        self.assertTrue(containers)
+        self.assertTrue(response)
 
     def test_containers_commit(self):
         containers = self.mgr.commit(CONTAINER1['id'], repo, tag)

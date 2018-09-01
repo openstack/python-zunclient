@@ -14,11 +14,14 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import base64
+import binascii
 import json
 import os
 import re
 
 from oslo_utils import netutils
+import six
 from six.moves.urllib import parse
 from six.moves.urllib import request
 from zunclient.common.apiclient import exceptions as apiexec
@@ -364,3 +367,17 @@ def list_container_networks(networks):
     utils.print_list(networks, columns,
                      {'fixed_ips': format_network_fixed_ips},
                      sortby_index=None)
+
+
+def encode_file_data(data):
+    if six.PY3 and isinstance(data, str):
+        data = data.encode('utf-8')
+    return base64.b64encode(data).decode('utf-8')
+
+
+def decode_file_data(data):
+    # Py3 raises binascii.Error instead of TypeError as in Py27
+    try:
+        return base64.b64decode(data)
+    except (TypeError, binascii.Error):
+        raise exc.CommandError(_('Invalid Base 64 file data.'))

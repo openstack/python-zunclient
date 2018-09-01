@@ -865,7 +865,7 @@ def do_cp(cs, args):
 
         res = cs.containers.get_archive(**opts)
         dest_path = args.destination
-        tardata = io.BytesIO(res['data'].encode())
+        tardata = io.BytesIO(res['data'])
         with closing(tarfile.open(fileobj=tardata)) as tar:
             tar.extractall(dest_path)
 
