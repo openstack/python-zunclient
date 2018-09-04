@@ -16,12 +16,19 @@ import json
 import yaml
 
 
-yaml_loader = yaml.SafeLoader
-
 if hasattr(yaml, 'CSafeDumper'):
-    yaml_dumper = yaml.CSafeDumper
+    yaml_dumper_base = yaml.CSafeDumper
 else:
-    yaml_dumper = yaml.SafeDumper
+    yaml_dumper_base = yaml.SafeDumper
+
+
+# We create custom class to not overriden the default yaml behavior
+class yaml_loader(yaml.SafeLoader):
+    pass
+
+
+class yaml_dumper(yaml_dumper_base):
+    pass
 
 
 def _construct_yaml_str(self, node):
