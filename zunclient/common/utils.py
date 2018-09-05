@@ -248,7 +248,7 @@ def parse_mounts(mounts):
             # TODO(hongbin): handle the case that 'source' is a directory
             filename = mount_info.pop('source')
             with open(filename, 'rb') as file:
-                mount_info['source'] = file.read()
+                mount_info['source'] = encode_file_data(file.read())
 
         parsed_mounts.append(mount_info)
     return parsed_mounts
