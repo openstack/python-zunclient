@@ -196,10 +196,19 @@ class ContainerManager(base.Manager):
                             qparams={'ps_args': ps_args})[1]
 
     def get_archive(self, id, path):
-        return self._action(id, '/get_archive', method='GET',
-                            qparams={'path': path})[1]
+        res = self._action(id, '/get_archive', method='GET',
+                           qparams={'path': path})[1]
+        # API version 1.25 or later will return Base64-encoded data
+        if self.api_version >= api_versions.APIVersion("1.25"):
+            res['data'] = utils.decode_file_data(res['data'])
+        else:
+            res['data'] = res['data'].encode()
+        return res
 
     def put_archive(self, id, path, data):
+        # API version 1.25 or later will expect Base64-encoded data
+        if self.api_version >= api_versions.APIVersion("1.25"):
+            data = utils.encode_file_data(data)
         return self._action(id, '/put_archive',
                             qparams={'path': path},
                             body={'data': data})

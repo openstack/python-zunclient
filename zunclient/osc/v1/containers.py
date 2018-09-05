@@ -1068,7 +1068,7 @@ class CopyContainer(command.Command):
 
             res = client.containers.get_archive(**opts)
             dest_path = parsed_args.destination
-            tardata = io.BytesIO(res['data'].encode())
+            tardata = io.BytesIO(res['data'])
             with closing(tarfile.open(fileobj=tardata)) as tar:
                 tar.extractall(dest_path)
 
