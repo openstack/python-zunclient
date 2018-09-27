@@ -19,6 +19,8 @@ from zunclient.v1 import capsules_shell
 from zunclient.v1 import containers_shell
 from zunclient.v1 import hosts_shell
 from zunclient.v1 import images_shell
+from zunclient.v1 import quota_classes_shell
+from zunclient.v1 import quotas_shell
 from zunclient.v1 import services_shell
 from zunclient.v1 import versions_shell
 
@@ -31,4 +33,6 @@ COMMAND_MODULES = [
     versions_shell,
     capsules_shell,
     actions_shell,
+    quotas_shell,
+    quota_classes_shell,
 ]

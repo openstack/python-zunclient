@@ -230,18 +230,21 @@ def keys_and_vals_to_strs(dictionary):
     return dict((to_str(k), to_str(v)) for k, v in dictionary.items())
 
 
-def print_dict(dct, dict_property="Property", wrap=0):
+def print_dict(dct, dict_property="Property", wrap=0, value_fields=None):
     """Print a `dict` as a table of two columns.
 
     :param dct: `dict` to print
     :param dict_property: name of the first column
     :param wrap: wrapping for the second column
+    :param value_fields: attributes that correspond to columns, in order
     """
     pt = prettytable.PrettyTable([dict_property, 'Value'])
+    if value_fields:
+        pt = prettytable.PrettyTable([dict_property] + list(value_fields))
     pt.align = 'l'
     for k, v in dct.items():
         # convert dict to str to check length
-        if isinstance(v, dict):
+        if isinstance(v, dict) and not value_fields:
             v = six.text_type(keys_and_vals_to_strs(v))
         if wrap > 0:
             v = textwrap.fill(six.text_type(v), wrap)
@@ -255,6 +258,9 @@ def print_dict(dct, dict_property="Property", wrap=0):
             for line in lines:
                 pt.add_row([col1, line])
                 col1 = ''
+        elif isinstance(v, dict):
+            vals = [v[field] for field in v if field in value_fields]
+            pt.add_row([k] + vals)
         elif isinstance(v, list):
             val = str([str(i) for i in v])
             pt.add_row([k, val])
