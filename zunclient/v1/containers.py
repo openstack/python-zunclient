@@ -96,6 +96,7 @@ class ContainerManager(base.Manager):
 
     def create(self, **kwargs):
         self._process_command(kwargs)
+        self._process_mounts(kwargs)
 
         new = {}
         for (key, value) in kwargs.items():
@@ -112,6 +113,13 @@ class ContainerManager(base.Manager):
             command = kwargs.pop('command', None)
             if command:
                 kwargs['command'] = utils.parse_command(command)
+
+    def _process_mounts(self, kwargs):
+        mounts = kwargs.get('mounts', None)
+        if mounts:
+            for mount in mounts:
+                if mount['type'] == 'bind':
+                    mount['source'] = utils.encode_file_data(mount['source'])
 
     def delete(self, id, **kwargs):
         return self._delete(self._path(id),
@@ -170,6 +178,7 @@ class ContainerManager(base.Manager):
 
     def run(self, **kwargs):
         self._process_command(kwargs)
+        self._process_mounts(kwargs)
 
         if not set(kwargs).issubset(CREATION_ATTRIBUTES):
             raise exceptions.InvalidAttribute(
