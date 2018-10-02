@@ -27,5 +27,4 @@
     gate:
       jobs:
         - zunclient-devstack-docker-sql
-
         - openstack-tox-lower-constraints
