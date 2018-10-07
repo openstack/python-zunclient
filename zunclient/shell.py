@@ -335,7 +335,8 @@ class OpenStackZunShell(object):
                                 'ZUN_API_VERSION',
                                 default=DEFAULT_API_VERSION),
                             help='Accepts X, X.Y (where X is major, Y is minor'
-                                 ' part), defaults to env[ZUN_API_VERSION].')
+                                 ' part) or "X.latest", defaults to'
+                                 ' env[ZUN_API_VERSION].')
         parser.add_argument('--zun_api_version',
                             help=argparse.SUPPRESS)
 
@@ -517,8 +518,9 @@ class OpenStackZunShell(object):
             spot = argv.index('--endpoint_type')
             argv[spot] = '--endpoint-type'
 
+        do_help = "help" in args
         subcommand_parser = self.get_subcommand_parser(
-            api_version, do_help=("help" in args))
+            api_version, do_help=do_help)
 
         self.parser = subcommand_parser
 
@@ -624,6 +626,42 @@ class OpenStackZunShell(object):
                         'prompted response')
 
         client = base_client
+
+        if not do_help:
+            if api_version.is_latest():
+                # This client is just used to discover api version.
+                # Version API needn't microversion, so we just pass
+                # version 1.1 at here.
+                self.cs = client.Client(
+                    version=api_versions.APIVersion("1.1"),
+                    username=os_username,
+                    password=os_password,
+                    project_id=os_project_id,
+                    project_name=os_project_name,
+                    user_domain_id=os_user_domain_id,
+                    user_domain_name=os_user_domain_name,
+                    project_domain_id=os_project_domain_id,
+                    project_domain_name=os_project_domain_name,
+                    auth_url=os_auth_url,
+                    service_type=service_type,
+                    region_name=args.os_region_name,
+                    endpoint_override=bypass_url,
+                    interface=endpoint_type,
+                    insecure=insecure,
+                    cacert=os_cacert)
+                api_version = api_versions.discover_version(self.cs,
+                                                            api_version)
+
+            min_version = api_versions.APIVersion(api_versions.MIN_API_VERSION)
+            max_version = api_versions.APIVersion(api_versions.MAX_API_VERSION)
+            if not api_version.matches(min_version, max_version):
+                raise exc.CommandError(
+                    _("The specified version isn't supported by "
+                      "client. The valid version range is '%(min)s' "
+                      "to '%(max)s'") % {
+                        "min": min_version.get_string(),
+                        "max": max_version.get_string()}
+                )
 
         kwargs = {}
         if profiler:

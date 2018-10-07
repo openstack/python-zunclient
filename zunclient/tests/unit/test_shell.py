@@ -82,6 +82,9 @@ class ShellTest(utils.TestCase):
         self.nc_util = mock.patch(
             'zunclient.common.cliutils.isunauthenticated').start()
         self.nc_util.return_value = False
+        self.discover_version = mock.patch(
+            'zunclient.api_versions.discover_version').start()
+        self.discover_version.return_value = api_versions.APIVersion('1.1')
 
     def test_help_unknown_command(self):
         self.assertRaises(exceptions.CommandError, self.shell, 'help foofoo')
@@ -250,22 +253,29 @@ class ShellTest(utils.TestCase):
 
     def test_main_option_region(self):
         self.make_env()
-        self._test_main_region('--os-region-name=myregion service-list',
-                               'myregion')
+        self._test_main_region(
+            '--zun-api-version 1.25 '
+            '--os-region-name=myregion service-list', 'myregion')
 
     def test_main_env_region(self):
         fake_env = dict(utils.FAKE_ENV, OS_REGION_NAME='myregion')
         self.make_env(fake_env=fake_env)
-        self._test_main_region('service-list', 'myregion')
+        self._test_main_region(
+            '--zun-api-version 1.25 '
+            'service-list', 'myregion')
 
     def test_main_no_region(self):
         self.make_env()
-        self._test_main_region('service-list', None)
+        self._test_main_region(
+            '--zun-api-version 1.25 '
+            'service-list', None)
 
     @mock.patch('zunclient.client.Client')
     def test_main_endpoint_public(self, mock_client):
         self.make_env()
-        self.shell('--endpoint-type publicURL service-list')
+        self.shell(
+            '--zun-api-version 1.25 '
+            '--endpoint-type publicURL service-list')
         mock_client.assert_called_once_with(
             username='username', password='password',
             interface='publicURL', project_id=None,
@@ -279,7 +289,9 @@ class ShellTest(utils.TestCase):
     @mock.patch('zunclient.client.Client')
     def test_main_endpoint_internal(self, mock_client):
         self.make_env()
-        self.shell('--endpoint-type internalURL service-list')
+        self.shell(
+            '--zun-api-version 1.25 '
+            '--endpoint-type internalURL service-list')
         mock_client.assert_called_once_with(
             username='username', password='password',
             interface='internalURL', project_id=None,
@@ -310,7 +322,9 @@ class ShellTestKeystoneV3(ShellTest):
     @mock.patch('zunclient.client.Client')
     def test_main_endpoint_public(self, mock_client):
         self.make_env(fake_env=FAKE_ENV4)
-        self.shell('--endpoint-type publicURL service-list')
+        self.shell(
+            '--zun-api-version 1.25 '
+            '--endpoint-type publicURL service-list')
         mock_client.assert_called_once_with(
             username='username', password='password',
             interface='publicURL', project_id='project_id',

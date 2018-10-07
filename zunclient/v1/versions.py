@@ -25,3 +25,9 @@ class VersionManager(base.Manager):
         url = "%s" % self.api.get_endpoint()
         url = "%s/" % url.rsplit("/", 1)[0]
         return self._list(url, "versions")
+
+    def get_current(self):
+        for version in self.list():
+            if version.status == "CURRENT":
+                return version
+        return None
