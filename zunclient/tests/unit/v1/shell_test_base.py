@@ -17,6 +17,7 @@ import re
 import mock
 from testtools import matchers
 
+from zunclient import api_versions
 from zunclient.tests.unit import utils
 
 FAKE_ENV = {'OS_USERNAME': 'username',
@@ -67,10 +68,14 @@ class TestCommandLineArgument(utils.TestCase):
         loader.start()
         session = mock.patch('keystoneauth1.session.Session')
         session.start()
+        discover = mock.patch('zunclient.api_versions.discover_version',
+                              return_value=api_versions.APIVersion('1.1'))
+        discover.start()
 
         self.addCleanup(session_client.stop)
         self.addCleanup(loader.stop)
         self.addCleanup(session.stop)
+        self.addCleanup(discover.stop)
 
     def _test_arg_success(self, command):
         stdout, stderr = self.shell(command)

@@ -17,8 +17,6 @@ import warnings
 from oslo_utils import importutils
 
 from zunclient import api_versions
-from zunclient import exceptions
-from zunclient.i18n import _
 
 osprofiler_profiler = importutils.try_import("osprofiler.profiler")
 
@@ -28,9 +26,6 @@ def _get_client_class_and_version(version):
         version = api_versions.get_api_version(version)
     else:
         api_versions.check_major_version(version)
-    if version.is_latest():
-        raise exceptions.UnsupportedVersion(
-            _('The version should be explicit, not latest.'))
     return version, importutils.import_class(
         'zunclient.v%s.client.Client' % version.ver_major)
 

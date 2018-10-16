@@ -32,7 +32,7 @@ HEADER_NAME = "OpenStack-API-Version"
 SERVICE_TYPE = "container"
 MIN_API_VERSION = '1.1'
 MAX_API_VERSION = '1.25'
-DEFAULT_API_VERSION = MAX_API_VERSION
+DEFAULT_API_VERSION = '1.latest'
 
 _SUBSTITUTIONS = {}
 
@@ -231,11 +231,66 @@ def get_api_version(version_string):
     """Returns checked APIVersion object"""
     version_string = str(version_string)
     if strutils.is_int_like(version_string):
-        version_string = "%s.0" % version_string
+        version_string = "%s.latest" % version_string
 
     api_version = APIVersion(version_string)
     check_major_version(api_version)
     return api_version
+
+
+def _get_server_version_range(client):
+    version = client.versions.get_current()
+
+    if not hasattr(version, 'max_version') or not version.max_version:
+        return APIVersion(), APIVersion()
+
+    return APIVersion(version.min_version), APIVersion(version.max_version)
+
+
+def discover_version(client, requested_version):
+    server_start_version, server_end_version = _get_server_version_range(
+        client)
+
+    if (not requested_version.is_latest() and
+            requested_version != APIVersion('1.1')):
+        if server_start_version.is_null() and server_end_version.is_null():
+            raise exceptions.UnsupportedVersion(
+                _("Server doesn't support microversions"))
+        if not requested_version.matches(server_start_version,
+                                         server_end_version):
+            raise exceptions.UnsupportedVersion(
+                _("The specified version isn't supported by server. The valid "
+                  "version range is '%(min)s' to '%(max)s'") % {
+                    "min": server_start_version.get_string(),
+                    "max": server_end_version.get_string()})
+        return requested_version
+
+    min_version = APIVersion(MIN_API_VERSION)
+    max_version = APIVersion(MAX_API_VERSION)
+    if server_start_version.is_null() and server_end_version.is_null():
+        return APIVersion("1.1")
+    elif min_version > server_end_version:
+        raise exceptions.UnsupportedVersion(
+            _("Server version is too old. The client valid version range is "
+              "'%(client_min)s' to '%(client_max)s'. The server valid version "
+              "range is '%(server_min)s' to '%(server_max)s'.") % {
+                  'client_min': min_version.get_string(),
+                  'client_max': max_version.get_string(),
+                  'server_min': server_start_version.get_string(),
+                  'server_max': server_end_version.get_string()})
+    elif max_version < server_start_version:
+        raise exceptions.UnsupportedVersion(
+            _("Server version is too new. The client valid version range is "
+              "'%(client_min)s' to '%(client_max)s'. The server valid version "
+              "range is '%(server_min)s' to '%(server_max)s'.") % {
+                  'client_min': min_version.get_string(),
+                  'client_max': max_version.get_string(),
+                  'server_min': server_start_version.get_string(),
+                  'server_max': server_end_version.get_string()})
+    elif max_version <= server_end_version:
+        return max_version
+    elif server_end_version < max_version:
+        return server_end_version
 
 
 def update_headers(headers, api_version):

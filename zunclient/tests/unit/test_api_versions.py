@@ -18,6 +18,7 @@ import mock
 from zunclient import api_versions
 from zunclient import exceptions
 from zunclient.tests.unit import utils
+from zunclient.v1 import versions
 
 
 class APIVersionTestCase(utils.TestCase):
@@ -157,7 +158,7 @@ class GetAPIVersionTestCase(utils.TestCase):
         version = 7
         self.assertEqual(mock_apiversion.return_value,
                          api_versions.get_api_version(version))
-        mock_apiversion.assert_called_once_with("%s.0" % str(version))
+        mock_apiversion.assert_called_once_with("%s.latest" % str(version))
 
     @mock.patch("zunclient.api_versions.APIVersion")
     def test_major_and_minor_parts_is_presented(self, mock_apiversion):
@@ -244,3 +245,88 @@ class WrapsTestCase(utils.TestCase):
         some_func(obj, *some_args, **some_kwargs)
 
         checker.assert_called_once_with(*((obj,) + some_args), **some_kwargs)
+
+
+class DiscoverVersionTestCase(utils.TestCase):
+    def setUp(self):
+        super(DiscoverVersionTestCase, self).setUp()
+        self.orig_max = api_versions.MAX_API_VERSION
+        self.orig_min = api_versions.MIN_API_VERSION
+        self.addCleanup(self._clear_fake_version)
+
+    def _clear_fake_version(self):
+        api_versions.MAX_API_VERSION = self.orig_max
+        api_versions.MIN_API_VERSION = self.orig_min
+
+    def test_server_is_too_new(self):
+        fake_client = mock.MagicMock()
+        fake_client.versions.get_current.return_value = mock.MagicMock(
+            max_version="1.7", min_version="1.4")
+        api_versions.MAX_API_VERSION = "1.3"
+        api_versions.MIN_API_VERSION = "1.1"
+        self.assertRaises(exceptions.UnsupportedVersion,
+                          api_versions.discover_version, fake_client,
+                          api_versions.APIVersion('1.latest'))
+
+    def test_server_is_too_old(self):
+        fake_client = mock.MagicMock()
+        fake_client.versions.get_current.return_value = mock.MagicMock(
+            max_version="1.7", min_version="1.4")
+        api_versions.MAX_API_VERSION = "1.10"
+        api_versions.MIN_API_VERSION = "1.9"
+
+        self.assertRaises(exceptions.UnsupportedVersion,
+                          api_versions.discover_version, fake_client,
+                          api_versions.APIVersion('1.latest'))
+
+    def test_server_end_version_is_the_latest_one(self):
+        fake_client = mock.MagicMock()
+        fake_client.versions.get_current.return_value = mock.MagicMock(
+            max_version="1.7", min_version="1.4")
+        api_versions.MAX_API_VERSION = "1.11"
+        api_versions.MIN_API_VERSION = "1.1"
+
+        self.assertEqual(
+            "1.7",
+            api_versions.discover_version(
+                fake_client,
+                api_versions.APIVersion('1.latest')).get_string())
+
+    def test_client_end_version_is_the_latest_one(self):
+        fake_client = mock.MagicMock()
+        fake_client.versions.get_current.return_value = mock.MagicMock(
+            max_version="1.16", min_version="1.4")
+        api_versions.MAX_API_VERSION = "1.11"
+        api_versions.MIN_API_VERSION = "1.1"
+
+        self.assertEqual(
+            "1.11",
+            api_versions.discover_version(
+                fake_client,
+                api_versions.APIVersion('1.latest')).get_string())
+
+    def test_server_without_microversion(self):
+        fake_client = mock.MagicMock()
+        fake_client.versions.get_current.return_value = mock.MagicMock(
+            max_version='', min_version='')
+        api_versions.MAX_API_VERSION = "1.11"
+        api_versions.MIN_API_VERSION = "1.1"
+
+        self.assertEqual(
+            "1.1",
+            api_versions.discover_version(
+                fake_client,
+                api_versions.APIVersion('1.latest')).get_string())
+
+    def test_server_without_microversion_and_no_version_field(self):
+        fake_client = mock.MagicMock()
+        fake_client.versions.get_current.return_value = versions.Version(
+            None, {})
+        api_versions.MAX_API_VERSION = "1.11"
+        api_versions.MIN_API_VERSION = "1.1"
+
+        self.assertEqual(
+            "1.1",
+            api_versions.discover_version(
+                fake_client,
+                api_versions.APIVersion('1.latest')).get_string())
