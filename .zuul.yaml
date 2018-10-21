@@ -15,6 +15,7 @@
 
 - project:
     templates:
+      - openstack-lower-constraints-jobs
       - openstack-python-jobs
       - openstack-python35-jobs
       - openstack-python36-jobs
@@ -23,8 +24,6 @@
     check:
       jobs:
         - zunclient-devstack-docker-sql
-        - openstack-tox-lower-constraints
     gate:
       jobs:
         - zunclient-devstack-docker-sql
-        - openstack-tox-lower-constraints
