@@ -24,7 +24,7 @@ VERSION1 = {'status': 'CURRENT',
             }
 
 fake_responses = {
-    '/':
+    'https://example.com':
     {
         'GET': (
             {},
@@ -36,15 +36,17 @@ fake_responses = {
 
 class VersionManagerTest(testtools.TestCase):
 
-    def setUp(self):
-        super(VersionManagerTest, self).setUp()
-        self.api = utils.FakeAPI(fake_responses)
-        self.mgr = versions.VersionManager(self.api)
-
     def test_version_list(self):
-        versions = self.mgr.list()
+        self._test_version_list('https://example.com')
+        self._test_version_list('https://example.com/v1')
+        self._test_version_list('https://example.com/v1/')
+
+    def _test_version_list(self, endpoint):
+        api = utils.FakeAPI(fake_responses, endpoint=endpoint)
+        mgr = versions.VersionManager(api)
+        api_versions = mgr.list()
         expect = [
-            ('GET', '/', {}, None),
+            ('GET', 'https://example.com', {}, None),
         ]
-        self.assertEqual(expect, self.api.calls)
-        self.assertThat(versions, matchers.HasLength(1))
+        self.assertEqual(expect, api.calls)
+        self.assertThat(api_versions, matchers.HasLength(1))
