@@ -40,11 +40,12 @@ class BaseTestCase(testtools.TestCase):
 
 
 class FakeAPI(object):
-    def __init__(self, responses):
+    def __init__(self, responses, endpoint=None):
         self.responses = responses
         self.calls = []
         self.api_version = api_versions.APIVersion(
             api_versions.MAX_API_VERSION)
+        self.endpoint = endpoint
 
     def _request(self, method, url, headers=None, body=None):
         call = (method, url, headers or {}, body)
@@ -61,7 +62,7 @@ class FakeAPI(object):
         return FakeResponse(response[0]), response[1]
 
     def get_endpoint(self, *args, **kwargs):
-        return '/v1'
+        return self.endpoint or '/v1'
 
 
 class FakeConnection(object):

@@ -10,6 +10,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from six.moves import urllib
+
 from zunclient.common import base
 
 
@@ -22,9 +24,25 @@ class VersionManager(base.Manager):
     resource_class = Version
 
     def list(self):
-        url = "%s" % self.api.get_endpoint()
-        url = "%s/" % url.rsplit("/", 1)[0]
-        return self._list(url, "versions")
+        endpoint = self.api.get_endpoint()
+        url = urllib.parse.urlparse(endpoint)
+        # NOTE(hongbin): endpoint URL has at least 2 formats:
+        #   1. the classic (legacy) endpoint:
+        #       http://{host}:{optional_port}/v1/
+        #   2. under wsgi:
+        #       http://{host}:{optional_port}/container/v1
+        if url.path.endswith("v1") or "/v1/" in url.path:
+            # this way should handle all 2 possible formats
+            path = url.path[:url.path.rfind("/v1")]
+            version_url = '%s://%s%s' % (url.scheme, url.netloc, path)
+        else:
+            # NOTE(hongbin): probably, it is one of the next cases:
+            #  * https://container.example.com/
+            #  * https://example.com/container
+            # leave as is without cropping.
+            version_url = endpoint
+
+        return self._list(version_url, "versions")
 
     def get_current(self):
         for version in self.list():
