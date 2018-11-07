@@ -89,6 +89,13 @@ def Client(version='1', username=None, auth_url=None, **kwargs):
         osprofiler_profiler.init(profile)
 
     api_version, client_class = _get_client_class_and_version(version)
+    if api_version.is_latest():
+        c = client_class(api_version=api_versions.APIVersion("1.1"),
+                         auth_url=auth_url,
+                         username=username,
+                         **kwargs)
+        api_version = api_versions.discover_version(c, api_version)
+
     return client_class(api_version=api_version,
                         auth_url=auth_url,
                         username=username,
