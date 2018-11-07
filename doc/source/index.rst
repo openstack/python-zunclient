@@ -11,6 +11,7 @@ Contents
    install/index
    contributor/index
    cli/index
+   user/index
 
 Indices and tables
 ------------------
