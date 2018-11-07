@@ -20,9 +20,9 @@ def _show_action(action):
 
 @utils.arg('container',
            metavar='<container>',
-           help='ID or name of the container to attach network.')
+           help='ID or name of a container.')
 def do_action_list(cs, args):
-    """Print a list of available actions."""
+    """Print a list of actions done on a container."""
     container = args.container
     actions = cs.actions.list(container)
     columns = ('user_id', 'container_uuid', 'request_id', 'action',
