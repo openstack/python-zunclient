@@ -369,7 +369,7 @@ class WINCHHandler(object):
 
 
 def do_attach(zunclient, url, container_id, escape, close_wait):
-    if url.startswith("ws://"):
+    if url.startswith("ws://") or url.startswith("wss://"):
         try:
             wscls = WebSocketClient(zunclient=zunclient, url=url,
                                     id=container_id, escape=escape,
