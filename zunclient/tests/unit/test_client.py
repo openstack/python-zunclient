@@ -22,24 +22,28 @@ from zunclient import exceptions
 
 class ClientTest(testtools.TestCase):
 
+    @mock.patch('zunclient.api_versions.discover_version',
+                return_value=api_versions.APIVersion('1.1'))
     @mock.patch('zunclient.v1.client.Client')
-    def test_no_version_argument(self, mock_zun_client_v1):
+    def test_no_version_argument(self, mock_zun_client_v1,
+                                 mock_discover_version):
         client.Client(auth_url='http://example/identity',
                       username='admin')
-        api_version = api_versions.get_api_version('1')
         mock_zun_client_v1.assert_called_with(
-            api_version=api_version,
+            api_version=api_versions.APIVersion('1.1'),
             auth_url='http://example/identity',
             username='admin')
 
+    @mock.patch('zunclient.api_versions.discover_version',
+                return_value=api_versions.APIVersion('1.1'))
     @mock.patch('zunclient.v1.client.Client')
-    def test_valid_version_argument(self, mock_zun_client_v1):
+    def test_valid_version_argument(self, mock_zun_client_v1,
+                                    mock_discover_version):
         client.Client(version='1',
                       auth_url='http://example/identity',
                       username='admin')
-        api_version = api_versions.get_api_version('1')
         mock_zun_client_v1.assert_called_with(
-            api_version=api_version,
+            api_version=api_versions.APIVersion('1.1'),
             auth_url='http://example/identity',
             username='admin')
 
