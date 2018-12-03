@@ -23,6 +23,7 @@ import os
 import select
 import signal
 import six
+import six.moves.urllib.parse as urlparse
 import socket
 import struct
 import sys
@@ -238,6 +239,7 @@ class WebSocketClient(BaseClient):
         try:
             self.ws = websocket.create_connection(
                 url, skip_utf8_validation=True,
+                origin=self._compute_origin_header(url),
                 subprotocols=["binary", "base64"])
             print('connected to %s, press Enter to continue' % self.id)
             print('type %s. to disconnect' % self.escape)
@@ -247,6 +249,13 @@ class WebSocketClient(BaseClient):
             raise exceptions.ConnectionFailed(e)
         except websocket.WebSocketBadStatusException as e:
             raise exceptions.ConnectionFailed(e)
+
+    def _compute_origin_header(self, url):
+        origin = urlparse.urlparse(url)
+        if origin.scheme == 'wss':
+            return "https://%s:%s" % (origin.hostname, origin.port)
+        else:
+            return "http://%s:%s" % (origin.hostname, origin.port)
 
     def fileno(self):
         return self.ws.fileno()
