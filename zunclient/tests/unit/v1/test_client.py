@@ -46,7 +46,7 @@ class ClientTest(testtools.TestCase):
         client.Client(auth_token='mytoken',
                       endpoint_override='http://myurl/')
         mock_session.assert_called_once_with(
-            auth=mock_auth_plugin, verify=True)
+            auth=mock_auth_plugin, cert=None, verify=True)
         http_client.assert_called_once_with(
             endpoint_override='http://myurl/',
             interface='public',

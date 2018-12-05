@@ -346,6 +346,18 @@ class OpenStackZunShell(object):
                             help='Specify a CA bundle file to use in '
                             'verifying a TLS (https) server certificate. '
                             'Defaults to env[OS_CACERT].')
+        parser.add_argument('--os-cert',
+                            metavar='<ca-certificate>',
+                            default=cliutils.env('OS_CERT', default=None),
+                            help='Specify a client certificate file (for '
+                                 'client auth). '
+                                 'Defaults to env[OS_CERT].')
+        parser.add_argument('--os-key',
+                            metavar='<ca-certificate>',
+                            default=cliutils.env('OS_KEY', default=None),
+                            help='Specify a client certificate key file (for '
+                                 'client auth). '
+                                 'Defaults to env[OS_KEY].')
 
         parser.add_argument('--bypass-url',
                             metavar='<bypass-url>',
@@ -543,13 +555,13 @@ class OpenStackZunShell(object):
          os_user_domain_id, os_user_domain_name,
          os_project_domain_id, os_project_domain_name,
          os_auth_url, os_auth_system, endpoint_type,
-         service_type, bypass_url, insecure, os_cacert) = (
+         service_type, bypass_url, insecure, os_cacert, os_cert, os_key) = (
             (args.os_username, args.os_project_name, args.os_project_id,
              args.os_user_domain_id, args.os_user_domain_name,
              args.os_project_domain_id, args.os_project_domain_name,
              args.os_auth_url, args.os_auth_system, args.endpoint_type,
              args.service_type, args.bypass_url, args.insecure,
-             args.os_cacert)
+             args.os_cacert, args.os_cert, args.os_key)
         )
 
         if os_auth_system and os_auth_system != "keystone":
@@ -683,6 +695,8 @@ class OpenStackZunShell(object):
                                 interface=endpoint_type,
                                 insecure=insecure,
                                 cacert=os_cacert,
+                                cert=os_cert,
+                                key=os_key,
                                 **kwargs)
 
         args.func(self.cs, args)
