@@ -362,7 +362,7 @@ class WINCHHandler(object):
 
 
 def do_attach(zunclient, url, container_id, escape, close_wait):
-    if url.startswith("ws://"):
+    if url.startswith("ws://") or url.startswith("wss://"):
         try:
             wscls = AttachClient(zunclient=zunclient, url=url,
                                  id=container_id, escape=escape,
@@ -378,7 +378,7 @@ def do_attach(zunclient, url, container_id, escape, close_wait):
 
 
 def do_exec(zunclient, url, container_id, exec_id, escape, close_wait):
-    if url.startswith("ws://"):
+    if url.startswith("ws://") or url.startswith("wss://"):
         try:
             wscls = ExecClient(zunclient=zunclient, url=url,
                                exec_id=exec_id,
