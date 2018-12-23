@@ -22,16 +22,18 @@ class QuotaManager(base.Manager):
     resource_class = Quota
 
     @staticmethod
-    def _path():
+    def _path(project_id):
+        if project_id is not None:
+            return '/v1/quotas/{}'.format(project_id)
         return '/v1/quotas'
 
-    def get(self, **kwargs):
+    def get(self, project_id, **kwargs):
         if not kwargs.get('usages'):
             kwargs = {}
-        return self._list(self._path(), qparams=kwargs)[0]
+        return self._list(self._path(project_id), qparams=kwargs)[0]
 
-    def update(self, containers=None, memory=None,
-               cpu=None, disk=None):
+    def update(self, project_id, containers=None,
+               memory=None, cpu=None, disk=None):
         resources = {}
         if cpu is not None:
             resources['cpu'] = cpu
@@ -41,10 +43,10 @@ class QuotaManager(base.Manager):
             resources['containers'] = containers
         if disk is not None:
             resources['disk'] = disk
-        return self._update(self._path(), resources, method='PUT')
+        return self._update(self._path(project_id), resources, method='PUT')
 
-    def defaults(self):
-        return self._list(self._path() + '/defaults')[0]
+    def defaults(self, project_id):
+        return self._list(self._path(project_id) + '/defaults')[0]
 
-    def delete(self):
-        return self._delete(self._path())
+    def delete(self, project_id):
+        return self._delete(self._path(project_id))

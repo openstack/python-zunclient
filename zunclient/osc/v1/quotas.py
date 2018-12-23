@@ -52,6 +52,10 @@ class UpdateQuota(command.ShowOne):
             metavar='<disk>',
             help='The number of gigabytes of container Disk '
                  'allowed per project')
+        parser.add_argument(
+            'project_id',
+            metavar='<project_id>',
+            help='The UUID of project in a multi-project cloud')
         return parser
 
     def take_action(self, parsed_args):
@@ -61,7 +65,7 @@ class UpdateQuota(command.ShowOne):
         opts['memory'] = parsed_args.memory
         opts['cpu'] = parsed_args.cpu
         opts['disk'] = parsed_args.disk
-        quota = client.quotas.update(**opts)
+        quota = client.quotas.update(parsed_args.project_id, **opts)
         columns = _quota_columns(quota)
         return columns, utils.get_item_properties(quota, columns)
 
@@ -77,11 +81,17 @@ class GetQuota(command.ShowOne):
             '--usages',
             action='store_true',
             help='Whether show quota usage statistic or not')
+        parser.add_argument(
+            'project_id',
+            metavar='<project_id>',
+            help='The UUID of project in a multi-project cloud')
         return parser
 
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
-        quota = client.quotas.get(usages=parsed_args.usages)
+        quota = client.quotas.get(
+            parsed_args.project_id,
+            usages=parsed_args.usages)
         columns = _quota_columns(quota)
         return columns, utils.get_item_properties(quota, columns)
 
@@ -91,9 +101,17 @@ class GetDefaultQuota(command.ShowOne):
 
     log = logging.getLogger(__name__ + '.GetDefeaultQuota')
 
+    def get_parser(self, prog_name):
+        parser = super(GetDefaultQuota, self).get_parser(prog_name)
+        parser.add_argument(
+            'project_id',
+            metavar='<project_id>',
+            help='The UUID of project in a multi-project cloud')
+        return parser
+
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
-        default_quota = client.quotas.defaults()
+        default_quota = client.quotas.defaults(parsed_args.project_id)
         columns = _quota_columns(default_quota)
         return columns, utils.get_item_properties(
             default_quota, columns)
@@ -104,10 +122,18 @@ class DeleteQuota(command.Command):
 
     log = logging.getLogger(__name__ + '.DeleteQuota')
 
+    def get_parser(self, prog_name):
+        parser = super(DeleteQuota, self).get_parser(prog_name)
+        parser.add_argument(
+            'project_id',
+            metavar='<project_id>',
+            help='The UUID of project in a multi-project cloud')
+        return parser
+
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         try:
-            client.quotas.delete()
+            client.quotas.delete(parsed_args.project_id)
             print(_('Request to delete quotas has been accepted.'))
         except Exception as e:
             print("Delete for quotas failed: %(e)s" % {'e': e})

@@ -40,7 +40,7 @@ MODIFIED_USAGE_QUOTAS = {
 }
 
 fake_responses = {
-    '/v1/quotas':
+    '/v1/quotas/test_project_id':
     {
         'GET': (
             {},
@@ -55,14 +55,14 @@ fake_responses = {
             None
         )
     },
-    '/v1/quotas/defaults':
+    '/v1/quotas/test_project_id/defaults':
     {
         'GET': (
             {},
             DEFAULT_QUOTAS
         )
     },
-    '/v1/quotas?usages=True':
+    '/v1/quotas/test_project_id?usages=True':
     {
         'GET': (
             {},
@@ -80,9 +80,9 @@ class QuotaManagerTest(testtools.TestCase):
         self.mgr = quotas.QuotaManager(self.api)
 
     def test_quotas_get_defaults(self):
-        quotas = self.mgr.defaults()
+        quotas = self.mgr.defaults('test_project_id')
         expect = [
-            ('GET', '/v1/quotas/defaults', {}, None)
+            ('GET', '/v1/quotas/test_project_id/defaults', {}, None)
         ]
         self.assertEqual(expect, self.api.calls)
         self.assertEqual(quotas.containers, DEFAULT_QUOTAS['containers'])
