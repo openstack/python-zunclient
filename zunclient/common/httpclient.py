@@ -51,7 +51,7 @@ def _extract_error_json(body):
             error_body = body_json['error']
             error_json = {'faultstring': error_body['title'],
                           'debuginfo': error_body['message']}
-        else:
+        elif 'errors' in body_json:
             error_body = body_json['errors'][0]
             error_json = {'faultstring': error_body['title']}
             if 'detail' in error_body:
