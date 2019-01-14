@@ -16,7 +16,7 @@ from oslo_log import log as logging
 
 
 def _quota_class_columns(quota_class):
-    return quota_class.__dict__.keys()
+    return quota_class._info.keys()
 
 
 def _get_client(obj, parsed_args):
@@ -86,6 +86,6 @@ class GetQuotaClass(command.ShowOne):
     def take_action(self, parsed_args):
         client = _get_client(self, parsed_args)
         quota_class_name = parsed_args.quota_class_name
-        quota_class = client.quota_class.get(quota_class_name)
-        columns = _quota_class_columns(quota_class_name)
+        quota_class = client.quota_classes.get(quota_class_name)
+        columns = _quota_class_columns(quota_class)
         return columns, utils.get_item_properties(quota_class, columns)
