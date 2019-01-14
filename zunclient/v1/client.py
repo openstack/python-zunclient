@@ -25,6 +25,7 @@ from zunclient.v1 import hosts
 from zunclient.v1 import images
 from zunclient.v1 import quota_classes
 from zunclient.v1 import quotas
+from zunclient.v1 import registries
 from zunclient.v1 import services
 from zunclient.v1 import versions
 
@@ -139,6 +140,7 @@ class Client(object):
         self.actions = actions.ActionManager(self.http_client)
         self.quotas = quotas.QuotaManager(self.http_client)
         self.quota_classes = quota_classes.QuotaClassManager(self.http_client)
+        self.registries = registries.RegistryManager(self.http_client)
 
     @property
     def api_version(self):
