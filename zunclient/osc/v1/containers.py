@@ -206,6 +206,10 @@ class CreateContainer(command.ShowOne):
                  'retries: Consecutive failures needed to report unhealthy.'
                  'timeout: Maximum time to allow one check to run (s|m|h)'
                  '         (default 0s).')
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help='Wait for create to complete')
         return parser
 
     def take_action(self, parsed_args):
@@ -249,6 +253,18 @@ class CreateContainer(command.ShowOne):
 
         opts = zun_utils.remove_null_parms(**opts)
         container = client.containers.create(**opts)
+        if parsed_args.wait:
+            container_uuid = getattr(container, 'uuid', None)
+            if utils.wait_for_status(
+                client.containers.get,
+                container_uuid,
+                success_status=['created'],
+            ):
+                container = client.containers.get(container_uuid)
+                print('Complete to create container.\n')
+            else:
+                print('Failed to create container.\n')
+                raise SystemExit
         columns = _container_columns(container)
         return columns, utils.get_item_properties(container, columns)
 
@@ -860,6 +876,10 @@ class RunContainer(command.ShowOne):
                  'retries: Consecutive failures needed to report unhealthy.'
                  'timeout: Maximum time to allow one check to run (s|m|h)'
                  '         (default 0s).')
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help='Wait for run to complete')
         return parser
 
     def take_action(self, parsed_args):
@@ -905,6 +925,18 @@ class RunContainer(command.ShowOne):
         container = client.containers.run(**opts)
         columns = _container_columns(container)
         container_uuid = getattr(container, 'uuid', None)
+        if parsed_args.wait:
+            if utils.wait_for_status(
+                client.containers.get,
+                container_uuid,
+                success_status=['running'],
+            ):
+                container = client.containers.get(container_uuid)
+                print('Complete to run container.\n')
+            else:
+                print('Failed to run container.\n')
+                raise SystemExit
+
         if parsed_args.interactive:
             ready_for_attach = False
             while True:
