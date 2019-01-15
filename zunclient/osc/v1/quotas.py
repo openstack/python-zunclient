@@ -99,7 +99,7 @@ class GetQuota(command.ShowOne):
 class GetDefaultQuota(command.ShowOne):
     """Get default quota of the project"""
 
-    log = logging.getLogger(__name__ + '.GetDefeaultQuota')
+    log = logging.getLogger(__name__ + '.GetDefaultQuota')
 
     def get_parser(self, prog_name):
         parser = super(GetDefaultQuota, self).get_parser(prog_name)
