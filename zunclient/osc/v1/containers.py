@@ -405,6 +405,10 @@ class DeleteContainer(command.Command):
             action="store_true",
             default=False,
             help='Delete container(s) in all projects by name.')
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help='Wait for create to complete')
         return parser
 
     def take_action(self, parsed_args):
@@ -421,6 +425,18 @@ class DeleteContainer(command.Command):
                 client.containers.delete(**opts)
                 print(_('Request to delete container %s has been accepted.')
                       % container)
+                if parsed_args.wait:
+                    if utils.wait_for_delete(
+                        client.containers,
+                        container,
+                        timeout=30
+                    ):
+                        print("Delete for container %(container)s success." %
+                              {'container': container})
+                    else:
+                        print("Delete for container %(container)s failed." %
+                              {'container': container})
+                        raise SystemExit
             except Exception as e:
                 print("Delete for container %(container)s failed: %(e)s" %
                       {'container': container, 'e': e})
