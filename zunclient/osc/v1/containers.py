@@ -1310,6 +1310,10 @@ class RebuildContainer(command.Command):
                  '"docker": update the image from Docker Hub. '
                  '"glance": update the image from Glance. '
                  'The default value is source container\'s image driver ')
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help='Wait for rebuild to complete')
         return parser
 
     def take_action(self, parsed_args):
@@ -1325,6 +1329,18 @@ class RebuildContainer(command.Command):
                 client.containers.rebuild(**opts)
                 print(_('Request to rebuild container %s has '
                         'been accepted') % container)
+                if parsed_args.wait:
+                    if utils.wait_for_status(
+                        client.containers.get,
+                        container,
+                        success_status=['created', 'running'],
+                    ):
+                        print("rebuild container %(container)s success." %
+                              {'container': container})
+                    else:
+                        print("rebuild container %(container)s failed." %
+                              {'container': container})
+                        raise SystemExit
             except Exception as e:
                 print("rebuild container %(container)s failed: %(e)s" %
                       {'container': container, 'e': e})
