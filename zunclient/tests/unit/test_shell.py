@@ -250,32 +250,32 @@ class ShellTest(utils.TestCase):
             user_domain_id='', user_domain_name='', profile=None,
             endpoint_override=None, insecure=False, cacert=None,
             cert=None, key=None,
-            version=api_versions.APIVersion('1.26'))
+            version=api_versions.APIVersion('1.29'))
 
     def test_main_option_region(self):
         self.make_env()
         self._test_main_region(
-            '--zun-api-version 1.26 '
+            '--zun-api-version 1.29 '
             '--os-region-name=myregion service-list', 'myregion')
 
     def test_main_env_region(self):
         fake_env = dict(utils.FAKE_ENV, OS_REGION_NAME='myregion')
         self.make_env(fake_env=fake_env)
         self._test_main_region(
-            '--zun-api-version 1.26 '
+            '--zun-api-version 1.29 '
             'service-list', 'myregion')
 
     def test_main_no_region(self):
         self.make_env()
         self._test_main_region(
-            '--zun-api-version 1.26 '
+            '--zun-api-version 1.29 '
             'service-list', None)
 
     @mock.patch('zunclient.client.Client')
     def test_main_endpoint_public(self, mock_client):
         self.make_env()
         self.shell(
-            '--zun-api-version 1.26 '
+            '--zun-api-version 1.29 '
             '--endpoint-type publicURL service-list')
         mock_client.assert_called_once_with(
             username='username', password='password',
@@ -286,13 +286,13 @@ class ShellTest(utils.TestCase):
             user_domain_id='', user_domain_name='', profile=None,
             endpoint_override=None, insecure=False, cacert=None,
             cert=None, key=None,
-            version=api_versions.APIVersion('1.26'))
+            version=api_versions.APIVersion('1.29'))
 
     @mock.patch('zunclient.client.Client')
     def test_main_endpoint_internal(self, mock_client):
         self.make_env()
         self.shell(
-            '--zun-api-version 1.26 '
+            '--zun-api-version 1.29 '
             '--endpoint-type internalURL service-list')
         mock_client.assert_called_once_with(
             username='username', password='password',
@@ -303,7 +303,7 @@ class ShellTest(utils.TestCase):
             user_domain_id='', user_domain_name='', profile=None,
             endpoint_override=None, insecure=False, cacert=None,
             cert=None, key=None,
-            version=api_versions.APIVersion('1.26'))
+            version=api_versions.APIVersion('1.29'))
 
 
 class ShellTestKeystoneV3(ShellTest):
@@ -326,7 +326,7 @@ class ShellTestKeystoneV3(ShellTest):
     def test_main_endpoint_public(self, mock_client):
         self.make_env(fake_env=FAKE_ENV4)
         self.shell(
-            '--zun-api-version 1.26 '
+            '--zun-api-version 1.29 '
             '--endpoint-type publicURL service-list')
         mock_client.assert_called_once_with(
             username='username', password='password',
@@ -337,4 +337,4 @@ class ShellTestKeystoneV3(ShellTest):
             user_domain_id='', user_domain_name='Default',
             endpoint_override=None, insecure=False, profile=None,
             cacert=None, cert=None, key=None,
-            version=api_versions.APIVersion('1.26'))
+            version=api_versions.APIVersion('1.29'))
