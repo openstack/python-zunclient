@@ -215,7 +215,7 @@ def parse_mounts(mounts):
                "or use --mount size=<size>,destination=<path> to create "
                "a new volume and mount to the container, "
                "or use --mount type=bind,source=<file>,destination=<path> "
-               "to inject file into a path in the container, ")
+               "to inject file into a path in the container.")
     parsed_mounts = []
     for mount in mounts:
         keys = ["source", "destination", "size", "type"]
@@ -235,13 +235,14 @@ def parse_mounts(mounts):
                 raise apiexec.CommandError(err_msg % mnt)
 
         if not mount_info.get('destination'):
-            raise apiexec.CommandError(err_msg % mnt)
+            raise apiexec.CommandError(err_msg % mount)
 
         if not mount_info.get('source') and not mount_info.get('size'):
-            raise apiexec.CommandError(err_msg % mnt)
+            raise apiexec.CommandError(err_msg % mount)
 
         type = mount_info.get('type', 'volume')
         if type not in ('volume', 'bind'):
+            mnt = "type=%s" % type
             raise apiexec.CommandError(err_msg % mnt)
 
         if type == 'bind':
