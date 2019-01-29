@@ -261,7 +261,6 @@ class CreateContainer(command.ShowOne):
                 success_status=['created'],
             ):
                 container = client.containers.get(container_uuid)
-                print('Complete to create container.\n')
             else:
                 print('Failed to create container.\n')
                 raise SystemExit
@@ -948,7 +947,6 @@ class RunContainer(command.ShowOne):
                 success_status=['running'],
             ):
                 container = client.containers.get(container_uuid)
-                print('Complete to run container.\n')
             else:
                 print('Failed to run container.\n')
                 raise SystemExit
