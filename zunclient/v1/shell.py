@@ -21,6 +21,7 @@ from zunclient.v1 import hosts_shell
 from zunclient.v1 import images_shell
 from zunclient.v1 import quota_classes_shell
 from zunclient.v1 import quotas_shell
+from zunclient.v1 import registries_shell
 from zunclient.v1 import services_shell
 from zunclient.v1 import versions_shell
 
@@ -35,4 +36,5 @@ COMMAND_MODULES = [
     actions_shell,
     quotas_shell,
     quota_classes_shell,
+    registries_shell,
 ]
