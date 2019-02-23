@@ -142,7 +142,7 @@ def check_commit_container_args(commit_args):
     opts = {}
     if commit_args.repository is not None:
         if ':' in commit_args.repository:
-            args_list = commit_args.repository.split(':')
+            args_list = commit_args.repository.rsplit(':')
             opts['repository'] = args_list[0]
             opts['tag'] = args_list[1]
         else:
