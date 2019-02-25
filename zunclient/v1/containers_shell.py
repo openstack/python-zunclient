@@ -15,11 +15,12 @@
 import argparse
 from contextlib import closing
 import io
-import json
 import os
 import tarfile
 import time
 import yaml
+
+from oslo_serialization import jsonutils
 
 from zunclient.common import cliutils as utils
 from zunclient.common import utils as zun_utils
@@ -345,7 +346,7 @@ def do_show(cs, args):
     opts = zun_utils.remove_null_parms(**opts)
     container = cs.containers.get(**opts)
     if args.format == 'json':
-        print(json.dumps(container._info, indent=4, sort_keys=True))
+        print(jsonutils.dumps(container._info, indent=4, sort_keys=True))
     elif args.format == 'yaml':
         print(yaml.safe_dump(container._info, default_flow_style=False))
     elif args.format == 'table':

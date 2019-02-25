@@ -10,8 +10,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import json
 import yaml
+
+from oslo_serialization import jsonutils
 
 from zunclient.common import cliutils as utils
 from zunclient.common import utils as zun_utils
@@ -63,7 +64,7 @@ def do_host_show(cs, args):
     """Show details of a host."""
     host = cs.hosts.get(args.host)
     if args.format == 'json':
-        print(json.dumps(host._info, indent=4, sort_keys=True))
+        print(jsonutils.dumps(host._info, indent=4, sort_keys=True))
     elif args.format == 'yaml':
         print(yaml.safe_dump(host._info, default_flow_style=False))
     elif args.format == 'table':

@@ -12,8 +12,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import json
 import yaml
+
+from oslo_serialization import jsonutils
 
 
 if hasattr(yaml, 'CSafeDumper'):
@@ -53,7 +54,7 @@ def parse(tmpl_str):
     # strip any whitespace before the check
     tmpl_str = tmpl_str.strip()
     if tmpl_str.startswith('{'):
-        tpl = json.loads(tmpl_str)
+        tpl = jsonutils.loads(tmpl_str)
     else:
         try:
             tpl = yaml.safe_load(tmpl_str)

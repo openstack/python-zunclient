@@ -12,8 +12,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import json
 import yaml
+
+from oslo_serialization import jsonutils
 
 from zunclient.common import cliutils as utils
 from zunclient.common import template_utils
@@ -102,7 +103,7 @@ def do_capsule_describe(cs, args):
     """Show details of a capsule."""
     capsule = cs.capsules.describe(args.capsule)
     if args.format == 'json':
-        print(json.dumps(capsule._info, indent=4, sort_keys=True))
+        print(jsonutils.dumps(capsule._info, indent=4, sort_keys=True))
     elif args.format == 'yaml':
         print(yaml.safe_dump(capsule._info, default_flow_style=False))
     elif args.format == 'table':

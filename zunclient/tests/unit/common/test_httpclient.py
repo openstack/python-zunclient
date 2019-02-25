@@ -13,11 +13,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import json
-
 import mock
 import six
 
+from oslo_serialization import jsonutils
 
 from zunclient import api_versions
 from zunclient.common.apiclient import exceptions
@@ -31,9 +30,9 @@ def _get_error_body(faultstring=None, debuginfo=None):
         'faultstring': faultstring,
         'debuginfo': debuginfo
     }
-    raw_error_body = json.dumps(error_body)
+    raw_error_body = jsonutils.dumps(error_body)
     body = {'error_message': raw_error_body}
-    raw_body = json.dumps(body)
+    raw_body = jsonutils.dumps(body)
     return raw_body
 
 

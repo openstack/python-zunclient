@@ -10,8 +10,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import json
 import yaml
+
+from oslo_serialization import jsonutils
 
 from zunclient.common import cliutils as utils
 from zunclient.common import utils as zun_utils
@@ -138,7 +139,7 @@ def do_registry_show(cs, args):
     opts = zun_utils.remove_null_parms(**opts)
     registry = cs.registries.get(**opts)
     if args.format == 'json':
-        print(json.dumps(registry._info, indent=4, sort_keys=True))
+        print(jsonutils.dumps(registry._info, indent=4, sort_keys=True))
     elif args.format == 'yaml':
         print(yaml.safe_dump(registry._info, default_flow_style=False))
     elif args.format == 'table':

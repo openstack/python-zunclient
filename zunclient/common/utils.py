@@ -16,10 +16,10 @@
 
 import base64
 import binascii
-import json
 import os
 import re
 
+from oslo_serialization import jsonutils
 from oslo_utils import netutils
 import six
 from six.moves.urllib import parse
@@ -78,7 +78,7 @@ def split_and_deserialize(string):
         raise exc.CommandError(_('Attributes must be a list of '
                                  'PATH=VALUE not "%s"') % string)
     try:
-        value = json.loads(value)
+        value = jsonutils.loads(value)
     except ValueError:
         pass
 

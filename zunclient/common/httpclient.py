@@ -15,9 +15,9 @@
 #    under the License.
 
 import copy
-import json
 import os
 from oslo_log import log as logging
+from oslo_serialization import jsonutils
 import socket
 import ssl
 
@@ -43,10 +43,10 @@ def _extract_error_json(body):
     """Return error_message from the HTTP response body."""
     error_json = {}
     try:
-        body_json = json.loads(body)
+        body_json = jsonutils.loads(body)
         if 'error_message' in body_json:
             raw_msg = body_json['error_message']
-            error_json = json.loads(raw_msg)
+            error_json = jsonutils.loads(raw_msg)
         elif 'error' in body_json:
             error_body = body_json['error']
             error_json = {'faultstring': error_body['title'],
@@ -219,7 +219,7 @@ class HTTPClient(object):
         kwargs['headers'].setdefault('Accept', 'application/json')
 
         if 'body' in kwargs:
-            kwargs['body'] = json.dumps(kwargs['body'])
+            kwargs['body'] = jsonutils.dumps(kwargs['body'])
 
         resp, body_iter = self._http_request(url, method, **kwargs)
         content_type = resp.getheader('content-type', None)
@@ -230,7 +230,7 @@ class HTTPClient(object):
         if 'application/json' in content_type:
             body = ''.join([chunk for chunk in body_iter])
             try:
-                body = json.loads(body)
+                body = jsonutils.loads(body)
             except ValueError:
                 LOG.error('Could not decode response body as JSON')
         else:
@@ -362,7 +362,7 @@ class SessionClient(adapter.LegacyJsonAdapter):
         kwargs['headers'].setdefault('Accept', 'application/json')
 
         if 'body' in kwargs:
-            kwargs['data'] = json.dumps(kwargs.pop('body'))
+            kwargs['data'] = jsonutils.dumps(kwargs.pop('body'))
 
         resp = self._http_request(url, method, **kwargs)
         body = resp.content

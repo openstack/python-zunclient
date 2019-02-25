@@ -10,7 +10,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import json
+from oslo_serialization import jsonutils
 
 from tempest.lib.common.utils import data_utils
 from tempest.lib import exceptions
@@ -50,7 +50,7 @@ class TestCase(base.FunctionalTestBase):
         output = self.openstack('appcontainer create {0}'
                                 ' --name {1} {2} {3}'
                                 .format(opts, name, image, params))
-        container = json.loads(output)
+        container = jsonutils.loads(output)
 
         if not output:
             self.fail('Container has not been created!')
@@ -71,7 +71,7 @@ class TestCase(base.FunctionalTestBase):
         output = self.openstack('appcontainer run {0}'
                                 ' --name {1} {2} {3}'
                                 .format(opts, name, image, params))
-        container = json.loads(output)
+        container = jsonutils.loads(output)
 
         if not output:
             self.fail('Container has not run!')
@@ -105,7 +105,7 @@ class TestCase(base.FunctionalTestBase):
         opts = self.get_opts(fields=fields)
         output = self.openstack('appcontainer list {0} {1}'
                                 .format(opts, params))
-        return json.loads(output)
+        return jsonutils.loads(output)
 
     def container_show(self, identifier, fields=None, params=''):
         """Show specified container.
@@ -118,7 +118,7 @@ class TestCase(base.FunctionalTestBase):
         opts = self.get_opts(fields)
         output = self.openstack('appcontainer show {0} {1} {2}'
                                 .format(opts, identifier, params))
-        return json.loads(output)
+        return jsonutils.loads(output)
 
     def container_rename(self, identifier, name):
         """Rename specified container.
