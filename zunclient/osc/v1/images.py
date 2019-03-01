@@ -165,7 +165,7 @@ class DeleteImage(command.Command):
         parser.add_argument(
             'uuid',
             metavar='<uuid>',
-            help='UUID of image to describe')
+            help='UUID of image to delete')
         return parser
 
     def take_action(self, parsed_args):
