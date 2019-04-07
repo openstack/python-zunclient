@@ -357,8 +357,9 @@ def base_url_for_url(url):
 
 
 def list_capsules(capsules):
-    columns = ('uuid', 'status', 'meta_name',
-               'meta_labels', 'containers_uuids', 'created_at', 'addresses')
+    for c in capsules:
+        format_container_addresses(c)
+    columns = ('uuid', 'name', 'status', 'addresses')
     utils.print_list(capsules, columns,
                      {'versions': print_list_field('versions')},
                      sortby_index=None)
