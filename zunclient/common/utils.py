@@ -18,6 +18,7 @@ import json
 import os
 
 from oslo_utils import netutils
+import six
 from six.moves.urllib import parse
 from six.moves.urllib import request
 from zunclient.common.apiclient import exceptions as apiexec
@@ -199,6 +200,8 @@ def list_availability_zones(zones):
 def parse_command(command):
     output = []
     if command:
+        if isinstance(command, six.string_types):
+            command = [command]
         for c in command:
             c = '"' + c + '"'
             output.append(c)
