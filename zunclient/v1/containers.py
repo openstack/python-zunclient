@@ -26,7 +26,7 @@ CREATION_ATTRIBUTES = ['name', 'image', 'command', 'cpu', 'memory',
                        'security_groups', 'hints', 'nets', 'auto_remove',
                        'runtime', 'hostname', 'mounts', 'disk',
                        'availability_zone', 'auto_heal', 'privileged',
-                       'exposed_ports', 'healthcheck']
+                       'exposed_ports', 'healthcheck', 'registry']
 
 
 class Container(base.Resource):

@@ -210,6 +210,10 @@ class CreateContainer(command.ShowOne):
             '--wait',
             action='store_true',
             help='Wait for create to complete')
+        parser.add_argument(
+            '--registry',
+            metavar='<registry>',
+            help='The container image registry ID or name.')
         return parser
 
     def take_action(self, parsed_args):
@@ -226,6 +230,7 @@ class CreateContainer(command.ShowOne):
         opts['image_driver'] = parsed_args.image_driver
         opts['auto_remove'] = parsed_args.auto_remove
         opts['command'] = parsed_args.command
+        opts['registry'] = parsed_args.registry
         if parsed_args.security_group:
             opts['security_groups'] = parsed_args.security_group
         if parsed_args.expose_port:
@@ -895,6 +900,10 @@ class RunContainer(command.ShowOne):
             '--wait',
             action='store_true',
             help='Wait for run to complete')
+        parser.add_argument(
+            '--registry',
+            metavar='<registry>',
+            help='The container image registry ID or name.')
         return parser
 
     def take_action(self, parsed_args):
@@ -911,6 +920,7 @@ class RunContainer(command.ShowOne):
         opts['image_driver'] = parsed_args.image_driver
         opts['auto_remove'] = parsed_args.auto_remove
         opts['command'] = parsed_args.command
+        opts['registry'] = parsed_args.registry
         if parsed_args.security_group:
             opts['security_groups'] = parsed_args.security_group
         if parsed_args.expose_port:

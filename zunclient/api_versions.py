@@ -31,7 +31,7 @@ if not LOG.handlers:
 HEADER_NAME = "OpenStack-API-Version"
 SERVICE_TYPE = "container"
 MIN_API_VERSION = '1.1'
-MAX_API_VERSION = '1.30'
+MAX_API_VERSION = '1.31'
 DEFAULT_API_VERSION = '1.latest'
 
 _SUBSTITUTIONS = {}

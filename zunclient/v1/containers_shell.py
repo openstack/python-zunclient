@@ -181,6 +181,9 @@ def _show_container(container):
                 'retries: Consecutive failures needed to report unhealthy. '
                 'timeout: Maximum time to allow one check to run (s|m|h)'
                 '         (default 0s).')
+@utils.arg('--registry',
+           metavar='<registry>',
+           help='The container image registry ID or name')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -202,6 +205,7 @@ def do_create(cs, args):
     opts['disk'] = args.disk
     opts['availability_zone'] = args.availability_zone
     opts['command'] = args.command
+    opts['registry'] = args.registry
     if args.healthcheck:
         opts['healthcheck'] = zun_utils.parse_health(args.healthcheck)
 
@@ -701,6 +705,9 @@ def do_kill(cs, args):
                 'retries: Consecutive failures needed to report unhealthy. '
                 'timeout: Maximum time to allow one check to run (s|m|h)'
                 '         (default 0s).')
+@utils.arg('--registry',
+           metavar='<registry>',
+           help='The container image registry ID or name')
 def do_run(cs, args):
     """Run a command in a new container."""
     opts = {}
@@ -722,6 +729,7 @@ def do_run(cs, args):
     opts['disk'] = args.disk
     opts['availability_zone'] = args.availability_zone
     opts['command'] = args.command
+    opts['registry'] = args.registry
     if args.healthcheck:
         opts['healthcheck'] = zun_utils.parse_health(args.healthcheck)
 
