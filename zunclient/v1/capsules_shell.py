@@ -23,6 +23,7 @@ from zunclient.i18n import _
 
 
 def _show_capsule(capsule):
+    zun_utils.format_container_addresses(capsule)
     utils.print_dict(capsule._info)
 
 
