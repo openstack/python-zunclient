@@ -33,5 +33,5 @@ and a command-line tool (zun).
 .. _Launchpad project: https://launchpad.net/python-zunclient
 .. _Blueprints: https://blueprints.launchpad.net/python-zunclient
 .. _Bugs: https://bugs.launchpad.net/python-zunclient
-.. _Source: https://git.openstack.org/cgit/openstack/python-zunclient
+.. _Source: https://opendev.org/openstack/python-zunclient
 .. _How to Contribute: https://docs.openstack.org/infra/manual/developers.html
