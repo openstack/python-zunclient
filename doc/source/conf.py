@@ -29,7 +29,6 @@ extensions = [
 repository_name = 'openstack/python-zunclient'
 bug_project = 'python-zunclient'
 bug_tag = 'doc'
-html_last_updated_fmt = '%Y-%m-%d %H:%M'
 
 # autodoc generation is a bit aggressive and a nuisance when doing heavy
 # text edit cycles.
@@ -42,7 +41,6 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'python-zunclient'
 copyright = u'2013, OpenStack Foundation'
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
