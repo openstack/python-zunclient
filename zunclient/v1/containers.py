@@ -26,7 +26,7 @@ CREATION_ATTRIBUTES = ['name', 'image', 'command', 'cpu', 'memory',
                        'security_groups', 'hints', 'nets', 'auto_remove',
                        'runtime', 'hostname', 'mounts', 'disk',
                        'availability_zone', 'auto_heal', 'privileged',
-                       'exposed_ports', 'healthcheck', 'registry']
+                       'exposed_ports', 'healthcheck', 'registry', 'tty']
 
 
 class Container(base.Resource):
@@ -97,6 +97,7 @@ class ContainerManager(base.Manager):
     def create(self, **kwargs):
         self._process_command(kwargs)
         self._process_mounts(kwargs)
+        self._process_tty(kwargs)
 
         new = {}
         for (key, value) in kwargs.items():
@@ -120,6 +121,12 @@ class ContainerManager(base.Manager):
             for mount in mounts:
                 if mount.get('type') == 'bind':
                     mount['source'] = utils.encode_file_data(mount['source'])
+
+    def _process_tty(self, kwargs):
+        tty_microversion = api_versions.APIVersion("1.36")
+        if self.api_version >= tty_microversion:
+            if 'interactive' in kwargs and 'tty' not in kwargs:
+                kwargs['tty'] = kwargs['interactive']
 
     def delete(self, id, **kwargs):
         return self._delete(self._path(id),
@@ -179,6 +186,7 @@ class ContainerManager(base.Manager):
     def run(self, **kwargs):
         self._process_command(kwargs)
         self._process_mounts(kwargs)
+        self._process_tty(kwargs)
 
         if not set(kwargs).issubset(CREATION_ATTRIBUTES):
             raise exceptions.InvalidAttribute(
