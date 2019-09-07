@@ -23,7 +23,5 @@
       - publish-openstack-docs-pti
     check:
       jobs:
-        - zunclient-devstack-docker-sql
-    gate:
-      jobs:
-        - zunclient-devstack-docker-sql
+        - zunclient-devstack-docker-sql:
+            voting: false
