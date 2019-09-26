@@ -179,6 +179,8 @@ class BaseClient(object):
             self.quit = True
             return
 
+        if isinstance(data, bytes):
+            data = data.decode("utf-8")
         sys.stdout.write(data)
         sys.stdout.flush()
 
