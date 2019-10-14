@@ -263,7 +263,7 @@ class WebSocketClient(BaseClient):
         return self.ws.fileno()
 
     def send(self, data):
-        self.ws.send(data)
+        self.ws.send_binary(data)
 
     def recv(self):
         return self.ws.recv()
