@@ -201,10 +201,10 @@ class CreateContainer(command.ShowOne):
             help='Specify a test cmd to perform to check that the container'
                  'is healthy. '
                  'cmd: Command to run to check health. '
-                 'interval: Time between running the check (|s|m|h)'
+                 'interval: Time between running the check (``s|m|h``)'
                  '          (default 0s). '
                  'retries: Consecutive failures needed to report unhealthy.'
-                 'timeout: Maximum time to allow one check to run (s|m|h)'
+                 'timeout: Maximum time to allow one check to run (``s|m|h``)'
                  '         (default 0s).')
         parser.add_argument(
             '--wait',
@@ -891,10 +891,10 @@ class RunContainer(command.ShowOne):
             help='Specify a test cmd to perform to check that the container'
                  'is healthy. '
                  'cmd: Command to run to check health. '
-                 'interval: Time between running the check (s|m|h)'
+                 'interval: Time between running the check (``s|m|h``)'
                  '          (default 0s). '
                  'retries: Consecutive failures needed to report unhealthy.'
-                 'timeout: Maximum time to allow one check to run (s|m|h)'
+                 'timeout: Maximum time to allow one check to run (``s|m|h``)'
                  '         (default 0s).')
         parser.add_argument(
             '--wait',
