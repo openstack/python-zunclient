@@ -7,15 +7,16 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   readme
    install/index
    contributor/index
    cli/index
    user/index
 
-Indices and tables
-------------------
+.. only:: html
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   Indices and tables
+   ------------------
+
+   * :ref:`genindex`
+   * :ref:`modindex`
+   * :ref:`search`

@@ -62,3 +62,25 @@ html_theme = 'openstackdocs'
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'zunclientdoc'
+
+# Grouping the document tree into LaTeX files. List of tuples
+# (source start file, target name, title, author, documentclass
+# [howto/manual]).
+latex_documents = [
+    ('index',
+     'doc-python-zunclient.tex',
+     u'Python Zun Client Documentation',
+     u'Zun development team', 'manual'),
+]
+
+# Disable usage of xindy https://bugzilla.redhat.com/show_bug.cgi?id=1643664
+latex_use_xindy = False
+
+latex_domain_indices = False
+
+latex_elements = {
+    'makeindex': '',
+    'printindex': '',
+    'preamble': r'\setcounter{tocdepth}{3}',
+    'extraclassoptions': 'openany',
+}
