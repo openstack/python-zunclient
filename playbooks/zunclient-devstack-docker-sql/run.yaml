@@ -30,6 +30,7 @@
           cat << 'EOF' >>"/tmp/dg-local.conf"
           [[local|localrc]]
           enable_plugin zun https://opendev.org/openstack/zun
+          USE_PYTHON3=True
 
           EOF
         executable: /bin/bash
