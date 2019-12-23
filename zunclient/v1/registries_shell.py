@@ -151,13 +151,13 @@ def do_registry_show(cs, args):
            help="ID or name of the registry to update.")
 @utils.arg('--username',
            metavar='<username>',
-           help='The username login to the registry.')
+           help='The new username for the registry.')
 @utils.arg('--password',
            metavar='<password>',
-           help='The domain login to the registry.')
+           help='The new password for the registry.')
 @utils.arg('--domain',
            metavar='<domain>',
-           help='The domain of the registry.')
+           help='The new domain for the registry.')
 @utils.arg('--name',
            metavar='<name>',
            help='The new name for the registry')
