@@ -214,6 +214,12 @@ class CreateContainer(command.ShowOne):
             '--registry',
             metavar='<registry>',
             help='The container image registry ID or name.')
+        parser.add_argument(
+            '--host',
+            metavar='<host>',
+            help='Requested host to create containers. Admin only by '
+                 'default. (supported by --os-container-api-version 1.39 '
+                 'or above')
         return parser
 
     def take_action(self, parsed_args):
@@ -231,6 +237,7 @@ class CreateContainer(command.ShowOne):
         opts['auto_remove'] = parsed_args.auto_remove
         opts['command'] = parsed_args.command
         opts['registry'] = parsed_args.registry
+        opts['host'] = parsed_args.host
         if parsed_args.security_group:
             opts['security_groups'] = parsed_args.security_group
         if parsed_args.expose_port:
@@ -904,6 +911,12 @@ class RunContainer(command.ShowOne):
             '--registry',
             metavar='<registry>',
             help='The container image registry ID or name.')
+        parser.add_argument(
+            '--host',
+            metavar='<host>',
+            help='Requested host to run containers. Admin only by '
+                 'default. (supported by --os-container-api-version 1.39 '
+                 'or above')
         return parser
 
     def take_action(self, parsed_args):
@@ -921,6 +934,7 @@ class RunContainer(command.ShowOne):
         opts['auto_remove'] = parsed_args.auto_remove
         opts['command'] = parsed_args.command
         opts['registry'] = parsed_args.registry
+        opts['host'] = parsed_args.host
         if parsed_args.security_group:
             opts['security_groups'] = parsed_args.security_group
         if parsed_args.expose_port:

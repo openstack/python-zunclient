@@ -184,6 +184,10 @@ def _show_container(container):
 @utils.arg('--registry',
            metavar='<registry>',
            help='The container image registry ID or name')
+@utils.arg('--host',
+           metavar='<host>',
+           help='Requested host to create containers. Admin only by default.'
+                '(Supported by API versions 1.39 or above)')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -206,6 +210,7 @@ def do_create(cs, args):
     opts['availability_zone'] = args.availability_zone
     opts['command'] = args.command
     opts['registry'] = args.registry
+    opts['host'] = args.host
     if args.healthcheck:
         opts['healthcheck'] = zun_utils.parse_health(args.healthcheck)
 
@@ -708,6 +713,10 @@ def do_kill(cs, args):
 @utils.arg('--registry',
            metavar='<registry>',
            help='The container image registry ID or name')
+@utils.arg('--host',
+           metavar='<host>',
+           help='Requested host to run containers. Admin only by default.'
+                '(Supported by API versions 1.39 or above)')
 def do_run(cs, args):
     """Run a command in a new container."""
     opts = {}
@@ -730,6 +739,7 @@ def do_run(cs, args):
     opts['availability_zone'] = args.availability_zone
     opts['command'] = args.command
     opts['registry'] = args.registry
+    opts['host'] = args.host
     if args.healthcheck:
         opts['healthcheck'] = zun_utils.parse_health(args.healthcheck)
 
