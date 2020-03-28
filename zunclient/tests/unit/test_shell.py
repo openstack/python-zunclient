@@ -91,9 +91,9 @@ class ShellTest(utils.TestCase):
 
     def test_help(self):
         required = [
-            '.*?^usage: ',
-            '.*?^\s+stop\s+Stop specified container.',
-            '.*?^See "zun help COMMAND" for help on a specific command',
+            r'.*?^usage: ',
+            r'.*?^\s+stop\s+Stop specified container.',
+            r'.*?^See "zun help COMMAND" for help on a specific command',
         ]
         stdout, stderr = self.shell('help')
         for r in required:
@@ -102,9 +102,9 @@ class ShellTest(utils.TestCase):
 
     def test_help_on_subcommand(self):
         required = [
-            '.*?^usage: zun create',
-            '.*?^Create a container.',
-            '.*?^Optional arguments:',
+            r'.*?^usage: zun create',
+            r'.*?^Create a container.',
+            r'.*?^Optional arguments:',
         ]
         stdout, stderr = self.shell('help create')
         for r in required:
@@ -113,9 +113,9 @@ class ShellTest(utils.TestCase):
 
     def test_help_no_options(self):
         required = [
-            '.*?^usage: ',
-            '.*?^\s+stop\s+Stop specified container.',
-            '.*?^See "zun help COMMAND" for help on a specific command',
+            r'.*?^usage: ',
+            r'.*?^\s+stop\s+Stop specified container.',
+            r'.*?^See "zun help COMMAND" for help on a specific command',
         ]
         stdout, stderr = self.shell('')
         for r in required:
@@ -126,10 +126,10 @@ class ShellTest(utils.TestCase):
         stdout, stderr = self.shell('bash-completion')
         # just check we have some output
         required = [
-            '.*--format',
-            '.*help',
-            '.*show',
-            '.*--name']
+            r'.*--format',
+            r'.*help',
+            r'.*show',
+            r'.*--name']
         for r in required:
             self.assertThat((stdout + stderr),
                             matchers.MatchesRegex(r, re.DOTALL | re.MULTILINE))

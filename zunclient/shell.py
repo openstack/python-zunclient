@@ -34,6 +34,16 @@ from oslo_utils import importutils
 from oslo_utils import strutils
 import six
 
+from zunclient import api_versions
+from zunclient import client as base_client
+from zunclient.common.apiclient import auth
+from zunclient.common import cliutils
+from zunclient import exceptions as exc
+from zunclient.i18n import _
+from zunclient.v1 import shell as shell_v1
+from zunclient import version
+
+
 profiler = importutils.try_import("osprofiler.profiler")
 
 HAS_KEYRING = False
@@ -51,15 +61,6 @@ try:
         pass
 except ImportError:
     pass
-
-from zunclient import api_versions
-from zunclient import client as base_client
-from zunclient.common.apiclient import auth
-from zunclient.common import cliutils
-from zunclient import exceptions as exc
-from zunclient.i18n import _
-from zunclient.v1 import shell as shell_v1
-from zunclient import version
 
 DEFAULT_API_VERSION = api_versions.DEFAULT_API_VERSION
 DEFAULT_ENDPOINT_TYPE = 'publicURL'

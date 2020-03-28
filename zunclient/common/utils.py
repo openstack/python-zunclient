@@ -324,8 +324,8 @@ def parse_health(hc_str):
 
 
 def _convert_healthcheck_para(time, err_msg):
-    int_pattern = '^\d+$'
-    time_pattern = '^\d+(s|m|h)$'
+    int_pattern = r'^\d+$'
+    time_pattern = r'^\d+(s|m|h)$'
     ret = 0
     if re.match(int_pattern, time):
         ret = int(time)

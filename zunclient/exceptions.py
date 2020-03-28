@@ -17,24 +17,25 @@ from zunclient.common.apiclient.exceptions import *  # noqa
 
 # NOTE(akurilin): This alias is left here since v.0.1.3 to support backwards
 # compatibility.
-InvalidEndpoint = EndpointException
-CommunicationError = ConnectionRefused
-HTTPBadRequest = BadRequest
-HTTPInternalServerError = InternalServerError
-HTTPNotFound = NotFound
-HTTPServiceUnavailable = ServiceUnavailable
-CommandErrorException = CommandError
+InvalidEndpoint = exceptions.EndpointException
+CommunicationError = exceptions.ConnectionRefused
+HTTPBadRequest = exceptions.BadRequest
+HTTPInternalServerError = exceptions.InternalServerError
+HTTPNotFound = exceptions.NotFound
+HTTPServiceUnavailable = exceptions.ServiceUnavailable
+CommandErrorException = exceptions.CommandError
 
 
-class AmbiguousAuthSystem(ClientException):
+class AmbiguousAuthSystem(exceptions.ClientException):
     """Could not obtain token and endpoint using provided credentials."""
     pass
+
 
 # Alias for backwards compatibility
 AmbigiousAuthSystem = AmbiguousAuthSystem
 
 
-class InvalidAttribute(ClientException):
+class InvalidAttribute(exceptions.ClientException):
     pass
 
 
