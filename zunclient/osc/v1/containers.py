@@ -1489,3 +1489,108 @@ class ActionShow(command.ShowOne):
         action = client.actions.get(container, request_id)
         columns = _action_columns(action)
         return columns, utils.get_item_properties(action, columns)
+
+
+class AddFloatingIP(command.Command):
+    """Add floating IP address to container"""
+
+    log = logging.getLogger(__name__ + ".AddFloatingIP")
+
+    def get_parser(self, prog_name):
+        parser = super(AddFloatingIP, self).get_parser(prog_name)
+        parser.add_argument(
+            'container',
+            metavar='<container>',
+            help='ID or name of the container to receive the floating '
+                 'IP address.'
+        )
+        parser.add_argument(
+            "ip_address",
+            metavar="<ip-address>",
+            help="Floating IP address to assign to the first available "
+                 "container port (IP only)"
+        )
+        parser.add_argument(
+            "--fixed-ip-address",
+            metavar="<ip-address>",
+            help="Fixed IP address to associate with this floating IP "
+                 "address. The first container port containing the fixed "
+                 "IP address will be used"
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = _get_client(self, parsed_args)
+        opts = {}
+        opts['id'] = parsed_args.container
+        container = client.containers.get(**opts)
+
+        network_client = self.app.client_manager.network
+        attrs = {}
+        obj = network_client.find_ip(
+            parsed_args.ip_address,
+            ignore_missing=False,
+        )
+        ports = list(network_client.ports(device_id=container.uuid))
+        # If the fixed IP address was specified, we need to find the
+        # corresponding port.
+        if parsed_args.fixed_ip_address:
+            fip_address = parsed_args.fixed_ip_address
+            attrs['fixed_ip_address'] = fip_address
+            for port in ports:
+                for ip in port.fixed_ips:
+                    if ip['ip_address'] == fip_address:
+                        attrs['port_id'] = port.id
+                        break
+                else:
+                    continue
+                break
+            if 'port_id' not in attrs:
+                print(_('No port found for fixed IP address %s.')
+                      % fip_address)
+                raise SystemExit
+            network_client.update_ip(obj, **attrs)
+        else:
+            # It's possible that one or more ports are not connected to a
+            # router and thus could fail association with a floating IP.
+            # Try each port until one succeeds. If none succeed, re-raise the
+            # last exception.
+            error = None
+            for port in ports:
+                attrs['port_id'] = port.id
+                try:
+                    network_client.update_ip(obj, **attrs)
+                except Exception as e:
+                    error = e
+                    continue
+                else:
+                    error = None
+                    break
+            if error:
+                raise error
+
+
+class RemoveFloatingIP(command.Command):
+    """Remove floating IP address from container"""
+
+    log = logging.getLogger(__name__ + ".RemoveFloatingIP")
+
+    def get_parser(self, prog_name):
+        parser = super(RemoveFloatingIP, self).get_parser(prog_name)
+        parser.add_argument(
+            "ip_address",
+            metavar="<ip-address>",
+            help=_("Floating IP address to remove from container (IP only)"),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        network_client = self.app.client_manager.network
+        attrs = {}
+        obj = network_client.find_ip(
+            parsed_args.ip_address,
+            ignore_missing=False,
+        )
+        attrs['port_id'] = None
+
+        network_client.update_ip(obj, **attrs)
