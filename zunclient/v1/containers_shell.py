@@ -188,6 +188,10 @@ def _show_container(container):
            metavar='<host>',
            help='Requested host to create containers. Admin only by default.'
                 '(Supported by API versions 1.39 or above)')
+@utils.arg('--entrypoint',
+           metavar='<entrypoint>',
+           help='The entrypoint which overwrites the default ENTRYPOINT '
+                'of the image. (Supported by API versions 1.40 or above)')
 def do_create(cs, args):
     """Create a container."""
     opts = {}
@@ -211,6 +215,7 @@ def do_create(cs, args):
     opts['command'] = args.command
     opts['registry'] = args.registry
     opts['host'] = args.host
+    opts['entrypoint'] = zun_utils.parse_entrypoint(args.entrypoint)
     if args.healthcheck:
         opts['healthcheck'] = zun_utils.parse_health(args.healthcheck)
 
@@ -717,6 +722,10 @@ def do_kill(cs, args):
            metavar='<host>',
            help='Requested host to run containers. Admin only by default.'
                 '(Supported by API versions 1.39 or above)')
+@utils.arg('--entrypoint',
+           metavar='<entrypoint>',
+           help='The entrypoint which overwrites the default ENTRYPOINT '
+                'of the image. (Supported by API versions 1.40 or above)')
 def do_run(cs, args):
     """Run a command in a new container."""
     opts = {}
@@ -740,6 +749,7 @@ def do_run(cs, args):
     opts['command'] = args.command
     opts['registry'] = args.registry
     opts['host'] = args.host
+    opts['entrypoint'] = zun_utils.parse_entrypoint(args.entrypoint)
     if args.healthcheck:
         opts['healthcheck'] = zun_utils.parse_health(args.healthcheck)
 

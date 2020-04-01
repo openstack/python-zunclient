@@ -220,6 +220,11 @@ class CreateContainer(command.ShowOne):
             help='Requested host to create containers. Admin only by '
                  'default. (supported by --os-container-api-version 1.39 '
                  'or above')
+        parser.add_argument(
+            '--entrypoint',
+            metavar='<entrypoint>',
+            help='The entrypoint which overwrites the default ENTRYPOINT '
+                 'of the image.')
         return parser
 
     def take_action(self, parsed_args):
@@ -238,6 +243,7 @@ class CreateContainer(command.ShowOne):
         opts['command'] = parsed_args.command
         opts['registry'] = parsed_args.registry
         opts['host'] = parsed_args.host
+        opts['entrypoint'] = zun_utils.parse_entrypoint(parsed_args.entrypoint)
         if parsed_args.security_group:
             opts['security_groups'] = parsed_args.security_group
         if parsed_args.expose_port:
@@ -917,6 +923,11 @@ class RunContainer(command.ShowOne):
             help='Requested host to run containers. Admin only by '
                  'default. (supported by --os-container-api-version 1.39 '
                  'or above')
+        parser.add_argument(
+            '--entrypoint',
+            metavar='<entrypoint>',
+            help='The entrypoint which overwrites the default ENTRYPOINT '
+                 'of the image.')
         return parser
 
     def take_action(self, parsed_args):
@@ -935,6 +946,7 @@ class RunContainer(command.ShowOne):
         opts['command'] = parsed_args.command
         opts['registry'] = parsed_args.registry
         opts['host'] = parsed_args.host
+        opts['entrypoint'] = zun_utils.parse_entrypoint(parsed_args.entrypoint)
         if parsed_args.security_group:
             opts['security_groups'] = parsed_args.security_group
         if parsed_args.expose_port:
