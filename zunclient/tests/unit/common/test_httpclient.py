@@ -13,10 +13,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import mock
-import six
+from unittest import mock
 
 from oslo_serialization import jsonutils
+import six
 
 from zunclient import api_versions
 from zunclient.common.apiclient import exceptions
