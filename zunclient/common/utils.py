@@ -18,6 +18,7 @@ import base64
 import binascii
 import os
 import re
+import shlex
 
 from oslo_serialization import jsonutils
 from oslo_utils import netutils
@@ -209,6 +210,10 @@ def parse_command(command):
             c = '"' + c + '"'
             output.append(c)
     return " ".join(output)
+
+
+def parse_entrypoint(entrypoint):
+    return shlex.split(entrypoint)
 
 
 def parse_mounts(mounts):
