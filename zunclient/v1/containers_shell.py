@@ -215,7 +215,8 @@ def do_create(cs, args):
     opts['command'] = args.command
     opts['registry'] = args.registry
     opts['host'] = args.host
-    opts['entrypoint'] = zun_utils.parse_entrypoint(args.entrypoint)
+    if args.entrypoint:
+        opts['entrypoint'] = zun_utils.parse_entrypoint(args.entrypoint)
     if args.healthcheck:
         opts['healthcheck'] = zun_utils.parse_health(args.healthcheck)
 
@@ -749,7 +750,8 @@ def do_run(cs, args):
     opts['command'] = args.command
     opts['registry'] = args.registry
     opts['host'] = args.host
-    opts['entrypoint'] = zun_utils.parse_entrypoint(args.entrypoint)
+    if args.entrypoint:
+        opts['entrypoint'] = zun_utils.parse_entrypoint(args.entrypoint)
     if args.healthcheck:
         opts['healthcheck'] = zun_utils.parse_health(args.healthcheck)
 
