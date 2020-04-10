@@ -243,7 +243,9 @@ class CreateContainer(command.ShowOne):
         opts['command'] = parsed_args.command
         opts['registry'] = parsed_args.registry
         opts['host'] = parsed_args.host
-        opts['entrypoint'] = zun_utils.parse_entrypoint(parsed_args.entrypoint)
+        if parsed_args.entrypoint:
+            opts['entrypoint'] = zun_utils.parse_entrypoint(
+                parsed_args.entrypoint)
         if parsed_args.security_group:
             opts['security_groups'] = parsed_args.security_group
         if parsed_args.expose_port:
@@ -946,7 +948,9 @@ class RunContainer(command.ShowOne):
         opts['command'] = parsed_args.command
         opts['registry'] = parsed_args.registry
         opts['host'] = parsed_args.host
-        opts['entrypoint'] = zun_utils.parse_entrypoint(parsed_args.entrypoint)
+        if parsed_args.entrypoint:
+            opts['entrypoint'] = zun_utils.parse_entrypoint(
+                parsed_args.entrypoint)
         if parsed_args.security_group:
             opts['security_groups'] = parsed_args.security_group
         if parsed_args.expose_port:
