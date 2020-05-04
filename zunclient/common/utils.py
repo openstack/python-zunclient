@@ -22,9 +22,8 @@ import shlex
 
 from oslo_serialization import jsonutils
 from oslo_utils import netutils
-import six
-from six.moves.urllib import parse
-from six.moves.urllib import request
+from urllib import parse
+from urllib import request
 from zunclient.common.apiclient import exceptions as apiexec
 from zunclient.common import cliutils as utils
 from zunclient import exceptions as exc
@@ -204,7 +203,7 @@ def list_availability_zones(zones):
 def parse_command(command):
     output = []
     if command:
-        if isinstance(command, six.string_types):
+        if isinstance(command, str):
             command = [command]
         for c in command:
             c = '"' + c + '"'
@@ -391,7 +390,7 @@ def list_container_networks(networks):
 
 
 def encode_file_data(data):
-    if six.PY3 and isinstance(data, str):
+    if isinstance(data, str):
         data = data.encode('utf-8')
     return base64.b64encode(data).decode('utf-8')
 

@@ -11,9 +11,10 @@
 #    under the License.
 
 import copy
-from six.moves.urllib import parse
+
 import testtools
 from testtools import matchers
+from urllib import parse
 from zunclient.common import utils as zun_utils
 from zunclient import exceptions
 from zunclient.tests.unit import utils

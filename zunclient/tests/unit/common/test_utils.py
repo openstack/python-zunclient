@@ -15,7 +15,6 @@
 #    under the License.
 
 import collections
-import six
 
 from zunclient.common import cliutils
 from zunclient.common import utils
@@ -187,10 +186,11 @@ class FormatArgsTest(test_utils.BaseTestCase):
 class CliUtilsTest(test_utils.BaseTestCase):
 
     def test_keys_and_vals_to_strs(self):
-        dict_in = {six.u('a'): six.u('1'),
-                   six.u('b'): {six.u('x'): 1,
-                                'y': six.u('2'),
-                                six.u('z'): six.u('3')},
+        dict_in = {'a': '1',
+                   'b': {
+                       'x': 1,
+                       'y': '2',
+                       'z': '3'},
                    'c': 7}
 
         dict_exp = collections.OrderedDict([
@@ -207,7 +207,7 @@ class CliUtilsTest(test_utils.BaseTestCase):
             ('b', collections.OrderedDict(sorted(dict_out['b'].items()))),
             ('c', dict_out['c'])])
 
-        self.assertEqual(six.text_type(dict_exp), six.text_type(dict_act))
+        self.assertEqual(str(dict_exp), str(dict_act))
 
 
 class ParseNetsTest(test_utils.BaseTestCase):

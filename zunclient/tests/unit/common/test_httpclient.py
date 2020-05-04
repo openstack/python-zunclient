@@ -13,10 +13,11 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from http import client as http_client
+from io import StringIO
 from unittest import mock
 
 from oslo_serialization import jsonutils
-import six
 
 from zunclient import api_versions
 from zunclient.common.apiclient import exceptions
@@ -36,7 +37,7 @@ def _get_error_body(faultstring=None, debuginfo=None):
     return raw_body
 
 
-HTTP_CLASS = six.moves.http_client.HTTPConnection
+HTTP_CLASS = http_client.HTTPConnection
 HTTPS_CLASS = http.VerifiedHTTPSConnection
 DEFAULT_TIMEOUT = 600
 
@@ -66,7 +67,7 @@ class HttpClientTest(utils.BaseTestCase):
     def test_server_exception_empty_body(self):
         error_body = _get_error_body()
         fake_resp = utils.FakeResponse({'content-type': 'application/json'},
-                                       six.StringIO(error_body),
+                                       StringIO(error_body),
                                        version=1,
                                        status=500)
         client = http.HTTPClient(
@@ -84,7 +85,7 @@ class HttpClientTest(utils.BaseTestCase):
         error_msg = 'test error msg'
         error_body = _get_error_body(error_msg)
         fake_resp = utils.FakeResponse({'content-type': 'application/json'},
-                                       six.StringIO(error_body),
+                                       StringIO(error_body),
                                        version=1,
                                        status=500)
         client = http.HTTPClient(
@@ -104,7 +105,7 @@ class HttpClientTest(utils.BaseTestCase):
                        "File \\\"/usr/local/lib/python2.7/...")
         error_body = _get_error_body(error_msg, error_trace)
         fake_resp = utils.FakeResponse({'content-type': 'application/json'},
-                                       six.StringIO(error_body),
+                                       StringIO(error_body),
                                        version=1,
                                        status=500)
         client = http.HTTPClient(
@@ -229,7 +230,7 @@ class HttpClientTest(utils.BaseTestCase):
     def test_401_unauthorized_exception(self):
         error_body = _get_error_body()
         fake_resp = utils.FakeResponse({'content-type': 'text/plain'},
-                                       six.StringIO(error_body),
+                                       StringIO(error_body),
                                        version=1,
                                        status=401)
         client = http.HTTPClient(

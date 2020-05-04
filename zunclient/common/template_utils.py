@@ -13,9 +13,8 @@
 #    under the License.
 
 from oslo_serialization import jsonutils
-import six
-from six.moves.urllib import parse
-from six.moves.urllib import request
+from urllib import parse
+from urllib import request
 
 from zunclient.common import template_format
 from zunclient.common import utils
@@ -43,7 +42,7 @@ def get_template_contents(template_file=None, template_url=None,
                                                template_url)
 
     try:
-        if isinstance(tpl, six.binary_type):
+        if isinstance(tpl, bytes):
             tpl = tpl.decode('utf-8')
         template = template_format.parse(tpl)
     except ValueError as e:
@@ -56,7 +55,7 @@ def get_template_contents(template_file=None, template_url=None,
 
 def is_template(file_content):
     try:
-        if isinstance(file_content, six.binary_type):
+        if isinstance(file_content, bytes):
             file_content = file_content.decode('utf-8')
         template_format.parse(file_content)
     except (ValueError, TypeError):

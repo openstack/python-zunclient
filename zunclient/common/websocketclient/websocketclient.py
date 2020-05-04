@@ -22,14 +22,13 @@ import os
 from oslo_log import log as logging
 import select
 import signal
-import six
-import six.moves.urllib.parse as urlparse
 import socket
 import struct
 import sys
 import termios
 import time
 import tty
+from urllib import parse as urlparse
 import websocket
 
 from zunclient.common.apiclient import exceptions as acexceptions
@@ -110,7 +109,7 @@ class BaseClient(object):
                         self.handle_stdin(event)
             except select.error as e:
                 # POSIX signals interrupt select()
-                no = e.errno if six.PY3 else e[0]
+                no = e.errno
                 if no == errno.EINTR:
                     continue
                 else:

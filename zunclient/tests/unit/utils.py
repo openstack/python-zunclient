@@ -15,11 +15,11 @@
 
 import copy
 import datetime
+import io
 import os
 import sys
 
 import fixtures
-import six
 import testtools
 
 from zunclient import api_versions
@@ -54,7 +54,7 @@ class FakeAPI(object):
 
     def raw_request(self, *args, **kwargs):
         response = self._request(*args, **kwargs)
-        body_iter = http.ResponseBodyIterator(six.StringIO(response[1]))
+        body_iter = http.ResponseBodyIterator(io.StringIO(response[1]))
         return FakeResponse(response[0]), body_iter
 
     def json_request(self, *args, **kwargs):
@@ -150,8 +150,8 @@ class TestCase(testtools.TestCase):
         orig = sys.stdout
         orig_stderr = sys.stderr
         try:
-            sys.stdout = six.StringIO()
-            sys.stderr = six.StringIO()
+            sys.stdout = io.StringIO()
+            sys.stderr = io.StringIO()
             _shell = shell.OpenStackZunShell()
             _shell.main(argstr.split())
         except SystemExit:

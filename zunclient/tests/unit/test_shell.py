@@ -12,13 +12,13 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import io
 import re
 import sys
 from unittest import mock
 
 import fixtures
 from keystoneauth1 import fixture
-import six
 from testtools import matchers
 
 from zunclient import api_versions
@@ -225,8 +225,8 @@ class ShellTest(utils.TestCase):
             self.fail('CommandError not raised')
 
     @mock.patch('sys.argv', ['zun'])
-    @mock.patch('sys.stdout', six.StringIO())
-    @mock.patch('sys.stderr', six.StringIO())
+    @mock.patch('sys.stdout', io.StringIO())
+    @mock.patch('sys.stderr', io.StringIO())
     def test_main_noargs(self):
         # Ensure that main works with no command-line arguments
         try:

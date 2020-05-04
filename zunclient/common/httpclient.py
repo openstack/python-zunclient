@@ -15,16 +15,17 @@
 #    under the License.
 
 import copy
+from http import client as http_client
+import io
 import os
 from oslo_log import log as logging
 from oslo_serialization import jsonutils
 import socket
 import ssl
+import urllib.parse as urlparse
 
 from keystoneauth1 import adapter
 from oslo_utils import importutils
-import six
-import six.moves.urllib.parse as urlparse
 
 from zunclient import api_versions
 from zunclient import exceptions
@@ -93,7 +94,7 @@ class HTTPClient(object):
             _kwargs['key_file'] = kwargs.get('key_file', None)
             _kwargs['insecure'] = kwargs.get('insecure', False)
         elif parts.scheme == 'http':
-            _class = six.moves.http_client.HTTPConnection
+            _class = http_client.HTTPConnection
         else:
             msg = 'Unsupported scheme: %s' % parts.scheme
             raise exceptions.EndpointException(msg)
@@ -105,7 +106,7 @@ class HTTPClient(object):
         try:
             return _class(*self.connection_params[1][0:2],
                           **self.connection_params[2])
-        except six.moves.http_client.InvalidURL:
+        except http_client.InvalidURL:
             raise exceptions.EndpointException()
 
     def log_curl_request(self, method, url, kwargs):
@@ -195,7 +196,7 @@ class HTTPClient(object):
             ]
             body_str = ''.join(body_list)
             self.log_http_response(resp, body_str)
-            body_iter = six.StringIO(body_str)
+            body_iter = io.StringIO(body_str)
         else:
             self.log_http_response(resp)
 
@@ -245,7 +246,7 @@ class HTTPClient(object):
         return self._http_request(url, method, **kwargs)
 
 
-class VerifiedHTTPSConnection(six.moves.http_client.HTTPSConnection):
+class VerifiedHTTPSConnection(http_client.HTTPSConnection):
     """httplib-compatibile connection using client-side SSL authentication
 
     :see http://code.activestate.com/recipes/
@@ -254,9 +255,9 @@ class VerifiedHTTPSConnection(six.moves.http_client.HTTPSConnection):
 
     def __init__(self, host, port, key_file=None, cert_file=None,
                  ca_file=None, timeout=None, insecure=False):
-        six.moves.http_client.HTTPSConnection.__init__(self, host, port,
-                                                       key_file=key_file,
-                                                       cert_file=cert_file)
+        http_client.HTTPSConnection.__init__(self, host, port,
+                                             key_file=key_file,
+                                             cert_file=cert_file)
         self.key_file = key_file
         self.cert_file = cert_file
         if ca_file is not None:

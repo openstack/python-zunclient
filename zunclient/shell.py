@@ -32,7 +32,6 @@ import sys
 from oslo_utils import encodeutils
 from oslo_utils import importutils
 from oslo_utils import strutils
-import six
 
 from zunclient import api_versions
 from zunclient import client as base_client
@@ -766,7 +765,7 @@ def main():
             map(encodeutils.safe_decode, sys.argv[1:]))
     except Exception as e:
         logger.debug(e, exc_info=1)
-        print("ERROR: %s" % encodeutils.safe_encode(six.text_type(e)),
+        print("ERROR: %s" % encodeutils.safe_encode(str(e)),
               file=sys.stderr)
         sys.exit(1)
 

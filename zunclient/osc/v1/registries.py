@@ -13,7 +13,6 @@
 from osc_lib.command import command
 from osc_lib import utils
 from oslo_log import log as logging
-import six
 
 from zunclient.common import utils as zun_utils
 from zunclient import exceptions as exc
@@ -60,7 +59,7 @@ class CreateRegistry(command.ShowOne):
         opts['password'] = parsed_args.password
         opts = zun_utils.remove_null_parms(**opts)
         registry = client.registries.create(**opts)
-        return zip(*sorted(six.iteritems(registry._info['registry'])))
+        return zip(*sorted(registry._info['registry'].items()))
 
 
 class ShowRegistry(command.ShowOne):
@@ -83,7 +82,7 @@ class ShowRegistry(command.ShowOne):
         opts = zun_utils.remove_null_parms(**opts)
         registry = client.registries.get(**opts)
 
-        return zip(*sorted(six.iteritems(registry._info['registry'])))
+        return zip(*sorted(registry._info['registry'].items()))
 
 
 class ListRegistry(command.Lister):
@@ -229,4 +228,4 @@ class UpdateRegistry(command.ShowOne):
         if not opts:
             raise exc.CommandError("You must update at least one property")
         registry = client.registries.update(registry, **opts)
-        return zip(*sorted(six.iteritems(registry._info['registry'])))
+        return zip(*sorted(registry._info['registry'].items()))

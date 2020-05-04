@@ -20,7 +20,6 @@
 import abc
 import argparse
 import os
-import six
 
 from zunclient.common.apiclient import exceptions
 
@@ -51,8 +50,7 @@ def load_plugin(auth_system):
     return plugin_class(auth_system=auth_system)
 
 
-@six.add_metaclass(abc.ABCMeta)
-class BaseAuthPlugin(object):
+class BaseAuthPlugin(object, metaclass=abc.ABCMeta):
     """Base class for authentication plugins.
 
     An authentication plugin needs to override at least the authenticate

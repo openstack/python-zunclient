@@ -29,8 +29,6 @@ import decorator
 from oslo_utils import encodeutils
 from oslo_utils import strutils
 import prettytable
-import six
-from six import moves
 
 from zunclient.i18n import _
 
@@ -209,10 +207,7 @@ def print_list(objs, fields, formatters=None, sortby_index=0,
                 row.append(data)
         pt.add_row(row)
 
-    if six.PY3:
-        print(encodeutils.safe_encode(pt.get_string(**kwargs)).decode())
-    else:
-        print(encodeutils.safe_encode(pt.get_string(**kwargs)))
+    print(encodeutils.safe_encode(pt.get_string(**kwargs)).decode())
 
 
 def keys_and_vals_to_strs(dictionary):
@@ -223,7 +218,7 @@ def keys_and_vals_to_strs(dictionary):
     def to_str(k_or_v):
         if isinstance(k_or_v, dict):
             return keys_and_vals_to_strs(k_or_v)
-        elif isinstance(k_or_v, six.text_type):
+        elif isinstance(k_or_v, str):
             return str(k_or_v)
         else:
             return k_or_v
@@ -245,14 +240,14 @@ def print_dict(dct, dict_property="Property", wrap=0, value_fields=None):
     for k, v in dct.items():
         # convert dict to str to check length
         if isinstance(v, dict) and not value_fields:
-            v = six.text_type(keys_and_vals_to_strs(v))
+            v = str(keys_and_vals_to_strs(v))
         if wrap > 0:
-            v = textwrap.fill(six.text_type(v), wrap)
+            v = textwrap.fill(str(v), wrap)
         elif wrap < 0:
             raise ValueError(_("Wrap argument should be a positive integer"))
         # if value has a newline, add in multiple rows
         # e.g. fault with stacktrace
-        if v and isinstance(v, six.string_types) and r'\n' in v:
+        if v and isinstance(v, str) and r'\n' in v:
             lines = v.strip().split(r'\n')
             col1 = k
             for line in lines:
@@ -267,10 +262,7 @@ def print_dict(dct, dict_property="Property", wrap=0, value_fields=None):
         else:
             pt.add_row([k, v])
 
-    if six.PY3:
-        print(encodeutils.safe_encode(pt.get_string()).decode())
-    else:
-        print(encodeutils.safe_encode(pt.get_string()))
+    print(encodeutils.safe_encode(pt.get_string()).decode())
 
 
 def get_password(max_password_prompts=3):
@@ -280,7 +272,7 @@ def get_password(max_password_prompts=3):
     if hasattr(sys.stdin, "isatty") and sys.stdin.isatty():
         # Check for Ctrl-D
         try:
-            for __ in moves.range(max_password_prompts):
+            for __ in range(max_password_prompts):
                 pw1 = getpass.getpass("OS Password: ")
                 if verify:
                     pw2 = getpass.getpass("Please verify: ")

@@ -12,10 +12,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import configparser as config_parser
 import os
 
-import six
-import six.moves.configparser as config_parser
 from tempest.lib.cli import base
 
 DEFAULT_CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'test.conf')
@@ -55,11 +54,7 @@ class FunctionalTestBase(base.ClientTestBase):
     def _get_config(self):
         config_file = os.environ.get('ZUNCLIENT_TEST_CONFIG',
                                      DEFAULT_CONFIG_FILE)
-        # SafeConfigParser was deprecated in Python 3.2
-        if six.PY3:
-            config = config_parser.ConfigParser()
-        else:
-            config = config_parser.SafeConfigParser()
+        config = config_parser.ConfigParser()
         if not config.read(config_file):
             self.skipTest('Skipping, no test config found @ %s' % config_file)
         try:
