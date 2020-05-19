@@ -26,9 +26,10 @@ extensions = [
 ]
 
 # openstackdocstheme options
-repository_name = 'openstack/python-zunclient'
-bug_project = 'python-zunclient'
-bug_tag = 'doc'
+openstackdocs_repo_name = 'openstack/python-zunclient'
+openstackdocs_pdf_link = True
+openstackdocs_bug_project = 'python-zunclient'
+openstackdocs_bug_tag = 'doc'
 
 # autodoc generation is a bit aggressive and a nuisance when doing heavy
 # text edit cycles.
