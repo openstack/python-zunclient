@@ -120,7 +120,10 @@ class Manager(object):
     def _list(self, url, response_key=None, obj_class=None, body=None,
               qparams=None):
         if qparams:
-            url = "%s?%s" % (url, urlparse.urlencode(qparams))
+            if '?' in url:
+                url = "%s&%s" % (url, urlparse.urlencode(qparams))
+            else:
+                url = "%s?%s" % (url, urlparse.urlencode(qparams))
 
         resp, body = self.api.json_request('GET', url)
 
