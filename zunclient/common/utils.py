@@ -92,6 +92,27 @@ def args_array_to_patch(attributes):
         patch.append({path: value})
     return patch
 
+def _helper_commas_value(strin):
+    '''
+    e.g.
+    in:  '--name=name1,DEVICES=0,1,3,--name=name2,key=v1,v2'
+    out: ['--name=name1', 'DEVICES=0,1,3', '--name=name2', 'key=v1,v2']
+    '''
+    args=[]
+    li0 = strin.split('=')
+    for i in range(len(li0)):
+        if i == 0 or i == len(li0)-1:
+            args.append(li0[i])
+            continue
+        li = li0[i].split(',')
+        args.append(','.join(li[:-1]))
+        args.append(li[-1])
+
+    outs=[]
+    for i in range(len(args)/2):
+        outs.append('%s=%s'%(args[2*i], args[2*i+1]))
+
+    return outs
 
 def format_args(args, parse_comma=True):
     '''Reformat a list of key-value arguments into a dict.
@@ -105,7 +126,7 @@ def format_args(args, parse_comma=True):
         # expect multiple invocations of --label (or other arguments) but fall
         # back to either , or ; delimited if only one --label is specified
         if len(args) == 1:
-            args = args[0].replace(';', ',').split(',')
+            args = _helper_commas_value(args[0].replace(';', ','))
 
     fmt_args = {}
     for arg in args:
