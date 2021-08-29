@@ -42,7 +42,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-copyright = u'2013, OpenStack Foundation'
+copyright = '2013, OpenStack Foundation'
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True
@@ -70,8 +70,8 @@ htmlhelp_basename = 'zunclientdoc'
 latex_documents = [
     ('index',
      'doc-python-zunclient.tex',
-     u'Python Zun Client Documentation',
-     u'Zun development team', 'manual'),
+     'Python Zun Client Documentation',
+     'Zun development team', 'manual'),
 ]
 
 # Disable usage of xindy https://bugzilla.redhat.com/show_bug.cgi?id=1643664
