@@ -101,10 +101,14 @@ class ShellTest(utils.TestCase):
                             matchers.MatchesRegex(r, re.DOTALL | re.MULTILINE))
 
     def test_help_on_subcommand(self):
+        if sys.version_info >= (3, 10):
+            options_name = 'Options'
+        else:
+            options_name = 'Optional arguments'
         required = [
             r'.*?^usage: zun create',
             r'.*?^Create a container.',
-            r'.*?^Optional arguments:',
+            r'.*?^' + options_name + ':',
         ]
         stdout, stderr = self.shell('help create')
         for r in required:
