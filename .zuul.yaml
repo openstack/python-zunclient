@@ -4,7 +4,3 @@
       - openstack-python3-jobs
       - check-requirements
       - publish-openstack-docs-pti
-    check:
-      jobs:
-        - zunclient-devstack-docker-sql:
-            voting: false
