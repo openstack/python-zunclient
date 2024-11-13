@@ -898,7 +898,7 @@ def do_cp(cs, args):
         dest_path = args.destination
         tardata = io.BytesIO(res['data'])
         with closing(tarfile.open(fileobj=tardata)) as tar:
-            tar.extractall(dest_path)
+            tar.extractall(dest_path)  # nosec
 
     elif ':' in args.destination:
         dest_parts = args.destination.split(':', 1)

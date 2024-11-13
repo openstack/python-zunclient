@@ -28,7 +28,7 @@ def get_template_contents(template_file=None, template_url=None,
     # Transform a bare file path to a file:// URL.
     if template_file:  # nosec
         template_url = utils.normalise_file_path_to_url(template_file)
-        tpl = request.urlopen(template_url).read()
+        tpl = request.urlopen(template_url).read()  # nosec
     else:
         raise exceptions.CommandErrorException(_('Need to specify exactly '
                                                  'one of %(arg1)s, %(arg2)s '

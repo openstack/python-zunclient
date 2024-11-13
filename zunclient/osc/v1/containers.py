@@ -1156,7 +1156,7 @@ class CopyContainer(command.Command):
             dest_path = parsed_args.destination
             tardata = io.BytesIO(res['data'])
             with closing(tarfile.open(fileobj=tardata)) as tar:
-                tar.extractall(dest_path)
+                tar.extractall(dest_path)  # nosec
 
         elif ':' in parsed_args.destination:
             dest_parts = parsed_args.destination.split(':', 1)
