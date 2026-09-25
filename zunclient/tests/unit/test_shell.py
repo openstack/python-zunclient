@@ -73,9 +73,9 @@ class ParserTest(utils.TestCase):
 class ShellTest(utils.TestCase):
     AUTH_URL = utils.FAKE_ENV['OS_AUTH_URL']
 
-    _msg_no_tenant_project = ("You must provide a project name or project id"
-                              " via --os-project-name, --os-project-id,"
-                              " env[OS_PROJECT_NAME] or env[OS_PROJECT_ID]")
+    _msg_no_project = ("You must provide a project name or project id"
+                       " via --os-project-name, --os-project-id,"
+                       " env[OS_PROJECT_NAME] or env[OS_PROJECT_ID]")
 
     def setUp(self):
         super(ShellTest, self).setUp()
@@ -161,7 +161,7 @@ class ShellTest(utils.TestCase):
             self.fail('CommandError not raised')
 
     def test_no_project_name(self):
-        required = self._msg_no_tenant_project
+        required = self._msg_no_project
         self.make_env(exclude='OS_PROJECT_NAME')
         try:
             self.shell('service-list')
@@ -171,7 +171,7 @@ class ShellTest(utils.TestCase):
             self.fail('CommandError not raised')
 
     def test_no_project_id(self):
-        required = self._msg_no_tenant_project
+        required = self._msg_no_project
         self.make_env(exclude='OS_PROJECT_ID', fake_env=FAKE_ENV3)
         try:
             self.shell('service-list')

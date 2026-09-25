@@ -24,7 +24,7 @@ import copy
 
 
 class Resource(object):
-    """Base class for OpenStack resources (tenant, user, etc.).
+    """Base class for OpenStack resources (project, user, etc.).
 
     This is pretty much just a bag for attributes.
     """

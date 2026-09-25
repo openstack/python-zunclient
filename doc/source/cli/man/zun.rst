@@ -4,7 +4,6 @@
 Zun CLI man page
 ================
 
-
 SYNOPSIS
 ========
 
@@ -14,7 +13,6 @@ Zun operation use `zun` command, and also support use `openstack` command.
 
 :program:`openstack` appcontainer <command> [command-options]
 
-
 DESCRIPTION
 ===========
 
@@ -23,8 +21,8 @@ Service (Zun).
 
 In order to use the CLI, you must provide your OpenStack username, password,
 project (historically called tenant), and auth endpoint. You can use
-configuration options `--os-username`, `--os-password`, `--os-tenant-name` or
-`--os-tenant-id`, and `--os-auth-url` or set corresponding environment
+configuration options `--os-username`, `--os-password`, `--os-project-name` or
+`--os-project-id`, and `--os-auth-url` or set corresponding environment
 variables::
 
     export OS_USERNAME=user
@@ -54,8 +52,6 @@ To get a list of available commands run::
 To get usage and options of a command::
 
     openstack appcontainer <command> --help
-
-
 
 EXAMPLES
 ========

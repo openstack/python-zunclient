@@ -54,8 +54,8 @@ class Client(object):
         :param str password: User password
         :param str project_domain_id: ID of project domain
         :param str project_domain_name: Name of project domain
-        :param str project_id: Project/Tenant ID
-        :param str project_name: Project/Tenant Name
+        :param str project_id: Project ID
+        :param str project_name: Project Name
         :param str region_name: Region Name
         :param str service_name: Service Name
         :param str service_type: Service Type
